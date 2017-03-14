@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>EDUGraphAPIRuby</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <%= csrf_meta_tags %>
+    <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
+  </head>
+
+  <body>
+  	<div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/">Edu Demo App</a>
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                  <%= yield :header_list %>
+                </ul>
+
+                <%= yield :user_login_info %>
+            </div>
+        </div>
+    </div>
+    <div class="containerbg">
+        <div class="container body-content">
+            <%= yield %>
+            <%= javascript_include_tag 'bootstrap' %>
+            <%= javascript_include_tag 'jqueryval' %>
+            <%= javascript_include_tag 'site' %>
+            <footer></footer>
+        </div>
+    </div>
+
+    <div class="demo-helper-control collapsed">
+    <div class="header">DEMO HELPER</div>
+    <div class="header-right-shadow-mask"></div>
+    <div class="body">
+        <p class="desc">Code sample links for this page:</p>
+        <ul>
+            <li>
+                <p class="title">Controller</p>
+                <p><a href="" target="_blank"></a></p>
+            </li>
+            <li>
+                <p class="title">View</p>
+                <p><a href="" target="_blank"></a></p>
+            </li>
+            <li>
+                <p class="title">LoginViewModel</p>
+                <p><a href="" target="_blank"></a></p>
+            </li>
+        </ul>
+    </div>
+    </div>
+  </body>
+</html>

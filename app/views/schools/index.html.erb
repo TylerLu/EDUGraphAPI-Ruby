@@ -1,0 +1,63 @@
+<% content_for :header_list do %>
+  <%= render 'common/header_list' %>
+<% end %>
+
+<% content_for :user_login_info do %>
+	<%= render 'common/user_login_info', userinfo: session[:current_user] %>
+<% end %>
+
+<div class="row schools">
+  <div class="tophero">
+      <div class="col-md-6">
+          <div class="a-heading schoolname">ALL SCHOOLS</div>
+      </div>
+      <div class="col-md-6 schooltiles">
+        <% if usertype = @me["extension_fe2174665583431c953114ff7268b7b3_Education_ObjectType"] %>
+      	<div class="infocontainer">
+            <div class="infoheader">
+							<%= usertype %> Id
+            </div>
+            <div class="infobody"><%= @me["extension_fe2174665583431c953114ff7268b7b3_Education_StudentNumber"] %></div>
+        </div>
+        <% end %>
+      </div>
+      <div class="container myschool">
+          <div class="schoolenrolled">Current school(s) enrolled</div>
+          <div class="greenicon"></div>
+      </div>
+      <div style="clear:both;" />
+  </div>
+      <table class="table  table-green table-schools">
+          <tr class="table-green-header">
+              <th class="tdleft">School Name</th>
+              <th>Principal</th>
+              <th>Grade Levels</th>
+              <th>Address</th>
+              <th></th>
+          </tr>
+					<% @schools.each do |school| %>
+          <tr class="tr-content <%= 'td-green' if (school_number = school['extension_fe2174665583431c953114ff7268b7b3_Education_SchoolNumber']) == @me['extension_fe2174665583431c953114ff7268b7b3_Education_SyncSource_SchoolId'] %>">
+              <td><%= school["displayName"] %></td>
+              <td><%= principal = school["extension_fe2174665583431c953114ff7268b7b3_Education_SchoolPrincipalName"] %></td>
+              <td><%= low_grade = school["extension_fe2174665583431c953114ff7268b7b3_Education_LowestGrade"] %> - <%= high_grade = school["extension_fe2174665583431c953114ff7268b7b3_Education_HighestGrade"] %></td>
+              <td>
+                  <div class="schooladdress">
+                      <%= school["extension_fe2174665583431c953114ff7268b7b3_Education_Address"] %><br />
+											<%= school["extension_fe2174665583431c953114ff7268b7b3_Education_City"] %>, <%= school["extension_fe2174665583431c953114ff7268b7b3_Education_StateId"] %> <%= school["extension_fe2174665583431c953114ff7268b7b3_Education_Zip"] %> 
+                  </div>
+                  <div class="schoolmap">
+                  </div>
+              </td>
+              <td>
+                  <a class="btnlink" href="/schools/<%= school["objectId"] %>/classes?<%= URI.encode "school_name=#{school['displayName']}&low_grade=#{low_grade}&high_grade=#{high_grade}&principal=#{principal}&school_number=#{school_number}" %>">Classes</a>
+                  <a class="btnlink" href="/schools/<%= school["objectId"] %>/users?<%= URI.encode "school_name=#{school['displayName']}&low_grade=#{low_grade}&high_grade=#{high_grade}&principal=#{principal}&school_number=#{school_number}" %>">Teachers/students</a>
+              </td>
+          </tr>
+          <% end %>  
+      </table>
+</div>
+<div id='myMap'></div>
+<input type="hidden" name="BingMapKey" id="BingMapKey" value="3123" />
+<!--     <script type='text/javascript' src='https://www.bing.com/api/maps/mapcontrol' async defer></script>
+<script src="/bundles/schools?v=qpMqT5xaEczH-r9scIDjXn1TWM8R1nAkZRIKgnAs3bs1"></script>
+ -->

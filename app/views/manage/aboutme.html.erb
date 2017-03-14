@@ -1,0 +1,39 @@
+<% content_for :user_login_info do %>
+	<%= render 'common/user_login_info', userinfo: session[:current_user] %>
+<% end %>
+
+<% content_for :header_list do %>
+  <%= render 'common/header_list' %>
+<% end %>
+
+<div class="container ">
+    <h2>About Me</h2>
+    <div class="margin-top-12 margin-btm-12 aboutme">
+        <b>Username:</b><br /> <%= session[:current_user][:display_name] %> <img src='/Photo/UserPhoto/b3f99590-3f2e-4b8f-bddb-b40bebe25180'/>
+    </div>
+    <div class="margin-top-12 margin-btm-12">
+        <b>Logged in as:</b><br /> <%= is_admin? ? 'admin' : session[:current_user][:user_identify] %>
+    </div>
+    <div class="margin-btm-12">
+        <b>Favorite Color:</b>
+	   <form action="/manage/update_favorite_color" method="post">
+        <input type="hidden" value="<%= @account.id %>" name="account_id">
+		<select name="favoritecolor">
+            <option value="#2F19FF" <%= 'selected' if @account.favorite_color == '#2F19FF' %>>Blue</option>
+            <option value="#127605" <%= 'selected' if @account.favorite_color == '#127605' %>>Green</option>
+            <option value="#535353" <%= 'selected' if @account.favorite_color == '#535353' %>>Grey</option>
+    		</select>
+        <input type="submit" value="Save" />
+	</form>
+			</div>
+    <div class="margin-btm-12 ">
+        <b>Classes:</b>
+        <br />
+        <div>
+            <% session[:current_user][:myclasses].each do |class_name| %>
+				<%= class_name %> <br />
+            <% end %>
+        </div>
+    </div>
+</div>
+

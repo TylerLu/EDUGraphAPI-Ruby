@@ -1,0 +1,42 @@
+<h2>Register.</h2>
+<form action="/account/register_account" class="form-horizontal" method="post" role="form"><input name="__RequestVerificationToken" type="hidden" value="Z7myuLIAXpAZiE7OHMRe-yYyxr175jDQUjAXVX2m4sk199PdFn9Ujp72ljMI5qZk9TGcvOiKBlKGg4625IgG38hQfzjw-QzMt0_GxwnnwDfNG73M7kk_5VCOmX9_Pcez4CZgikIy4zw3bMNzRP1tww2" />    <h4>Create a new account.</h4>
+    <hr />
+<div class="validation-summary-valid text-danger" data-valmsg-summary="true"><ul><li style="display:none"></li>
+<% if flash[:alert] %>
+    <li><%= flash[:alert] %></li>
+<% end %>
+</ul></div>    
+    <div class="form-group">
+        <label class="col-md-2 control-label" for="Email">Email</label>
+        <div class="col-md-10">
+            <input class="form-control" data-val="true" data-val-email="The Email field is not a valid e-mail address." data-val-required="The Email field is required." id="Email" name="Email" type="text" value="" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-2 control-label" for="Password">Password</label>
+        <div class="col-md-10">
+            <input class="form-control" data-val="true" data-val-length="The Password must be at least 6 characters long." data-val-length-max="100" data-val-length-min="6" data-val-required="The Password field is required." id="Password" name="Password" type="password" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-2 control-label" for="ConfirmPassword">Confirm password</label>
+        <div class="col-md-10">
+            <input class="form-control" data-val="true" data-val-equalto="The password and confirmation password do not match." data-val-equalto-other="*.Password" id="ConfirmPassword" name="ConfirmPassword" type="password" />
+        </div>
+    </div>    <div class="form-group">
+        <label class="col-md-2 control-label" for="FavoriteColor">Favorite color</label>
+        <div class="col-md-10">
+                <select name="FavoriteColor" id="FavoriteColor" class="form-control">
+            <option value="#2F19FF">Blue</option>
+            <option value="#127605">Green</option>
+            <option value="#535353">Grey</option>
+    </select>
+
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" class="btn btn-default" value="Register" />
+        </div>
+    </div>
+</form>

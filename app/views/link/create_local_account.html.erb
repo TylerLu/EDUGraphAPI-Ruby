@@ -1,0 +1,30 @@
+<% content_for :user_login_info do %>
+    <%= render 'common/user_login_info', userinfo: session[:current_user] %>
+<% end %>
+
+<% content_for :header_list do %>
+  <%= render 'common/header_list' %>
+<% end %>
+
+<h4>Link to your local account - Create new local account</h4>
+<hr />
+<section id="createLocalAccount">
+    <form action="/link" class="form-horizontal" method="post" role="form">
+    <input name="__RequestVerificationToken" type="hidden" value="ZAOTCX8UjNgOAfcLAtVXDRbs6l-xkQJbJrM3dfTPGHyyl9kAAO6c-vfkyQeEn4IJVr3rLkOHOwvVMkzfwow8zpb9CAyUwwebXr3dVF7MLywO55nnstSr8NGbzRhSZbGlrHohbHYv4nlx-M-I5G6tUg2" />            
+    <div class="form-group">
+        <label class="col-md-2 control-label" for="FavoriteColor">Favorite color</label>
+        <div class="col-md-10">
+            <select name="FavoriteColor" id="FavoriteColor" class="form-control">
+                <option value="#2F19FF">Blue</option>
+                <option value="#127605">Green</option>
+                <option value="#535353">Grey</option>
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" value="Create and Link" class="btn btn-primary" />
+        </div>
+    </div>
+    </form>
+</section>

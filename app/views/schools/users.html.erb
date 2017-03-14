@@ -1,0 +1,112 @@
+<% content_for :header_list do %>
+  <%= render 'common/header_list', class_info: @class_info %>
+<% end %>
+
+<% content_for :user_login_info do %>
+    <%= render 'common/user_login_info', userinfo: session[:current_user] %>
+<% end %>
+
+<div class="row schools teacher-student">
+    <div class="tophero">
+        <div class="col-md-8">
+            <div class="secondnav">
+                <a href="/schools">All Schools</a> > <%= @school_name %></div>
+            <div class="a-heading">Teachers & Students</div>
+        </div>
+        <div class="toptiles">
+            <div class="section-school-name"><%= @school_name %></div>
+            <div class="infocontainer">
+                <div class="infoheader">PRINCIPAL</div>
+                <div class="infobody" title="Harry James">
+                    <%= @principal %>
+                </div>
+            </div>
+            <div class="infocontainer">
+                <div class="infoheader">Grade levels</div>
+                <div class="infobody" title="">
+                    <%= @low_grade %> - <%= @high_grade %>
+                </div>
+            </div>
+        </div>
+        <div>
+            <div class="col-md-6 usericon">
+                <div class="stuicon"></div><div>Student</div>
+                <div class="teacicon"></div><div>Teacher</div>
+            </div>
+            <div class="col-md-6 filterlink-container">
+                <div class="search-container ">
+                    <input type="text" placeholder="Search" class="txtsearch" />
+                    <button type="submit" id="btnsearch" title="Search" data-bi-dnt="" tabindex="40" class="btnsubmit"></button>
+                </div>
+                <span>FILTER:</span> <a id="filterteacher" class="filterlink" data-type="teachers">Teachers</a> | <a id="filterstudnet" class="filterlink" data-type="students">Students</a> | <a id="filterall" class="filterlink selected" data-type="users">All</a>
+            </div>
+        </div>
+        <br style="clear:both;" />
+    </div>
+    <div class="users-container tiles-root-container">
+        <div id="users" class="tiles-secondary-container">        
+        <div class="content">
+        			<% @students.each do |student| %>
+                <div class="element student-bg">
+                    <div class="userimg">
+                        <img src="/Images/header-default.jpg" realheader="" />
+                    </div>
+                    <div class="username"><%= student["displayName"] %></div>
+                </div>
+              <% end %>
+              <% @teachers.each do |teacher| %>
+                <div class="element teacher-bg">
+                    <div class="userimg">
+                        <img src="/Images/header-default.jpg" realheader="" />
+                    </div>
+                    <div class="username"><%= teacher["displayName"] %></div>
+                </div>
+              <% end %>
+        </div>
+        <div class="pagination hideitem">
+            <input id="nextlink" type="hidden" />
+            <input id="curpage" type="hidden" value="1" />
+            <span class="current prev">Previous</span>
+            <span class="next">Next</span>
+        </div>
+		</div>
+        <div id="students" class="tiles-secondary-container">        
+        	<div class="content">
+        				<% @students.each do |student| %>
+                <div class="element student-bg">
+                    <div class="userimg">
+                        <img src="/Images/header-default.jpg" realheader="" />
+                    </div>
+                    <div class="username"><%= student["displayName"] %></div>
+                </div>
+                <% end %>
+        </div>
+        <div class="pagination hideitem">
+            <input id="nextlink" type="hidden" />
+            <input id="curpage" type="hidden" value="1" />
+            <span class="current prev">Previous</span>
+            <span class="next">Next</span>
+        </div>
+		</div>
+        <div id="teachers" class="tiles-secondary-container">
+        	<div class="content">
+        			<% @teachers.each do |teacher| %>
+                <div class="element teacher-bg">
+                    <div class="userimg">
+                        <img src="/Images/header-default.jpg" realheader="" />
+                    </div>
+                    <div class="username"><%= teacher["displayName"] %></div>
+                </div>
+              <% end %>
+        </div>
+        <div class="pagination hideitem">
+            <input id="nextlink" type="hidden" />
+            <input id="curpage" type="hidden" value="1" />
+            <span class="current prev">Previous</span>
+            <span class="next">Next</span>
+        </div>
+</div>
+    </div>
+</div>
+
+<%= javascript_include_tag "users" %>

@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  gwn_refresh_token: MyString
+  o365email: MyString
+  gmc_refresh_token: MyString
+
+two:
+  gwn_refresh_token: MyString
+  o365email: MyString
+  gmc_refresh_token: MyString

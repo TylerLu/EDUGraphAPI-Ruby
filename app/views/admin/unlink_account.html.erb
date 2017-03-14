@@ -1,0 +1,15 @@
+
+<h2>Unlink Accounts</h2>
+<h3>Are you sure you want to unlink the accounts?</h3>
+<div>
+  <hr />
+  <dl class="dl-horizontal"></dl>
+	<form action="/admin/unlink_account?account_id=<%= @account.id %>" method="post">
+	<p>Local Account: <%= @account.email %></p>
+  <p>Office 365 Account: <%= @account.o365_email %></p>
+    <div class="form-actions no-color">
+      <input type="submit" value="Unlink" class="btn btn-default" /> |
+      <a href="/admin/linked_accounts">Back to List</a>
+    </div>
+	</form>
+</div>

@@ -1,0 +1,18 @@
+<h2>Linked Accounts</h2>
+<table class="table table-striped table-bordered">
+    <tr>
+        <th>Local Account</th>
+        <th>Office 365 Account</th>
+        <th></th>
+    </tr>
+        <% @accounts.each do |_account| %>
+        <tr>
+            <td><%= _account.email %></td>
+            <td><%= _account.o365_email %></td>
+            <td>
+                <a href="/admin/unlink_account?account_id=<%= _account.id %>">Unlink</a>
+            </td>
+        </tr>
+        <% end %>
+    </table>
+<p><a class="btn btn-default" href="/admin">Return</a></p>

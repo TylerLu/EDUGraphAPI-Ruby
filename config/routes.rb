@@ -1,0 +1,52 @@
+Rails.application.routes.draw do
+
+  resources :admin, only: :index do 
+    collection do 
+      post :consent
+      post :unconsent
+      get :linked_accounts
+      match :unlink_account, via: [:get, :post]
+    end
+  end
+  
+  resources :manage, only: :index do
+    collection do
+      get :aboutme
+      post :update_favorite_color
+    end
+  end
+
+  resources :schools, only: :index do
+  	member do
+  	  get :classes
+  	  get :users
+  	end
+  end
+
+  match '/Account/Callback' => 'account#callback', via: [:get, :post]
+
+  resources :account, only: [:index] do 
+  	collection do 
+  		get :login
+  		post :login_account
+			get :register
+			post :externalLogin
+
+			post :register_account
+			post :callback
+			post :logoff
+			get :o365login
+  	end
+  end
+
+  resources :link, only: [:index, :create] do
+    collection do
+      post :loginO365
+      # post :processcode
+      post :link_to_local_account
+      get :login_local
+      match :create_local_account, via: [:get, :post]
+    end
+  end
+  
+end

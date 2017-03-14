@@ -1,0 +1,37 @@
+<% content_for :user_login_info do %>
+	<%= render 'common/user_login_info', userinfo: session[:current_user] %>
+<% end %>
+
+<% content_for :header_list do %>
+  <%= render 'common/header_list' %>
+<% end %>
+
+<h2>Link Office 365 &amp; Local Account</h2>
+
+<% if @link_info && !@link_info.o365_email %>
+<p>This page will enable you to link your Office 365 & Local Account together to successfully use the demo application.</p>
+<div class="form-horizontal" id="linkAccountPrompt"><hr />
+	<form action="/link/loginO365" method="post"><input name="__RequestVerificationToken" type="hidden" value="" />                
+	<p><input type="submit" value="Link to existing O365 account" class="btn btn-primary" /> &nbsp; &nbsp;</p>
+	</form>        
+</div>
+<% elsif session[:current_user][:o365_email] %>
+<p>This page will enable you to link your Office 365 & Local Account together to successfully use the demo application.</p><hr />
+<div class="form-horizontal">
+    <p>
+<a class="btn btn-primary" href="/link/create_local_account">Continue with new Local Account</a>                    &nbsp; &nbsp;
+<a class="btn btn-primary" href="/link/login_local">Link with existing Local Account</a> &nbsp; &nbsp;
+    </p>
+</div>
+<% else %>
+<div>
+  <p>Your local account and Office 365 account are now linked.</p>
+  <p>
+    <ul>
+      <li>Local account: <%= @link_info.email %></li>
+      <li>Office 365 account: <%= @link_info.o365_email %></li>
+    </ul>
+  </p>
+  <p><a class="btn btn-default" href="/schools">Return to home</a></p>
+</div>
+<% end %>

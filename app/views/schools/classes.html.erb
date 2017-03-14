@@ -1,0 +1,140 @@
+<% content_for :header_list do %>
+  <%= render 'common/header_list', class_info: @class_info %>
+<% end %>
+
+<% content_for :user_login_info do %>
+    <%= render 'common/user_login_info', userinfo: session[:current_user] %>
+<% end %>
+
+<div class="row schools sections">
+    <div class="tophero">
+        <div class="col-md-8">
+            <div class="secondnav">
+                <a href="/schools"> All Schools</a> > <%= @school_name %>
+            </div>
+            <div class="a-heading">Classes</div>
+        </div>
+        <div class="toptiles">
+            <div class="section-school-name"><%= @school_name %></div>
+            <div class="infocontainer">
+                <div class="infoheader">PRINCIPAL</div>
+                <div class="infobody" title="Amy Roebuck">
+                    <%= @principal %>
+                </div>
+            </div>
+            <div class="infocontainer">
+                <div class="infoheader">Grade levels</div>
+                <div class="infobody">
+                    <%= @low_grade %> - <%= @high_grade %>
+                </div>
+            </div>
+        </div>
+        <div>
+            <div class="col-md-4 usericon">
+                <div class="icon"></div>
+                    <div>Not Enrolled</div>
+                <div class="icon my-class"></div><div>My Class</div>
+            </div>
+            <div class="col-md-3 filterlink-container">
+                <div class="search-container "></div>
+                <span>FILTER:</span> <a id="filtermyclasses" class="filterlink selected" data-type="myclasses">My Classes</a> | <a id="filterclasses" class="filterlink " data-type="allclasses">All Classes</a>
+            </div>
+        </div>
+        <br style="clear:both;" />
+    </div>
+    <div class="myclasses-container tiles-root-container">
+        <div id="allclasses" class="tiles-secondary-container">
+            <div class="section-tiles">
+                <div class="content clearfix">
+                    <% @allclasses.each do |all_class| %>
+                    <div class="tile-container">
+                        <% if @mycourseids.include? all_class['extension_fe2174665583431c953114ff7268b7b3_Education_SyncSource_CourseId'] %>
+                        <a class="mysectionlink" href="/schools/<%= @school_id %>/classes/<%= all_class['objectId'] %>">
+                        <div class="tile">
+                            <h5><%= all_class['displayName'] %></h5>
+                            <h2><%= all_class['extension_fe2174665583431c953114ff7268b7b3_Education_CourseSubject'][0..2].upcase rescue '' %>
+                                <%= all_class['extension_fe2174665583431c953114ff7268b7b3_Education_CourseNumber'] %>
+                            </h2>
+                        </div>
+                        </a>
+                        <% else %>
+                        <div class="tile">
+                            <h5><%= all_class['displayName'] %></h5>
+                            <h2><%= all_class['extension_fe2174665583431c953114ff7268b7b3_Education_CourseSubject'][0..2].upcase rescue '' %>
+                                <%= all_class['extension_fe2174665583431c953114ff7268b7b3_Education_CourseNumber'] %>
+                            </h2>
+                        </div>
+                        <% end %>
+                        <div class="detail">
+                            <h5>Course Id:</h5>
+                            <h6><%= all_class['extension_fe2174665583431c953114ff7268b7b3_Education_SyncSource_CourseId'] %></h6>
+                            <h5>Description:</h5>
+                            <h6><%= all_class['extension_fe2174665583431c953114ff7268b7b3_Education_CourseDescription'] %></h6>
+                            <h5>Teachers:</h5>
+                            <h5>Term Name:</h5>
+                            <h6><%= all_class['extension_fe2174665583431c953114ff7268b7b3_Education_TermName'] %></h6>
+                            <h5>Start/Finish Date:</h5>
+                            <h6>
+                                <span id="termdate"><%= Date.strptime(all_class['extension_fe2174665583431c953114ff7268b7b3_Education_TermStartDate'], '%m/%d/%Y').to_s rescue '' %></span>
+                                <span> ~ </span>
+                                <span id="termdate"><%= Date.strptime(all_class['extension_fe2174665583431c953114ff7268b7b3_Education_TermEndDate'], '%m/%d/%Y').to_s rescue '' %></span>
+                            </h6>
+                            <h5>Period:</h5>
+                            <h6><%= all_class['extension_fe2174665583431c953114ff7268b7b3_Education_Period'] %></h6>
+                        </div>
+                    </div>
+                    <% end %>      
+                </div>
+                <div class="seemore " id="see-more">
+                    <input id="nextlink" type="hidden" value="directoryObjects/$/Microsoft.DirectoryServices.Group?$filter=extension_fe2174665583431c953114ff7268b7b3_Education_ObjectType%20eq%20&#39;Section&#39;%20and%20extension_fe2174665583431c953114ff7268b7b3_Education_SyncSource_SchoolId%20eq%20&#39;10001&#39;&amp;$skiptoken=X&#39;445370740700010000000000000000100000000C215D187B6B5C47BF3E7FBE751224EA000000000000000000000017312E322E3834302E3131333535362E312E342E3233333100000000&#39;" />
+                    <input id="schoolid" type="hidden" value="f7458bac-130c-4b93-83fd-e14a3bd547cb" />
+                    <span>See More</span>
+                </div>
+
+            </div>
+        </div>
+        <div id="myclasses" class="tiles-secondary-container">
+            <div class="section-tiles">
+                <div class="content clearfix">
+                    <% if @myclasses.empty? %>
+                        <div class="nodata"> Not enrolled in any classes.</div>
+                    <% else %>
+                    <% @myclasses.each do |myclass| %>
+                    <div class="tile-container">
+                        <a class="mysectionlink" href="/Schools/<%= @schoolid %>/Classes/<%= myclass['objectId'] %>">
+                        <div class="tile">
+                            <h5><%= myclass['displayName'] %></h5>
+                            <h2><%= myclass['extension_fe2174665583431c953114ff7268b7b3_Education_CourseSubject'][0..2].upcase %>
+                                <%= myclass['extension_fe2174665583431c953114ff7268b7b3_Education_CourseNumber'] %>
+                            </h2>
+                        </div>
+                        </a>
+
+                        <div class="detail">
+                            <h5>Course Id:</h5>
+                            <h6><%= myclass['extension_fe2174665583431c953114ff7268b7b3_Education_SyncSource_CourseId'] %></h6>
+                            <h5>Description:</h5>
+                            <h6><%= myclass['extension_fe2174665583431c953114ff7268b7b3_Education_CourseDescription'] %></h6>
+                            <h5>Teachers:</h5>
+                            <h5>Term Name:</h5>
+                            <h6><%= myclass['extension_fe2174665583431c953114ff7268b7b3_Education_TermName'] %></h6>
+                            <h5>Start/Finish Date:</h5>
+                            <h6>
+                                <span id="termdate"><%= Date.strptime(myclass['extension_fe2174665583431c953114ff7268b7b3_Education_TermStartDate'], '%m/%d/%Y').to_s %></span>
+                                <span> ~ </span>
+                                <span id="termdate"><%= Date.strptime(myclass['extension_fe2174665583431c953114ff7268b7b3_Education_TermEndDate'], '%m/%d/%Y').to_s %></span>
+                            </h6>
+                            <h5>Period:</h5>
+                            <h6><%= myclass['extension_fe2174665583431c953114ff7268b7b3_Education_Period'] %></h6>
+                        </div>
+                    </div>
+                    <% end %>
+                    <% end %>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%= javascript_include_tag 'moment.min' %>
+<%= javascript_include_tag 'sections' %>
