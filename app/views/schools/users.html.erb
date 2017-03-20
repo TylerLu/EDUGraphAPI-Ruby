@@ -49,7 +49,7 @@
         			<% @students.each do |student| %>
                 <div class="element student-bg">
                     <div class="userimg">
-                        <img src="/Images/header-default.jpg" realheader="" />
+                        <img src="/Images/header-default.jpg" realheader="<%= get_user_photo_url(student['objectId']) %>" />
                     </div>
                     <div class="username"><%= student["displayName"] %></div>
                 </div>
@@ -57,7 +57,7 @@
               <% @teachers.each do |teacher| %>
                 <div class="element teacher-bg">
                     <div class="userimg">
-                        <img src="/Images/header-default.jpg" realheader="" />
+                        <img src="/Images/header-default.jpg" realheader="<%= get_user_photo_url(teacher['objectId']) %>" />
                     </div>
                     <div class="username"><%= teacher["displayName"] %></div>
                 </div>
@@ -75,7 +75,7 @@
         				<% @students.each do |student| %>
                 <div class="element student-bg">
                     <div class="userimg">
-                        <img src="/Images/header-default.jpg" realheader="" />
+                    <img src="/Images/header-default.jpg" realheader="<%= get_user_photo_url(student['objectId']) %>" />
                     </div>
                     <div class="username"><%= student["displayName"] %></div>
                 </div>
@@ -93,7 +93,7 @@
         			<% @teachers.each do |teacher| %>
                 <div class="element teacher-bg">
                     <div class="userimg">
-                        <img src="/Images/header-default.jpg" realheader="" />
+                        <img src="/Images/header-default.jpg" realheader="<%= get_user_photo_url(teacher['objectId']) %>" />
                     </div>
                     <div class="username"><%= teacher["displayName"] %></div>
                 </div>

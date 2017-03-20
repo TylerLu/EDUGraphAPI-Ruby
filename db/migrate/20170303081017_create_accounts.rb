@@ -1,6 +1,6 @@
 class CreateAccounts < ActiveRecord::Migration[5.0]
   def change
-    create_table :accounts, options: 'DEFAULT CHARSET=utf8', comment: '用户信息表' do |t|
+    create_table :accounts, comment: '用户信息表' do |t|
     	t.string :first_name, limit: 40, default: '', comment: '姓'
     	t.string :last_name, limit: 40, default: '', comment: '名字'
     	t.integer :organization_id

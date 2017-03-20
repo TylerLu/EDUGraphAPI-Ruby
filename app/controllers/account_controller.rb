@@ -3,12 +3,21 @@ class AccountController < ApplicationController
 	skip_before_action :verify_access_token
 
 	def login
-
+		cookies[:o365_login_email] = nil
 	end
 
 	def login_account
 		session.clear
 		account = Account.find_by_email(params["Email"])
+
+		unless params["RememberMe"].empty?
+			cookies[:user_local_account] = params["Email"]
+			cookies[:user_local_remember] = true
+		else
+			cookies[:user_local_account] = nil
+			cookies[:user_local_remember] = nil
+		end
+
 		if account && account.password == params["Password"]
 			#判断是否link，没有则跳转到link页
 			session[:current_user] = {
@@ -32,8 +41,17 @@ class AccountController < ApplicationController
 					resource: 'https://graph.windows.net'
 				}).body
 
+				res2 = JSON.parse HTTParty.post('https://login.microsoftonline.com/common/oauth2/token', body: {
+					grant_type: 'refresh_token',
+					client_id: Settings.edu_graph_api.app_id,
+					refresh_token: refresh_token,
+					client_secret: Settings.edu_graph_api.default_key,
+					resource: 'https://graph.microsoft.com'
+				}).body
+
 				if res["access_token"]
 					session[:gwn_access_token] = res["access_token"]
+					session[:gmc_access_token] = res2["access_token"]
 					session[:token_type] = res["token_type"]
 					session[:expires_on] = res["expires_on"]
 
@@ -47,13 +65,6 @@ class AccountController < ApplicationController
 
 			cookies[:local_account] = params["Email"]
 
-			if params["RememberMe"]
-				cookies[:user_local_account] = params["Email"]
-				cookies[:user_local_remember] = true
-			else
-				cookies[:user_local_account] = nil
-				cookies[:user_local_remember] = false
-			end
 		else
 			redirect_to login_account_index_path, alert: 'Invalid login attempt.'
 		end
@@ -112,6 +123,9 @@ class AccountController < ApplicationController
 		id_token = params["id_token"] 
 
 		if params["admin_consent"] == "True"
+			account = Account.find_by_o365_email(cookies[:o365_login_email])
+			account.is_consent = true
+			account.save
 			redirect_to admin_index_path, notice: 'admin consent success'
 			return 
 		end

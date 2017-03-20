@@ -14,3 +14,7 @@
  *= require site
  *= require_self
  */
+
+.hidden_course{
+	display: none !important;
+}

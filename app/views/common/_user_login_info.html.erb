@@ -1,5 +1,6 @@
-<form action="/account/logoff" class="navbar-right" id="logoutForm" method="post"><input name="__RequestVerificationToken" type="hidden" value="MBzC9b0tIkCTWPYXW5wkvXbfKI8FQQmpXlP76ScYoB2dCVdcIn5_9WPBZZeJz1ZqlS3wqvaxCtkBA4nf2uTfa7geqtNejoY-8vpnLOR5LKzZOLTmHj3AG-hfOC_Z3_FkT8XxhpSSf70AImch8w5sAw2" />     <div class="userinfo">
-    <a href="javascript:void(0);" id="userinfolink">Logged in as: <%= is_admin? ? 'admin' : userinfo[:user_identify] %>. Hello <%= userinfo[:display_name] %> <img src='/Images/header.png'/></a>
+<form action="/account/logoff" class="navbar-right" id="logoutForm" method="post">
+    <div class="userinfo">
+    <a href="javascript:void(0);" id="userinfolink">Logged in as: <%= is_admin? ? 'admin' : userinfo[:user_identify] %>. Hello <%= userinfo[:display_name] %> <img src='<%= session[:current_user][:photo] %>'/></a>
         <span class="caret" id="caret"></span>
     </div>
     <div class="popupcontainer" id="userinfoContainer">

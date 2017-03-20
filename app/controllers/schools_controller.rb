@@ -1,7 +1,7 @@
 class SchoolsController < ApplicationController
 	def index
 		# 根据access_token 获取登录用户信息
-		@me = JSON.parse HTTParty.get('https://graph.windows.net/canvizEdu.onmicrosoft.com/me?api-version=beta', headers: {
+		@me = JSON.parse HTTParty.get("https://graph.windows.net/#{Settings.tenant_name}/me?api-version=beta", headers: {
 			"Authorization" => "#{session[:token_type]} #{session[:gwn_access_token]}",
 			"Content-Type" => "application/x-www-form-urlencoded"
 		}).body
@@ -10,6 +10,7 @@ class SchoolsController < ApplicationController
 			user_identify: @me["extension_fe2174665583431c953114ff7268b7b3_Education_ObjectType"],
 			display_name: @me["displayName"],
 			school_number: @me["extension_fe2174665583431c953114ff7268b7b3_Education_SyncSource_SchoolId"],
+			photo: get_user_photo_url(@me['objectId'])
 		}
 
 		classes = if is_admin?
@@ -25,28 +26,8 @@ class SchoolsController < ApplicationController
 
 		session[:current_user][:myclasses] = classes
 
-		# account = Account.find_by_o365_user_id(@me["id"])
-		# unless account
-		# 	Account.create({
-		# 		o365_user_id: 	 @me["id"],
-		# 		first_name: 		 @me["surname"],
-		# 		last_name: 			 @me["givenName"],
-		# 		username: 			 @me["displayName"],
-		# 		job_title: 			 @me["jobTitle"],
-		# 		mobile: 				 @me["mobilePhone"],
-		# 		o365_email:   	 @me["userPrincipalName"],
-		# 		business_phones: @me["businessPhones"]
-		# 	})
-		# elsif !account.role_id
-		# 	#获取用户角色
-			
-		# end
-
-		# p @me
-		
-
 		# 根据access_token 获取schools信息
-		all_schools = JSON.parse(HTTParty.get("https://graph.windows.net/canvizEdu.onmicrosoft.com/administrativeUnits",
+		all_schools = JSON.parse(HTTParty.get("https://graph.windows.net/#{Settings.tenant_name}/administrativeUnits",
 			query: {
 				"api-version" => "beta"
 			},
@@ -96,18 +77,77 @@ class SchoolsController < ApplicationController
 		else
 			[]
 		end
+		# p @myclasses
 
 		@mycourseids = @myclasses.map do |myclass| 
 			myclass['extension_fe2174665583431c953114ff7268b7b3_Education_SyncSource_CourseId']
 		end
 
-		# p "https://graph.windows.net/canvizEdu.onmicrosoft.com/groups?api-version=beta&$filter=extension_fe2174665583431c953114ff7268b7b3_Education_ObjectType%20eq%20'Section'%20and%20extension_fe2174665583431c953114ff7268b7b3_Education_SyncSource_SchoolId%20eq%20'#{@school_id}'"
-		res = JSON.parse HTTParty.get("https://graph.windows.net/canvizEdu.onmicrosoft.com/groups?api-version=beta&$filter=extension_fe2174665583431c953114ff7268b7b3_Education_ObjectType%20eq%20'Section'%20and%20extension_fe2174665583431c953114ff7268b7b3_Education_SyncSource_SchoolId%20eq%20'#{school_number}'", headers: {
+		res = JSON.parse HTTParty.get("https://graph.windows.net/#{Settings.tenant_name}/groups?api-version=beta&$filter=extension_fe2174665583431c953114ff7268b7b3_Education_ObjectType%20eq%20'Section'%20and%20extension_fe2174665583431c953114ff7268b7b3_Education_SyncSource_SchoolId%20eq%20'#{school_number}'", headers: {
 			"Authorization" => "#{session[:token_type]} #{session[:gwn_access_token]}",
 			"Content-Type" => "application/x-www-form-urlencoded"
 		}).body
 
 		@allclasses = res['value']
+	end
+
+	def class_info
+		school_id = params["id"]
+		class_id = params["class_id"]
+
+		@class_info = {
+			school_id: params[:id],
+			school_number: params[:school_number],
+			school_name: params[:school_name],
+			low_grade: params[:low_grade],
+			high_grade: params[:high_grade],
+			principal: params[:principal]
+		}
+
+		# 获取会话
+		@conversations = JSON.parse(HTTParty.get("https://graph.microsoft.com/v1.0/groups/#{class_id}/conversations", headers: {
+			"Authorization" => "#{session[:token_type]} #{session[:gmc_access_token]}",
+			"Content-Type" => "application/x-www-form-urlencoded"
+		}).body)["value"] rescue []
+
+		# 获取documents
+		@items = JSON.parse(HTTParty.get("https://graph.microsoft.com/beta/groups/#{class_id}/drive/root/children", headers: {
+			"Authorization" => "#{session[:token_type]} #{session[:gmc_access_token]}",
+			"Content-Type" => "application/x-www-form-urlencoded"
+		}).body)["value"] rescue []
+
+		# p @items
+
+		@myclass = JSON.parse HTTParty.get("https://graph.windows.net/#{Settings.tenant_name}/groups/#{class_id}?api-version=beta", headers: {
+			"Authorization" => "#{session[:token_type]} #{session[:gwn_access_token]}",
+			"Content-Type" => "application/x-www-form-urlencoded"
+		}).body		
+
+		# p @myclass
+
+		members = JSON.parse HTTParty.get("https://graph.windows.net/#{Settings.tenant_name}/groups/#{class_id}/$links/members?api-version=beta", headers: {
+			"Authorization" => "#{session[:token_type]} #{session[:gwn_access_token]}",
+			"Content-Type" => "application/x-www-form-urlencoded"
+		}).body
+
+		@student_info = []
+
+		members["value"].each do |member|
+			_tmp = JSON.parse HTTParty.get("#{member['url']}?api-version=beta", headers: {
+				"Authorization" => "#{session[:token_type]} #{session[:gwn_access_token]}",
+				"Content-Type" => "application/x-www-form-urlencoded"
+			}).body
+
+			@student_info << {
+				user_id: _tmp['objectId'], 
+				displayName: _tmp['displayName'], 
+				object_type: _tmp['extension_fe2174665583431c953114ff7268b7b3_Education_ObjectType'],
+				email: _tmp['userPrincipalName'],
+				grade: _tmp['extension_fe2174665583431c953114ff7268b7b3_Education_Grade'],
+				photo: get_user_photo_url(_tmp['objectId'])
+			}
+		end
+
 	end
 
 	def users
@@ -127,7 +167,7 @@ class SchoolsController < ApplicationController
 			principal: @principal
 		}
 
-		res = JSON.parse(HTTParty.get("https://graph.windows.net/canvizEDU.onmicrosoft.com/administrativeUnits/#{@school_id}/members?api-version=beta", headers: {
+		res = JSON.parse(HTTParty.get("https://graph.windows.net/#{Settings.tenant_name}/administrativeUnits/#{@school_id}/members?api-version=beta", headers: {
 			"Authorization" => "#{session[:token_type]} #{session[:gwn_access_token]}",
 			"Content-Type" => "application/x-www-form-urlencoded"
 		}).body)["value"]

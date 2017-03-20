@@ -1,14 +1,7 @@
-MS_GRAPH_USERNAME: "usernamehere@xxxxx.onmicrosoft.com"
-MS_GRAPH_PASSWORD: "xxxxxxxxxxxx"
-MS_GRAPH_CLIENT_ID: "70288edd-ba06-4139-befc-1315f6b0a721"
-MS_GRAPH_CLIENT_SECRET: "S01BulKmE3s4nPR9pJU7GzRlefCOGwqTu1Zbp3KsUvk="
-MS_GRAPH_TENANT: "xxxxx.onmicrosoft.com"
 
 default_password: '111111'
 
 redirect_uri: 'http://localhost:44311/Account/Callback'
-
-redirect_uri_token: 'http://localhost:44311/Account/CallbackToken'
 
 BING_MAP: "Am9chh_4wTOKVFk6uZj0IHylYkAx9ePzBru8kwZ2WgPjQVBkGlcW71hFdWyD-Ci2"
 
@@ -19,3 +12,4 @@ open_config: "https://login.microsoftonline.com/common/.well-known/openid-config
 edu_graph_api:
   app_id: "70288edd-ba06-4139-befc-1315f6b0a721"
   default_key: 'S01BulKmE3s4nPR9pJU7GzRlefCOGwqTu1Zbp3KsUvk='
+

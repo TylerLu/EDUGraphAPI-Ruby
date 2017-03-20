@@ -5,6 +5,7 @@ Rails.application.routes.draw do
       post :consent
       post :unconsent
       get :linked_accounts
+      post :add_app_role_assignments
       match :unlink_account, via: [:get, :post]
     end
   end
@@ -19,6 +20,7 @@ Rails.application.routes.draw do
   resources :schools, only: :index do
   	member do
   	  get :classes
+      get 'classes/:class_id' => 'schools#class_info'
   	  get :users
   	end
   end

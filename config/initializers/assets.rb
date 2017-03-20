@@ -12,5 +12,5 @@ Rails.application.config.assets.precompile += %w(
 login.css bootstrap.js
 jqueryval.js site.js
 moment.min.js sections.js
-users.js
+users.js classdetail.js
 )

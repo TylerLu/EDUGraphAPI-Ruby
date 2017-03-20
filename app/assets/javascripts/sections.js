@@ -41,85 +41,117 @@ $(document).ready(function () {
         tilesContainer.removeClass(tilesContainer.attr("class").replace("tiles-root-container", "")).addClass(filterType + "-container");
     });
 
-    $("#see-more  span").click(function () {
+    // $("#see-more  span").click(function () {
+    //     search(true);
+    //     var element = $(this);
+    //     if (element.hasClass("disabled") || element.hasClass("nomore")) {
+    //         return;
+    //     }
+
+    //     var schoolId = element.siblings("input#schoolid").val();
+    //     var url = "/Schools/" + schoolId + "/Classes/Next";
+    //     var nextLinkElement = element.siblings("input#nextlink");
+
+    //     element.addClass("disabled");
+    //     $.ajax({
+    //         type: 'GET',
+    //         url: url,
+    //         dataType: 'json',
+    //         data: { schoolId: schoolId, nextLink: nextLinkElement.val() },
+    //         contentType: "application/json; charset=utf-8",
+    //         success: function (data) {
+    //             if (data.error === "AdalException" || data.error === "Unauthorized") {
+    //                 alert("Your current session has expired. Please click OK to refresh the page.");
+    //                 window.location.reload(false);
+    //                 return;
+    //             }
+
+    //             var tiles = element.parent().prev(".content");
+    //             var newTiles = $();
+    //             $.each(data.Sections.Value, function (i, s) {
+    //                 var isMine = hasSection(s, data.MySections);
+    //                 var newTile = $('<div class="tile-container"></div>');
+    //                 var tileContainer = newTile;
+    //                 if (isMine) {
+    //                     tileContainer = $('<a class="mysectionlink" href="/Schools/' + schoolId + '/Classes/' + s.ObjectId + '"></a>').appendTo(newTile);
+    //                 }
+    //                 var tile = $('<div class="tile"><h5>' + s.DisplayName + '</h5><h2>' + s.CombinedCourseNumber + '</h2></div>');
+    //                 tile.appendTo(tileContainer);
+    //                 var tileDetail = $('<div class="detail" style="display: none;">' +
+    //                                         '<h5>Course Id:</h5>' +
+    //                                         '<h6>' + s.CourseId + '</h6>' +
+    //                                         '<h5>Description:</h5>' +
+    //                                         '<h6>' + s.CourseDescription + '</h6>' +
+    //                                         '<h5>Teachers:</h5>' +
+    //                                         ((s.Members instanceof Array) ?
+    //                                         s.Members.reduce(function (accu, cur) {
+    //                                             if (cur.ObjectType == 'Teacher') {
+    //                                                 accu += '<h6>' + cur.DisplayName + '</h6>';
+    //                                             }
+    //                                             return accu;
+    //                                         }, '') : '') +
+
+    //                                         '<h5>Term Name:</h5>' +
+    //                                         '<h6>' + s.TermName + '</h6>' +
+    //                                         '<h5>Start/Finish Date:</h5>' +
+    //                                         ((s.TermStartDate || s.TermEndDate) ?
+    //                                         ('<h6><span id="termdate">' + s.TermStartDate + '</span>' +
+    //                                         '<span> - </span>' +
+    //                                         '<span id="termdate">' + s.TermEndDate + '</span>' +
+    //                                         '</h6>') : '') +
+    //                                         '<h5>Period:</h5>' +
+    //                                         '<h6>' + s.Period + '</h6>' +
+    //                                     '</div>');
+    //                 tileDetail.appendTo(newTile);
+    //                 newTiles = newTiles.add(newTile);
+    //             });
+    //             newTiles.appendTo(tiles).hide().fadeIn("slow");
+    //             bindShowDetail(newTiles);
+
+    //             var newNextLink = data.Sections.NextLink;
+    //             nextLinkElement.val(newNextLink);
+    //             if (typeof (newNextLink) != "string" || newNextLink.length == 0) {
+    //                 element.addClass("nomore");
+    //             }
+    //             $(window).scrollTop($(document).height() - $(window).height())
+    //         },
+    //         complete: function () {
+    //             element.removeClass("disabled");
+    //         }
+    //     });
+    // });
+    // 
+    $("#see-more").click(function () {
         search(true);
-        var element = $(this);
-        if (element.hasClass("disabled") || element.hasClass("nomore")) {
-            return;
-        }
+        var start_index = parseInt($(this).data('index'));
+        var all_count = parseInt($(this).data('count'));
 
-        var schoolId = element.siblings("input#schoolid").val();
-        var url = "/Schools/" + schoolId + "/Classes/Next";
-        var nextLinkElement = element.siblings("input#nextlink");
-
-        element.addClass("disabled");
-        $.ajax({
-            type: 'GET',
-            url: url,
-            dataType: 'json',
-            data: { schoolId: schoolId, nextLink: nextLinkElement.val() },
-            contentType: "application/json; charset=utf-8",
-            success: function (data) {
-                if (data.error === "AdalException" || data.error === "Unauthorized") {
-                    alert("Your current session has expired. Please click OK to refresh the page.");
-                    window.location.reload(false);
-                    return;
-                }
-
-                var tiles = element.parent().prev(".content");
-                var newTiles = $();
-                $.each(data.Sections.Value, function (i, s) {
-                    var isMine = hasSection(s, data.MySections);
-                    var newTile = $('<div class="tile-container"></div>');
-                    var tileContainer = newTile;
-                    if (isMine) {
-                        tileContainer = $('<a class="mysectionlink" href="/Schools/' + schoolId + '/Classes/' + s.ObjectId + '"></a>').appendTo(newTile);
-                    }
-                    var tile = $('<div class="tile"><h5>' + s.DisplayName + '</h5><h2>' + s.CombinedCourseNumber + '</h2></div>');
-                    tile.appendTo(tileContainer);
-                    var tileDetail = $('<div class="detail" style="display: none;">' +
-                                            '<h5>Course Id:</h5>' +
-                                            '<h6>' + s.CourseId + '</h6>' +
-                                            '<h5>Description:</h5>' +
-                                            '<h6>' + s.CourseDescription + '</h6>' +
-                                            '<h5>Teachers:</h5>' +
-                                            ((s.Members instanceof Array) ?
-                                            s.Members.reduce(function (accu, cur) {
-                                                if (cur.ObjectType == 'Teacher') {
-                                                    accu += '<h6>' + cur.DisplayName + '</h6>';
-                                                }
-                                                return accu;
-                                            }, '') : '') +
-
-                                            '<h5>Term Name:</h5>' +
-                                            '<h6>' + s.TermName + '</h6>' +
-                                            '<h5>Start/Finish Date:</h5>' +
-                                            ((s.TermStartDate || s.TermEndDate) ?
-                                            ('<h6><span id="termdate">' + s.TermStartDate + '</span>' +
-                                            '<span> - </span>' +
-                                            '<span id="termdate">' + s.TermEndDate + '</span>' +
-                                            '</h6>') : '') +
-                                            '<h5>Period:</h5>' +
-                                            '<h6>' + s.Period + '</h6>' +
-                                        '</div>');
-                    tileDetail.appendTo(newTile);
-                    newTiles = newTiles.add(newTile);
-                });
-                newTiles.appendTo(tiles).hide().fadeIn("slow");
-                bindShowDetail(newTiles);
-
-                var newNextLink = data.Sections.NextLink;
-                nextLinkElement.val(newNextLink);
-                if (typeof (newNextLink) != "string" || newNextLink.length == 0) {
-                    element.addClass("nomore");
-                }
-                $(window).scrollTop($(document).height() - $(window).height())
-            },
-            complete: function () {
-                element.removeClass("disabled");
+        for(var i = start_index; i < start_index + 12; i++){
+            if(i >= all_count){   
+                $(this).unbind('click');
+                $(this).find('span').html('END');
+                return;
             }
-        });
+            $("#course_" + i).removeClass('hidden_course');
+        }
+        $(this).data('index', start_index + 12);
     });
+
+    $("#my-see-more").click(function(){
+       search(true);
+        var start_index = parseInt($(this).data('index'));
+        var all_count = parseInt($(this).data('count'));
+
+        for(var i = start_index; i < start_index + 12; i++){
+            if(i >= all_count){   
+                $(this).unbind('click');
+                $(this).find('span').html('END');
+                return;
+            }
+            $("#my_course_" + i).removeClass('hidden_course');
+        }
+        $(this).data('index', start_index + 12); 
+    })
 
     $("#btnsearch").click(function () {
         search();

@@ -9,7 +9,7 @@
 <div class="container ">
     <h2>About Me</h2>
     <div class="margin-top-12 margin-btm-12 aboutme">
-        <b>Username:</b><br /> <%= session[:current_user][:display_name] %> <img src='/Photo/UserPhoto/b3f99590-3f2e-4b8f-bddb-b40bebe25180'/>
+        <b>Username:</b><br /> <%= session[:current_user][:display_name] %> <img src='<%= session[:current_user][:photo] %>'/>
     </div>
     <div class="margin-top-12 margin-btm-12">
         <b>Logged in as:</b><br /> <%= is_admin? ? 'admin' : session[:current_user][:user_identify] %>
