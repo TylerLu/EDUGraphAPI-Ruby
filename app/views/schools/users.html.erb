@@ -45,34 +45,26 @@
     </div>
     <div class="users-container tiles-root-container">
         <div id="users" class="tiles-secondary-container">        
-        <div class="content">
-        			<% @students.each do |student| %>
-                <div class="element student-bg">
+            <div class="content" id='users_1'>
+              <% @all.each do |_one| %>
+                <div class="element <%= _one['extension_fe2174665583431c953114ff7268b7b3_Education_ObjectType'] == 'Teacher' ? 'teacher-bg' : 'student-bg' %>">
                     <div class="userimg">
-                        <img src="/Images/header-default.jpg" realheader="<%= get_user_photo_url(student['objectId']) %>" />
+                        <img src="/Images/header-default.jpg" realheader="<%= get_user_photo_url(_one['objectId']) %>" />
                     </div>
-                    <div class="username"><%= student["displayName"] %></div>
+                    <div class="username"><%= _one["displayName"] %></div>
                 </div>
               <% end %>
-              <% @teachers.each do |teacher| %>
-                <div class="element teacher-bg">
-                    <div class="userimg">
-                        <img src="/Images/header-default.jpg" realheader="<%= get_user_photo_url(teacher['objectId']) %>" />
-                    </div>
-                    <div class="username"><%= teacher["displayName"] %></div>
-                </div>
-              <% end %>
-        </div>
-        <div class="pagination hideitem">
-            <input id="nextlink" type="hidden" />
-            <input id="curpage" type="hidden" value="1" />
-            <span class="current prev">Previous</span>
-            <span class="next">Next</span>
-        </div>
+            </div>
+            <div class="pagination <%= 'hideitem' unless @all_next_link %>">
+                <input id="nextlink" type="hidden" value="<%= @all_next_link %>"/>
+                <input id="curpage" type="hidden" value="1" />
+                <span class="current prev">Previous</span>
+                <span class="next">Next</span>
+            </div>
 		</div>
         <div id="students" class="tiles-secondary-container">        
-        	<div class="content">
-        				<% @students.each do |student| %>
+        	<div class="content" id='students_1'>
+        		<% @students.each do |student| %>
                 <div class="element student-bg">
                     <div class="userimg">
                     <img src="/Images/header-default.jpg" realheader="<%= get_user_photo_url(student['objectId']) %>" />
@@ -80,17 +72,17 @@
                     <div class="username"><%= student["displayName"] %></div>
                 </div>
                 <% end %>
-        </div>
-        <div class="pagination hideitem">
-            <input id="nextlink" type="hidden" />
-            <input id="curpage" type="hidden" value="1" />
-            <span class="current prev">Previous</span>
-            <span class="next">Next</span>
-        </div>
+            </div>
+            <div class="pagination <%= 'hideitem' unless @student_next_link %>">
+                <input id="nextlink" type="hidden" value="<%= @student_next_link %>" />
+                <input id="curpage" type="hidden" value="1" />
+                <span class="current prev">Previous</span>
+                <span class="next">Next</span>
+            </div>
 		</div>
         <div id="teachers" class="tiles-secondary-container">
-        	<div class="content">
-        			<% @teachers.each do |teacher| %>
+        	<div class="content" id="teachers_1">
+        		<% @teachers.each do |teacher| %>
                 <div class="element teacher-bg">
                     <div class="userimg">
                         <img src="/Images/header-default.jpg" realheader="<%= get_user_photo_url(teacher['objectId']) %>" />
@@ -98,15 +90,16 @@
                     <div class="username"><%= teacher["displayName"] %></div>
                 </div>
               <% end %>
+            </div>
+            <div class="pagination <%= 'hideitem' unless @teacher_next_link %>">
+                <input id="nextlink" type="hidden" value="<%= @teacher_next_link %>"/>
+                <input id="curpage" type="hidden" value="1" />
+                <span class="current prev">Previous</span>
+                <span class="next">Next</span>
+            </div>
         </div>
-        <div class="pagination hideitem">
-            <input id="nextlink" type="hidden" />
-            <input id="curpage" type="hidden" value="1" />
-            <span class="current prev">Previous</span>
-            <span class="next">Next</span>
-        </div>
-</div>
     </div>
+    <input id="school-objectid" type="hidden" value="<%= @class_info[:school_number] %>" />
 </div>
 
 <%= javascript_include_tag "users" %>

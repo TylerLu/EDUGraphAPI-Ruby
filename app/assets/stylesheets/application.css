@@ -18,3 +18,9 @@
 .hidden_course{
 	display: none !important;
 }
+
+.disabled{
+	color:#c2c2c2; 
+	background-color:transparent; 
+	cursor:default;
+}

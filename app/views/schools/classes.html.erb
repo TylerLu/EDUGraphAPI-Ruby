@@ -45,11 +45,11 @@
     <div class="myclasses-container tiles-root-container">
         <div id="allclasses" class="tiles-secondary-container">
             <div class="section-tiles">
-                <div class="content clearfix">
+                <div class="content clearfix" id="class_content">
                     <% @allclasses.each_with_index do |all_class, index| %>
                     <div class="tile-container <%= 'hidden_course' if index > 11 %>" id="course_<%= index %>">
                         <% if @mycourseids.include? all_class['extension_fe2174665583431c953114ff7268b7b3_Education_SyncSource_CourseId'] %>
-                        <a class="mysectionlink" href="/schools/<%= @school_id %>/classes/<%= all_class['id'] %>?<%= URI.encode "school_name=#{@class_info[:school_name]}&low_grade=#{@class_info[:low_grade]}&high_grade=#{@class_info[:high_grade]}&principal=#{@class_info[:principal]}&school_number=#{@class_info[:school_number]}" %>">
+                        <a class="mysectionlink" href="/schools/<%= @school_id %>/classes/<%= all_class['objectId'] %>?<%= URI.encode "school_name=#{@class_info[:school_name]}&low_grade=#{@class_info[:low_grade]}&high_grade=#{@class_info[:high_grade]}&principal=#{@class_info[:principal]}&school_number=#{@class_info[:school_number]}" %>">
                             <div class="tile">
                                 <h5><%= all_class['displayName'] %></h5>
                                 <h2><%= all_class['extension_fe2174665583431c953114ff7268b7b3_Education_CourseSubject'][0..2].upcase rescue '' %>
@@ -85,8 +85,9 @@
                     </div>
                     <% end %>      
                 </div>
-                <% if @allclasses.count > 12 %>
-                <div class="seemore" id="see-more" data-index=12 data-count=<%= @allclasses.count %>>
+                <% if @skip_token %>
+                <!-- <div class="seemore" id="see-more" data-index=12 data-count=''> -->
+                <div class="seemore" id="see-more" data-url-params=<%= @url_params %> data-school-id="<%= @school_id %>" data-token=<%= @skip_token %> data-school-number="<%= @class_info[:school_number] %>">
                     <span>See More</span>
                 </div>
                 <% end %>
@@ -100,7 +101,7 @@
                     <% else %>
                         <% @myclasses.each_with_index do |myclass, index| %>
                         <div class="tile-container <%= 'hidden_course' if index > 11 %>" id="my_course_<%= index %>">
-                            <a class="mysectionlink" href="/schools/<%= @school_id %>/classes/<%= myclass['id'] %>?<%= URI.encode "school_name=#{@class_info[:school_name]}&low_grade=#{@class_info[:low_grade]}&high_grade=#{@class_info[:high_grade]}&principal=#{@class_info[:principal]}&school_number=#{@class_info[:school_number]}" %>">
+                            <a class="mysectionlink" href="/schools/<%= @school_id %>/classes/<%= myclass['objectId'] %>?<%= URI.encode "school_name=#{@class_info[:school_name]}&low_grade=#{@class_info[:low_grade]}&high_grade=#{@class_info[:high_grade]}&principal=#{@class_info[:principal]}&school_number=#{@class_info[:school_number]}" %>">
                             <div class="tile">
                                 <h5><%= myclass['displayName'] %></h5>
                                 <h2><%= myclass['extension_fe2174665583431c953114ff7268b7b3_Education_CourseSubject'][0..2].upcase %>

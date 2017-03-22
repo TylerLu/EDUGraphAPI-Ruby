@@ -13,37 +13,59 @@ class AdminController < ApplicationController
   end
 
   def unconsent
-    servicePrincipals = "https://graph.windows.net/#{Settings.tenant_name}/servicePrincipals/?api-version=beta"
-    res = JSON.parse(HTTParty.get(servicePrincipals, headers: {
-      "Authorization" => "#{session[:token_type]} #{session[:gwn_access_token]}",
-      "Content-Type" => "application/x-www-form-urlencoded"
-    }).body)['value']
+    # servicePrincipals = "https://graph.windows.net/#{Settings.tenant_name}/servicePrincipals/?api-version=beta"
+    # res = JSON.parse(HTTParty.get(servicePrincipals, headers: {
+    #   "Authorization" => "#{session[:token_type]} #{session[:gwn_access_token]}",
+    #   "Content-Type" => "application/x-www-form-urlencoded"
+    # }).body)['value']
+
+    res = graph_request({
+      host: 'graph.windows.net',
+      tenant_name: Settings.tenant_name,
+      resource_name: 'servicePrincipals',
+      access_token: session[:gwn_access_token]
+    })['value']
     
     obj = res.find{ |_| _['appId'] == Settings.edu_graph_api.app_id }
-    if obj
-      res = HTTParty.delete("https://graph.windows.net/#{Settings.tenant_name}/servicePrincipals/#{obj['objectId']}?api-version=beta", headers: {
-        "Authorization" => "#{session[:token_type]} #{session[:gwn_access_token]}",
-        "Content-Type" => "application/x-www-form-urlencoded"
-      })
 
-      account = Account.find_by_o365_email(cookies[:o365_login_email])
-      account.is_consent = false
-      account.save
+    if obj
+      # res = HTTParty.delete("https://graph.windows.net/#{Settings.tenant_name}/servicePrincipals/#{obj['objectId']}?api-version=beta", headers: {
+      #   "Authorization" => "#{session[:token_type]} #{session[:gwn_access_token]}",
+      #   "Content-Type" => "application/x-www-form-urlencoded"
+      # })
+
+      res = graph_request({
+        http_method: 'delete',
+        host: 'graph.windows.net',
+        tenant_name: Settings.tenant_name,
+        resource_name: "servicePrincipals/#{obj['objectId']}",
+        access_token: session[:gwn_access_token],
+      })
 
       Account.where("o365_email is not null and email is not null and o365_email != ?", cookies[:o365_login_email]).each do |_account|
         _account.update({o365_email: nil})
       end
     end
 
+    account = Account.find_by_o365_email(cookies[:o365_login_email])
+    account.is_consent = false
+    account.save
+
     redirect_to admin_index_path
   end
 
   def add_app_role_assignments
-    servicePrincipals = "https://graph.windows.net/#{Settings.tenant_name}/servicePrincipals/?api-version=beta"
-    res = JSON.parse(HTTParty.get(servicePrincipals, headers: {
-      "Authorization" => "#{session[:token_type]} #{session[:gwn_access_token]}",
-      "Content-Type" => "application/x-www-form-urlencoded"
-    }).body)['value']
+    # servicePrincipals = "https://graph.windows.net/#{Settings.tenant_name}/servicePrincipals/?api-version=beta"
+    # res = JSON.parse(HTTParty.get(servicePrincipals, headers: {
+    #   "Authorization" => "#{session[:token_type]} #{session[:gwn_access_token]}",
+    #   "Content-Type" => "application/x-www-form-urlencoded"
+    # }).body)['value']
+    res = graph_request({
+      host: 'graph.windows.net',
+      tenant_name: Settings.tenant_name,
+      resource_name: 'servicePrincipals',
+      access_token: session[:gwn_access_token]
+    })['value']
     
     obj = res.find{ |_| _['appId'] == Settings.edu_graph_api.app_id }
     # p obj
@@ -51,25 +73,48 @@ class AdminController < ApplicationController
     if obj
       resourceId = obj['objectId']
       resoucreName = obj['displayName']
-      user_url_with_roles = "https://graph.windows.net/#{Settings.tenant_name}/users?api-version=1.5&$expand=appRoleAssignments"
-      users = JSON.parse(HTTParty.get(user_url_with_roles, headers: {
-        "Authorization" => "#{session[:token_type]} #{session[:gwn_access_token]}",
-        "Content-Type" => "application/x-www-form-urlencoded"
-      }).body)['value']
+      # user_url_with_roles = "https://graph.windows.net/#{Settings.tenant_name}/users?api-version=1.5&$expand=appRoleAssignments"
+      # users = JSON.parse(HTTParty.get(user_url_with_roles, headers: {
+      #   "Authorization" => "#{session[:token_type]} #{session[:gwn_access_token]}",
+      #   "Content-Type" => "application/x-www-form-urlencoded"
+      # }).body)['value']
+      # 
+      users = graph_request({
+        host: 'graph.windows.net',
+        tenant_name: Settings.tenant_name,
+        resource_name: 'users',
+        api_version: '1.5',
+        access_token: session[:gwn_access_token],
+        query: {
+          "$expand" => "appRoleAssignments"
+        }
+      })
 
       users.each do |user|
         # p user['objectId']
         next if user['appRoleAssignments'].find{|_user| _user['resourceId'] == resourceId }
 
-        res = JSON.parse(HTTParty.post("https://graph.windows.net/#{Settings.tenant_name}/users/#{user['objectId']}/appRoleAssignments?api-version=1.5", headers: {
-          "Authorization" => "#{session[:token_type]} #{session[:gwn_access_token]}",
-          "Content-Type" => "application/json"
-        }, body: {
-          "resourceId" => resourceId,
-          "principalId" => user['objectId']
-        }.to_json).body)
+        # res = JSON.parse(HTTParty.post("https://graph.windows.net/#{Settings.tenant_name}/users/#{user['objectId']}/appRoleAssignments?api-version=1.5", headers: {
+        #   "Authorization" => "#{session[:token_type]} #{session[:gwn_access_token]}",
+        #   "Content-Type" => "application/json"
+        # }, body: {
+        #   "resourceId" => resourceId,
+        #   "principalId" => user['objectId']
+        # }.to_json).body)
+
+        res = graph_request({
+          host: 'graph.windows.net',
+          tenant_name: Settings.tenant_name,
+          resource_name: "users/#{user['objectId']}/appRoleAssignments",
+          api_version: '1.5',
+          body: {
+            "resourceId" => resourceId,
+            "principalId" => user['objectId']
+          }.to_json
+        })
 
         # p res
+        # }
       end
     end
     

@@ -121,20 +121,60 @@ $(document).ready(function () {
     //     });
     // });
     // 
+    
+    // $("#see-more").click(function () {
+    //     search(true);
+    //     var start_index = parseInt($(this).data('index'));
+    //     var all_count = parseInt($(this).data('count'));
+
+    //     for(var i = start_index; i < start_index + 12; i++){
+    //         if(i >= all_count){   
+    //             $(this).unbind('click');
+    //             $(this).find('span').html('END');
+    //             return;
+    //         }
+    //         $("#course_" + i).removeClass('hidden_course');
+    //     }
+    //     $(this).data('index', start_index + 12);
+    // });
+    // 
     $("#see-more").click(function () {
         search(true);
-        var start_index = parseInt($(this).data('index'));
-        var all_count = parseInt($(this).data('count'));
+        var element = $(this);
+        var skip_token = element.data('token');
+        var school_number = element.data('school-number');
+        var school_id = element.data('school-id');
+        var url_params = element.data('url-params');
 
-        for(var i = start_index; i < start_index + 12; i++){
-            if(i >= all_count){   
-                $(this).unbind('click');
-                $(this).find('span').html('END');
-                return;
-            }
-            $("#course_" + i).removeClass('hidden_course');
+        element.find('span').addClass('disabled');
+
+        if(skip_token != ''){
+            $.ajax({
+                type: 'POST',
+                url: '/schools/' + school_id + '/next_class',
+                dataType: 'json',
+                data: { school_number: school_number, skip_token: skip_token, school_id: school_id, url_params: url_params },
+                success: function(res){
+                    var html = '';
+                    $.each(res['values'], function(index, value){
+                        html += '<div class="tile-container">';
+                        if(value['is_my_course'] == true){
+                            html += '<a class="mysectionlink" href="/schools/'+ res['school_id'] +'/classes/'+ value['class_id'] +'?' +res['url_params']+ '">' + 
+                            '<div class="tile"><h5>' +value['displayName']+ '</h5><h2>' + value['course_subject'] + value['course_number'] + '</h2></div></a>';
+                        }else{
+                            html += '<div class="tile"><h5>' +value['displayName']+ '</h5><h2>' + value['course_subject'] + value['course_number'] + '</h2></div>';
+                        }
+                        html += '<div class="detail"><h5>Course Id:</h5><h6>' +value['course_id']+ '</h6><h5>Description:</h5><h6>'+ value['course_desc'] +'</h6>' + 
+                            '<h5>Teachers:</h5><h5>Term Name:</h5><h6>' + value['teacher_name'] + '</h6><h5>Start/Finish Date:</h5><h6><span id="termdate">'+ value['start_time'] +'</span><span> ~ </span>' + 
+                            '<span id="termdate">'+value['end_time']+'</span></h6><h5>Period:</h5><h6>' + value['period'] + '</h6></div>';
+                        html += '</div>';
+                    })
+                    $("#class_content").append(html);
+                    element.data('token', res['skip_token']);
+                    element.find('span').removeClass('disabled');
+                }
+            })
         }
-        $(this).data('index', start_index + 12);
     });
 
     $("#my-see-more").click(function(){

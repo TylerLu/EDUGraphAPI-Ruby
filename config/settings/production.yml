@@ -1,5 +1,19 @@
-MS_GRAPH_USERNAME: "usernamehere@xxxxx.onmicrosoft.com"
-MS_GRAPH_PASSWORD: "xxxxxxxxxxxx"
-MS_GRAPH_CLIENT_ID: "xxxxx-xxxx-xxx-xxxxxx-xxxxxxx"
-MS_GRAPH_CLIENT_SECRET: "xxxXXXxxXXXxxxXXXxxXXXXXXXXxxxxxx="
-MS_GRAPH_TENANT: "xxxxx.onmicrosoft.com"
+
+default_password: '111111'
+
+redirect_uri: 'http://localhost:44311/Account/Callback'
+
+bing_map_key: "Anu3xoioQvqyG6b3eZ30IyR8TwyeQYpeag6OBdQvrsfUn0FwsVwFH9OnkJZvX-8a"
+
+jwks_uri: 'https://login.microsoftonline.com/common/discovery/keys'
+
+open_config: "https://login.microsoftonline.com/common/.well-known/openid-configuration"
+
+edu_graph_api:
+  app_id: "70288edd-ba06-4139-befc-1315f6b0a721"
+  default_key: 'S01BulKmE3s4nPR9pJU7GzRlefCOGwqTu1Zbp3KsUvk='
+
+host:
+  gmc: 'graph.microsoft.com'
+  gwn: 'graph.windows.net'
+

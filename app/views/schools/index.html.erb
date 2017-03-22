@@ -46,6 +46,9 @@
 											<%= school["extension_fe2174665583431c953114ff7268b7b3_Education_City"] %>, <%= school["extension_fe2174665583431c953114ff7268b7b3_Education_StateId"] %> <%= school["extension_fe2174665583431c953114ff7268b7b3_Education_Zip"] %> 
                   </div>
                   <div class="schoolmap">
+                    <% unless school[:location].empty? %>
+                      <a class="bingMapLink" lat="<%= school[:location][:lat] %>" lon="<%= school[:location][:lon] %>" href="javascript:void(0)"><img src="<%= school['extension_fe2174665583431c953114ff7268b7b3_Education_SchoolNumber'] == @me['extension_fe2174665583431c953114ff7268b7b3_Education_SyncSource_SchoolId'] ? '/Images/icon-map_30x28px-WHT.png' : '/Images/icon-map_30x28px-BLU.png' %>" /></a>
+                    <% end %>
                   </div>
               </td>
               <td>
@@ -57,7 +60,6 @@
       </table>
 </div>
 <div id='myMap'></div>
-<input type="hidden" name="BingMapKey" id="BingMapKey" value="3123" />
-<!--     <script type='text/javascript' src='https://www.bing.com/api/maps/mapcontrol' async defer></script>
-<script src="/bundles/schools?v=qpMqT5xaEczH-r9scIDjXn1TWM8R1nAkZRIKgnAs3bs1"></script>
- -->
+<input type="hidden" name="BingMapKey" id="BingMapKey" value="<%= Settings.bing_map_key %>" />
+<script type='text/javascript' src='https://www.bing.com/api/maps/mapcontrol' async defer></script>
+<%= javascript_include_tag "schools" %>
