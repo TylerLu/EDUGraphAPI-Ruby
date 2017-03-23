@@ -89,10 +89,10 @@
                                 <td class="border-holder"></td>
                                 <td class="space-holder left"></td>
                                 <td>
-                                    <a target="_blank" href="<%= item['webUrl'] %>"><%= item['name'] %></a>
+                                    <a target="_blank" href="<%= item.web_url %>"><%= item.name %></a>
                                 </td>
-                                <td><%= item['lastModifiedDateTime'] %></td>
-                                <td><%= item['createdBy']['user']['displayName'] %></td>
+                                <td><%= item.last_modified_date_time %></td>
+                                <td><%= item.created_by.user.display_name %></td>
                                 <td class="space-holder right"></td>
                             </tr>
                             <% end %>
@@ -109,7 +109,7 @@
                                     <td class="border-holder"></td>
                                     <td class="space-holder left"></td>
                                     <td>
-                                        <a target="_blank" href="https://outlook.office.com/owa/?path=/group/<%= @myclass['mail'] %>/mail&exsvurl=1&ispopout=0&ConvID=<%= conversation['id'] %>"><%= conversation['topic'] %></a>
+                                        <a target="_blank" href="https://outlook.office.com/owa/?path=/group/<%= @myclass['mail'] %>/mail&exsvurl=1&ispopout=0&ConvID=<%= conversation.id %>"><%= conversation.topic %></a>
                                     </td>
                                     <td class="space-holder right"></td>
                                 </tr>

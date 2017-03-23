@@ -205,26 +205,37 @@ class SchoolsController < ApplicationController
 			principal: params[:principal]
 		}
 
+		graph = graph_request({
+			host: 'graph.microsoft.com',
+			access_token: session[:gmc_access_token]
+		})
+
 		# 获取会话
-		@conversations = JSON.parse(HTTParty.get("https://graph.microsoft.com/v1.0/groups/#{class_id}/conversations", headers: {
-			"Authorization" => "#{session[:token_type]} #{session[:gmc_access_token]}",
-			"Content-Type" => "application/x-www-form-urlencoded"
-		}).body)["value"] rescue []
+		# @conversations = JSON.parse(HTTParty.get("https://graph.microsoft.com/v1.0/groups/#{class_id}/conversations", headers: {
+		# 	"Authorization" => "#{session[:token_type]} #{session[:gmc_access_token]}",
+		# 	"Content-Type" => "application/x-www-form-urlencoded"
+		# }).body)["value"] rescue []
+		@conversations = graph.groups.find(class_id).conversations
 
 		# 获取documents
-		@items = JSON.parse(HTTParty.get("https://graph.microsoft.com/beta/groups/#{class_id}/drive/root/children", headers: {
-			"Authorization" => "#{session[:token_type]} #{session[:gmc_access_token]}",
-			"Content-Type" => "application/x-www-form-urlencoded"
-		}).body)["value"] rescue []
+		# @items = JSON.parse(HTTParty.get("https://graph.microsoft.com/beta/groups/#{class_id}/drive/root/children", headers: {
+		# 	"Authorization" => "#{session[:token_type]} #{session[:gmc_access_token]}",
+		# 	"Content-Type" => "application/x-www-form-urlencoded"
+		# }).body)["value"] rescue []
 
-		# p @items
+		@items = graph.groups.find(class_id).drive.root.children
 
-		@myclass = JSON.parse HTTParty.get("https://graph.windows.net/#{Settings.tenant_name}/groups/#{class_id}?api-version=beta", headers: {
-			"Authorization" => "#{session[:token_type]} #{session[:gwn_access_token]}",
-			"Content-Type" => "application/x-www-form-urlencoded"
-		}).body		
+		# @myclass = JSON.parse HTTParty.get("https://graph.windows.net/#{Settings.tenant_name}/groups/#{class_id}?api-version=beta", headers: {
+		# 	"Authorization" => "#{session[:token_type]} #{session[:gwn_access_token]}",
+		# 	"Content-Type" => "application/x-www-form-urlencoded"
+		# }).body		
 
-		# p @myclass
+		@myclass = graph_request({
+			host: 'graph.windows.net',
+			tenant_name: Settings.tenant_name,
+			resource_name: "groups/#{class_id}",
+			access_token: session[:gwn_access_token]
+		})
 
 		# members = JSON.parse HTTParty.get("https://graph.windows.net/#{Settings.tenant_name}/groups/#{class_id}/$links/members?api-version=beta", headers: {
 		# 	"Authorization" => "#{session[:token_type]} #{session[:gwn_access_token]}",
@@ -241,11 +252,6 @@ class SchoolsController < ApplicationController
 		@student_info = []
 
 		members["value"].each do |member|
-			# _tmp = JSON.parse HTTParty.get("#{member['url']}?api-version=beta", headers: {
-			# 	"Authorization" => "#{session[:token_type]} #{session[:gwn_access_token]}",
-			# 	"Content-Type" => "application/x-www-form-urlencoded"
-			# }).body
-
 			_tmp = graph_request({
 				host: 'graph.windows.net',
 				tenant_name: Settings.tenant_name,
