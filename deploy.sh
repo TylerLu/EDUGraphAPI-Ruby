@@ -85,7 +85,7 @@ setLatestNodeVersion(){
 # Deployment
 # ----------
 
-echo Ruby on Rails deployment.
+echo Ruby on Rails customized deployment.
 
 # 1. KuduSync
 if [[ "$IN_PLACE_DEPLOYMENT" -ne "1" ]]; then
@@ -103,7 +103,10 @@ if [ -e "$DEPLOYMENT_TARGET/Gemfile" ]; then
   exitWithMessageOnError "init failed"
   rbenv global $WEBSITES_LATEST_NODE_VERSION
   exitWithMessageOnError "Failed to switch ruby versions"
+
+  echo "gem install mysql2 -v '0.4.5'"
   eval gem install mysql2 -v '0.4.5' 
+  
   eval bundle install --deployment $OPTIONS
   exitWithMessageOnError "bundler failed"
   if [ "$ASSETS_PRECOMPILE" == true ]; then 
