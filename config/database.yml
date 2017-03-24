@@ -5,7 +5,7 @@
 #   gem 'sqlite3'
 #
 default: &default
-  adapter: sqlite3
+  adapter: mysql2
   pool: 5
   timeout: 5000
 
@@ -22,4 +22,7 @@ test:
 
 production:
   <<: *default
-  database: edu_graph_production
+  database: edugraphapiruby
+  host: 'us-cdbr-azure-west-b.cleardb.com'
+  username: 'b30652b7d280de'
+  password: 'da9bbf8b'
