@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT license.  
+# See LICENSE in the project root for license information.  
+
 module BingMapHelper
   def get_longitude_and_latitude_by_address(address)
     if address.blank?

@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT license.  
+# See LICENSE in the project root for license information.  
+
 class ManageController < ApplicationController
 	skip_before_action :verify_authenticity_token
 
@@ -10,6 +13,6 @@ class ManageController < ApplicationController
   	account.favorite_color = params["favoritecolor"]
   	account.save
 
-  	redirect_to aboutme_manage_index_path
+  	redirect_to aboutme_manage_index_path, notice: 'Favorite color has been updated!'
   end
 end

@@ -1,3 +1,6 @@
+<!-- Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT license.  
+See LICENSE in the project root for license information.   -->
+
 <form action="/account/logoff" class="navbar-right" id="logoutForm" method="post">
     <div class="userinfo">
     <a href="javascript:void(0);" id="userinfolink">Logged in as: <%= is_admin? ? 'admin' : userinfo[:user_identify] %>. Hello <%= userinfo[:display_name] %> <img src='<%= session[:current_user][:photo] %>'/></a>

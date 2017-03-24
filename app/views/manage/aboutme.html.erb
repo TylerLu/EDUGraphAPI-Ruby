@@ -1,3 +1,6 @@
+<!-- Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT license.  
+See LICENSE in the project root for license information.   -->
+
 <% content_for :user_login_info do %>
 	<%= render 'common/user_login_info', userinfo: session[:current_user] %>
 <% end %>
@@ -24,6 +27,9 @@
             <option value="#535353" <%= 'selected' if @account.favorite_color == '#535353' %>>Grey</option>
     		</select>
         <input type="submit" value="Save" />
+        <% if flash[:notice] %>
+            <span class='saveresult'><%= flash[:notice] %></span>
+        <% end %>
 	</form>
 			</div>
     <div class="margin-btm-12 ">

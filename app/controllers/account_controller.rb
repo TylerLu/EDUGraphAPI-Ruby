@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT license.  
+# See LICENSE in the project root for license information.  
+
 class AccountController < ApplicationController
 	skip_before_action :verify_authenticity_token
 	skip_before_action :verify_access_token

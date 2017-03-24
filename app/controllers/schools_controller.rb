@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT license.  
+# See LICENSE in the project root for license information.  
+
 class SchoolsController < ApplicationController
 	include BingMapHelper
 
@@ -20,12 +23,6 @@ class SchoolsController < ApplicationController
 		classes = if is_admin?
 			[]
 		else
-		 	# JSON.parse(
-			# 	HTTParty.get('https://graph.microsoft.com/v1.0/me/memberOf', headers: {
-			# 		"Authorization" => "#{session[:token_type]} #{session[:gmc_access_token]}",
-			# 		"Content-Type" => "application/x-www-form-urlencoded"
-			# 	}).body
-			# )["value"].map{ |_class| _class['displayName'] }
 			graph_request({
 				host: 'graph.microsoft.com',
 				tenant_name: Settings.tenant_name,
@@ -36,16 +33,6 @@ class SchoolsController < ApplicationController
 		end
 
 		session[:current_user][:myclasses] = classes
-
-		# 根据access_token 获取schools信息
-		# all_schools = JSON.parse(HTTParty.get("https://graph.windows.net/#{Settings.tenant_name}/administrativeUnits",
-		# 	query: {
-		# 		"api-version" => "beta"
-		# 	},
-		#   headers: {
-		# 		"Authorization" => "#{session[:token_type]} #{session[:gwn_access_token]}",
-		# 		"Content-Type" => "application/x-www-form-urlencoded"
- 	# 		}).body)["value"]
 
 		all_schools = graph_request({
 			host: 'graph.windows.net',
@@ -99,12 +86,6 @@ class SchoolsController < ApplicationController
 				access_token: session[:gwn_access_token],
 				resource_name: "users/#{cookies[:o365_login_email]}/memberOf"
 			})['value'].select{|_class| _class['objectType'] == 'Group' }
-			# JSON.parse(
-			# 	HTTParty.get('https://graph.microsoft.com/v1.0/me/memberOf', headers: {
-			# 		"Authorization" => "#{session[:token_type]} #{session[:gmc_access_token]}",
-			# 		"Content-Type" => "application/x-www-form-urlencoded"
-			# 	}).body
-			# )["value"]
 		else
 			[]
 		end
@@ -115,11 +96,6 @@ class SchoolsController < ApplicationController
 
 		self.class.current_user_course_ids = @mycourseids
 
-		# res = JSON.parse HTTParty.get("https://graph.windows.net/#{Settings.tenant_name}/groups?api-version=beta&$top=12&$filter=extension_fe2174665583431c953114ff7268b7b3_Education_ObjectType%20eq%20'Section'%20and%20extension_fe2174665583431c953114ff7268b7b3_Education_SyncSource_SchoolId%20eq%20'#{school_number}'", headers: {
-		# 	"Authorization" => "#{session[:token_type]} #{session[:gwn_access_token]}",
-		# 	"Content-Type" => "application/x-www-form-urlencoded"
-		# }).body
-		
 		res = graph_request({
 			host: 'graph.windows.net',
 			tenant_name: Settings.tenant_name,
@@ -205,30 +181,16 @@ class SchoolsController < ApplicationController
 			principal: params[:principal]
 		}
 
+		@user_info = Account.find_by_o365_email(cookies[:o365_login_email])
+
 		graph = graph_request({
 			host: 'graph.microsoft.com',
 			access_token: session[:gmc_access_token]
 		})
 
-		# 获取会话
-		# @conversations = JSON.parse(HTTParty.get("https://graph.microsoft.com/v1.0/groups/#{class_id}/conversations", headers: {
-		# 	"Authorization" => "#{session[:token_type]} #{session[:gmc_access_token]}",
-		# 	"Content-Type" => "application/x-www-form-urlencoded"
-		# }).body)["value"] rescue []
-		@conversations = graph.groups.find(class_id).conversations
+		@conversations = graph.groups.find(class_id).conversations rescue []
 
-		# 获取documents
-		# @items = JSON.parse(HTTParty.get("https://graph.microsoft.com/beta/groups/#{class_id}/drive/root/children", headers: {
-		# 	"Authorization" => "#{session[:token_type]} #{session[:gmc_access_token]}",
-		# 	"Content-Type" => "application/x-www-form-urlencoded"
-		# }).body)["value"] rescue []
-
-		@items = graph.groups.find(class_id).drive.root.children
-
-		# @myclass = JSON.parse HTTParty.get("https://graph.windows.net/#{Settings.tenant_name}/groups/#{class_id}?api-version=beta", headers: {
-		# 	"Authorization" => "#{session[:token_type]} #{session[:gwn_access_token]}",
-		# 	"Content-Type" => "application/x-www-form-urlencoded"
-		# }).body		
+		@items = graph.groups.find(class_id).drive.root.children rescue []
 
 		@myclass = graph_request({
 			host: 'graph.windows.net',
@@ -236,11 +198,6 @@ class SchoolsController < ApplicationController
 			resource_name: "groups/#{class_id}",
 			access_token: session[:gwn_access_token]
 		})
-
-		# members = JSON.parse HTTParty.get("https://graph.windows.net/#{Settings.tenant_name}/groups/#{class_id}/$links/members?api-version=beta", headers: {
-		# 	"Authorization" => "#{session[:token_type]} #{session[:gwn_access_token]}",
-		# 	"Content-Type" => "application/x-www-form-urlencoded"
-		# }).body
 
 		members = graph_request({
 			host: 'graph.windows.net',
@@ -288,10 +245,6 @@ class SchoolsController < ApplicationController
 			principal: @principal
 		}
 
-		# res_all = JSON.parse(HTTParty.get("https://graph.windows.net/#{Settings.tenant_name}/users?api-version=beta&$top=12&$filter=extension_fe2174665583431c953114ff7268b7b3_Education_SyncSource_SchoolId%20eq%20'#{school_number}'", headers: {
-		# 	"Authorization" => "#{session[:token_type]} #{session[:gwn_access_token]}",
-		# 	"Content-Type" => "application/x-www-form-urlencoded"
-		# }).body)
 		res_all = graph_request({
 			host: 'graph.windows.net',
 			tenant_name: Settings.tenant_name,
@@ -305,11 +258,6 @@ class SchoolsController < ApplicationController
 
 		@all_next_link = res_all["odata.nextLink"]
 
-		# res_teacher = JSON.parse(HTTParty.get("https://graph.windows.net/#{Settings.tenant_name}/users?api-version=beta&$top=12&$filter=extension_fe2174665583431c953114ff7268b7b3_Education_ObjectType%20eq%20'Teacher'%20and%20extension_fe2174665583431c953114ff7268b7b3_Education_SyncSource_SchoolId%20eq%20'#{school_number}'", headers: {
-		# 	"Authorization" => "#{session[:token_type]} #{session[:gwn_access_token]}",
-		# 	"Content-Type" => "application/x-www-form-urlencoded"
-		# }).body)
-
 		res_teacher = graph_request({
 			host: 'graph.windows.net',
 			tenant_name: Settings.tenant_name,
@@ -320,11 +268,6 @@ class SchoolsController < ApplicationController
 				"$filter" => "#{Constant.get('edu_object_type')} eq 'Teacher' and #{Constant.get('edu_school_id')} eq '#{school_number}'"
 			}
 		})
-
-		# res_student = JSON.parse(HTTParty.get("https://graph.windows.net/#{Settings.tenant_name}/users?api-version=beta&$top=12&$filter=extension_fe2174665583431c953114ff7268b7b3_Education_ObjectType%20eq%20'Student'%20and%20extension_fe2174665583431c953114ff7268b7b3_Education_SyncSource_SchoolId%20eq%20'#{school_number}'", headers: {
-		# 	"Authorization" => "#{session[:token_type]} #{session[:gwn_access_token]}",
-		# 	"Content-Type" => "application/x-www-form-urlencoded"
-		# }).body)
 
 		res_student = graph_request({
 			host: 'graph.windows.net',
@@ -351,10 +294,6 @@ class SchoolsController < ApplicationController
 		type = params[:type]
 
 		if type == 'users'
-			# res = JSON.parse(HTTParty.get("https://graph.windows.net/#{Settings.tenant_name}/users?api-version=beta&$skiptoken=#{next_link}&$top=12&$filter=extension_fe2174665583431c953114ff7268b7b3_Education_SyncSource_SchoolId%20eq%20'#{school_number}'", headers: {
-			# 	"Authorization" => "#{session[:token_type]} #{session[:gwn_access_token]}",
-			# 	"Content-Type" => "application/x-www-form-urlencoded"
-			# }).body)
 			res = graph_request({
 				host: 'graph.windows.net',
 				tenant_name: Settings.tenant_name,
@@ -367,10 +306,6 @@ class SchoolsController < ApplicationController
 				}
 			})
 		elsif type == 'teachers'
-			# res = JSON.parse(HTTParty.get("https://graph.windows.net/#{Settings.tenant_name}/users?api-version=beta&$skiptoken=#{next_link}&$top=12&$filter=extension_fe2174665583431c953114ff7268b7b3_Education_ObjectType%20eq%20'Teacher'%20and%20extension_fe2174665583431c953114ff7268b7b3_Education_SyncSource_SchoolId%20eq%20'#{school_number}'", headers: {
-			# 	"Authorization" => "#{session[:token_type]} #{session[:gwn_access_token]}",
-			# 	"Content-Type" => "application/x-www-form-urlencoded"
-			# }).body)
 			res = graph_request({
 				host: 'graph.windows.net',
 				tenant_name: Settings.tenant_name,
@@ -383,10 +318,6 @@ class SchoolsController < ApplicationController
 				}
 			})
 		else
-			# res = JSON.parse(HTTParty.get("https://graph.windows.net/#{Settings.tenant_name}/users?api-version=beta&$skiptoken=#{next_link}&$top=12&$filter=extension_fe2174665583431c953114ff7268b7b3_Education_ObjectType%20eq%20'Student'%20and%20extension_fe2174665583431c953114ff7268b7b3_Education_SyncSource_SchoolId%20eq%20'#{school_number}'", headers: {
-			# 	"Authorization" => "#{session[:token_type]} #{session[:gwn_access_token]}",
-			# 	"Content-Type" => "application/x-www-form-urlencoded"
-			# }).body)
 			res = graph_request({
 				host: 'graph.windows.net',
 				tenant_name: Settings.tenant_name,
