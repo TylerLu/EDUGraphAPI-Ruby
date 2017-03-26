@@ -93,11 +93,11 @@ if [[ "$IN_PLACE_DEPLOYMENT" -ne "1" ]]; then
   exitWithMessageOnError "Kudu Sync failed"
 fi
 
-echo "apt-get install libmysqlclient-dev"
-eval apt-get install libmysqlclient-dev
+# echo "apt-get install libmysqlclient-dev"
+# eval apt-get install libmysqlclient-dev
 
-echo "gem install mysql2 -v '0.4.5'"
-eval gem install mysql2 -v '0.4.5' 
+# echo "gem install mysql2 -v '0.4.5'"
+# eval gem install mysql2 -v '0.4.5' 
 
 initializeDeploymentConfig
 
