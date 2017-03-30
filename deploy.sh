@@ -99,6 +99,9 @@ fi
 # echo "gem install mysql2 -v '0.4.5'"
 # eval gem install mysql2 -v '0.4.5' 
 
+echo "gem install mysql"
+eval gem install mysql
+
 initializeDeploymentConfig
 
 echo "$DEPLOYMENT_TARGET"
