@@ -96,11 +96,8 @@ fi
 # echo "apt-get install libmysqlclient-dev"
 # eval apt-get install libmysqlclient-dev
 
-# echo "gem install mysql2 -v '0.4.5'"
-# eval gem install mysql2 -v '0.4.5' 
-
-echo "gem install mysql"
-eval gem install mysql
+echo "gem install mysql2 -v '0.4.5'"
+eval gem install mysql2 -v '0.4.5' 
 
 initializeDeploymentConfig
 
