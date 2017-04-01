@@ -1,6 +1,8 @@
 <!-- Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT license.  
 See LICENSE in the project root for license information.   -->
 
+<%= content_for :title, 'ALL SCHOOLS - EDUGraphAPI' %>
+
 <% content_for :header_list do %>
   <%= render 'common/header_list' %>
 <% end %>
@@ -41,15 +43,19 @@ See LICENSE in the project root for license information.   -->
 					<% @schools.each do |school| %>
           <tr class="tr-content <%= 'td-green' if (school_number = school['extension_fe2174665583431c953114ff7268b7b3_Education_SchoolNumber']) == @me['extension_fe2174665583431c953114ff7268b7b3_Education_SyncSource_SchoolId'] %>">
               <td><%= school["displayName"] %></td>
-              <td><%= principal = school["extension_fe2174665583431c953114ff7268b7b3_Education_SchoolPrincipalName"] %></td>
+              <td><%= principal = school["extension_fe2174665583431c953114ff7268b7b3_Education_SchoolPrincipalName"] || '-' %></td>
               <td><%= low_grade = school["extension_fe2174665583431c953114ff7268b7b3_Education_LowestGrade"] %> - <%= high_grade = school["extension_fe2174665583431c953114ff7268b7b3_Education_HighestGrade"] %></td>
               <td>
                   <div class="schooladdress">
+                    <% if school["extension_fe2174665583431c953114ff7268b7b3_Education_Address"].present? %>
                       <%= school["extension_fe2174665583431c953114ff7268b7b3_Education_Address"] %><br />
-											<%= school["extension_fe2174665583431c953114ff7268b7b3_Education_City"] %>, <%= school["extension_fe2174665583431c953114ff7268b7b3_Education_StateId"] %> <%= school["extension_fe2174665583431c953114ff7268b7b3_Education_Zip"] %> 
+											<%= school["extension_fe2174665583431c953114ff7268b7b3_Education_City"] %>, <%= school["extension_fe2174665583431c953114ff7268b7b3_Education_StateId"] %> <%= school["extension_fe2174665583431c953114ff7268b7b3_Education_Zip"] %>
+                    <% else %>
+                      -
+                    <% end %>
                   </div>
                   <div class="schoolmap">
-                    <% unless school[:location].empty? %>
+                    <% if school["extension_fe2174665583431c953114ff7268b7b3_Education_Address"].present? %>
                       <a class="bingMapLink" lat="<%= school[:location][:lat] %>" lon="<%= school[:location][:lon] %>" href="javascript:void(0)"><img src="<%= school['extension_fe2174665583431c953114ff7268b7b3_Education_SchoolNumber'] == @me['extension_fe2174665583431c953114ff7268b7b3_Education_SyncSource_SchoolId'] ? '/Images/icon-map_30x28px-WHT.png' : '/Images/icon-map_30x28px-BLU.png' %>" /></a>
                     <% end %>
                   </div>

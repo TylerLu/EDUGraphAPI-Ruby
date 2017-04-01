@@ -22,7 +22,7 @@ test:
 
 production:
   <<: *default
-  database: acsm_59b65ecb82b6e12
-  host: 'ap-cdbr-azure-east-a.cloudapp.net'
-  username: 'b23685d7324082'
-  password: 'a01e0545''
+  database: edugraphapiruby
+  host: 'us-cdbr-azure-west-b.cleardb.com'
+  username: 'b30652b7d280de'
+  password: 'da9bbf8b'

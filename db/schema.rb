@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170313031027) do
+ActiveRecord::Schema.define(version: 20170324061740) do
 
   create_table "accounts", force: :cascade do |t|
     t.string   "first_name",      limit: 40, default: ""
@@ -55,6 +55,15 @@ ActiveRecord::Schema.define(version: 20170313031027) do
     t.datetime "updated_at"
     t.index ["session_id"], name: "index_sessions_on_session_id", unique: true
     t.index ["updated_at"], name: "index_sessions_on_updated_at"
+  end
+
+  create_table "student_settings", force: :cascade do |t|
+    t.string   "class_id",   limit: 40
+    t.string   "user_id",    limit: 40
+    t.integer  "position"
+    t.datetime "created_at",            null: false
+    t.datetime "updated_at",            null: false
+    t.index ["class_id", "user_id"], name: "index_student_settings_on_class_id_and_user_id", unique: true
   end
 
   create_table "tokens", force: :cascade do |t|

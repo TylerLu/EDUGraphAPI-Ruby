@@ -1,5 +1,6 @@
 <!-- Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT license.  
 See LICENSE in the project root for license information.   -->
+<%= content_for :title, 'Class Details - EDUGraphAPI' %>
 
 <% content_for :header_list do %>
   <%= render 'common/header_list', class_info: @class_info %>
@@ -16,7 +17,7 @@ See LICENSE in the project root for license information.   -->
             <div class="col-md-6 secondnav">
                 <a href="/schools"> All Schools</a>
                 > <a href="/schools/<%= @class_info[:school_id] %>/classes"><%= @class_info[:school_name] %></a>
-                > <%= @myclass['displayName'] %>
+                > <%= @myclass['extension_fe2174665583431c953114ff7268b7b3_Education_CourseName'] %>
             </div>
         </div>
         <div class="container">
@@ -25,9 +26,9 @@ See LICENSE in the project root for license information.   -->
         </div>
         <div class="container coursedetail">
             <div class="col-md-6">
-                <span>Course Name:</span> <%= @myclass['displayName'] %>
+                <span>Course Name:</span> <%= @myclass['extension_fe2174665583431c953114ff7268b7b3_Education_CourseName'] %>
                 <br />
-                <span>Description:</span> <%= @myclass['description'] %>
+                <span>Description:</span> <%= @myclass['extension_fe2174665583431c953114ff7268b7b3_Education_CourseDescription'] %>
                 <br />
                 <span>Period:</span> <%= @myclass['extension_fe2174665583431c953114ff7268b7b3_Education_Period'] %>
                 <br />
@@ -124,7 +125,8 @@ See LICENSE in the project root for license information.   -->
             </div>
 
             <% if session[:current_user][:user_identify] == "Teacher" %>
-            <div id="seatingchart" class="tab-pane fade ">
+            <div id="seatingchart" class="tab-pane fade">
+                <div id="saveResult" style="display: none;"><div>Seating map changes saved.</div></div>
                 <div class="left" id="dvleft">
                         <div class="tip"> To assign seats for each student, drag and drop student profile icons below onto the seating map to the right.</div>
                     <ul id="lstproducts">
@@ -132,13 +134,13 @@ See LICENSE in the project root for license information.   -->
                         <li id="<%= student[:user_id] %>">
                             <img src="<%= student[:photo] %>" realheader="<%= student[:photo] %>" />
                             <span class="disname"> <%= student[:displayName] %> </span>
-                            <span class="seated hideitem">seated ✓</span>
+                            <span class="seated <%= 'hideitem' unless student[:has_seat] %>">seated ✓</span>
                         </li>
                         <% end %>
                     </ul>
                     <div id="hidtiles" class="hideitem">
-                        <% @student_info.select{|_| _[:object_type] == 'Student'}.each do |student| %>
-                        <div class="deskcontainer unsaved" style="" position="0" userid="<%= student[:user_id] %>">
+                        <% @student_info.select{|_| _[:object_type] == 'Student' && !_[:has_seat] }.each do |student| %>
+                        <div class="deskcontainer unsaved" style="<%= 'background-color: ' + student[:favorite_color] if student[:favorite_color] %>" position="0" userid="<%= student[:user_id] %>">
                             <div class="deskclose"><img src="/Images/close.png"></div>
                             <div class="deskicon">
                                 <img src="<%= student[:photo] %>" realheader="<%= student[:photo] %>" />
@@ -152,51 +154,30 @@ See LICENSE in the project root for license information.   -->
                     <div class="teacherdesk" style="background-color: <%= @user_info.favorite_color || '#2F19FF' %>">Teacher's desk</div>
                     <div>
                         <div id="graybg">
-                            <div class="desktile" position="1"></div>
-                            <div class="desktile" position="2"></div>
-                            <div class="desktile" position="3"></div>
-                            <div class="desktile" position="4"></div>
-                            <div class="desktile" position="5"></div>
-                            <div class="desktile" position="6"></div>
-                            <div class="desktile" position="7"></div>
-                            <div class="desktile" position="8"></div>
-                            <div class="desktile" position="9"></div>
-                            <div class="desktile" position="10"></div>
-                            <div class="desktile" position="11"></div>
-                            <div class="desktile" position="12"></div>
-                            <div class="desktile" position="13"></div>
-                            <div class="desktile" position="14"></div>
-                            <div class="desktile" position="15"></div>
-                            <div class="desktile" position="16"></div>
-                            <div class="desktile" position="17"></div>
-                            <div class="desktile" position="18"></div>
-                            <div class="desktile" position="19"></div>
-                            <div class="desktile" position="20"></div>
-                            <div class="desktile" position="21"></div>
-                            <div class="desktile" position="22"></div>
-                            <div class="desktile" position="23"></div>
-                            <div class="desktile" position="24"></div>
-                            <div class="desktile" position="25"></div>
-                            <div class="desktile" position="26"></div>
-                            <div class="desktile" position="27"></div>
-                            <div class="desktile" position="28"></div>
-                            <div class="desktile" position="29"></div>
-                            <div class="desktile" position="30"></div>
-                            <div class="desktile" position="31"></div>
-                            <div class="desktile" position="32"></div>
-                            <div class="desktile" position="33"></div>
-                            <div class="desktile" position="34"></div>
-                            <div class="desktile" position="35"></div>
-                            <div class="desktile" position="36"></div>
+                            <% (1..36).each do |index| %>
+                                <% if _student = @student_settings[index] %>
+                                <div class="desktile" position="<%= index %>">
+                                    <div class="deskcontainer white" style="<%= 'background-color: ' + @id_color[_student.first.user_id] if @id_color[_student.first.user_id] %>" position="<%= index %>" userid="<%= _student.first.user_id %>">
+                                        <div class="deskclose" style="display: none;"><img src="/Images/close.png"></div>
+                                        <div class="deskicon">
+                                            <img src="/Images/header.png" realheader="<%= get_user_photo_url(_student.first.user_id) %>">
+                                        </div>
+                                    <div class="stuname"><%= @id_name[_student.first.user_id] %></div>
+                                    </div>
+                                </div>
+                                <% else %>
+                                    <div class="desktile" position="<%= index %>"></div>
+                                <% end %>
+                            <% end %>
                         </div>
                     </div>
                 </div>
                 <div id="dvedit" class="dvedit">
-                        <img id="imgedit" src="/Images/edit.png" />
-                        <img id="imgsave" src="/Images/save.png" />
-                        <img id="imgcancel" src="/Images/cancel.png" />
+                        <img id="imgedit" src="/Images/edit.png" style="">
+                        <img id="imgsave" src="/Images/save.png" style="display: none;">
+                        <img id="imgcancel" src="/Images/cancel.png" style="display: none;">
                 </div>
-                <br style="clear:both" />
+                <br style="clear:both">
             </div>
             <% else %>
             <div id="seatingchart" class="tab-pane fade ">
@@ -207,12 +188,12 @@ See LICENSE in the project root for license information.   -->
                         <li id="<%= student[:user_id] %>">
                             <img src="<%= student[:photo] %>" realheader="<%= student[:photo] %>" />
                             <span class="disname"> <%= student[:displayName] %> </span>
-                            <span class="seated hideitem">seated ✓</span> 
+                            <span class="seated <%= 'hideitem' unless student[:has_seat] %>">seated ✓</span> 
                         </li>
                         <% end %>
                     </ul>
                     <div id="hidtiles" class="hideitem">
-                        <% @student_info.select{|_| _[:object_type] == 'Student'}.each do |student| %>
+                        <% @student_info.select{|_| _[:object_type] == 'Student' && !_[:has_seat] }.each do |student| %>
                         <div class="deskcontainer unsaved green" style="background-color:#2F19FF" position="0" userid="<%= student[:user_id] %>">
                             <div class="deskclose"><img src="/Images/close.png"></div>
                             <div class="deskicon">
@@ -227,42 +208,21 @@ See LICENSE in the project root for license information.   -->
                     <div class="teacherdesk" style="">Teacher's desk</div>
                     <div>
                         <div id="graybg">
-                                <div class="desktile" position="1"></div>
-                                <div class="desktile" position="2"></div>
-                                <div class="desktile" position="3"></div>
-                                <div class="desktile" position="4"></div>
-                                <div class="desktile" position="5"></div>
-                                <div class="desktile" position="6"></div>
-                                <div class="desktile" position="7"></div>
-                                <div class="desktile" position="8"></div>
-                                <div class="desktile" position="9"></div>
-                                <div class="desktile" position="10"></div>
-                                <div class="desktile" position="11"></div>
-                                <div class="desktile" position="12"></div>
-                                <div class="desktile" position="13"></div>
-                                <div class="desktile" position="14"></div>
-                                <div class="desktile" position="15"></div>
-                                <div class="desktile" position="16"></div>
-                                <div class="desktile" position="17"></div>
-                                <div class="desktile" position="18"></div>
-                                <div class="desktile" position="19"></div>
-                                <div class="desktile" position="20"></div>
-                                <div class="desktile" position="21"></div>
-                                <div class="desktile" position="22"></div>
-                                <div class="desktile" position="23"></div>
-                                <div class="desktile" position="24"></div>
-                                <div class="desktile" position="25"></div>
-                                <div class="desktile" position="26"></div>
-                                <div class="desktile" position="27"></div>
-                                <div class="desktile" position="28"></div>
-                                <div class="desktile" position="29"></div>
-                                <div class="desktile" position="30"></div>
-                                <div class="desktile" position="31"></div>
-                                <div class="desktile" position="32"></div>
-                                <div class="desktile" position="33"></div>
-                                <div class="desktile" position="34"></div>
-                                <div class="desktile" position="35"></div>
-                                <div class="desktile" position="36"></div>
+                            <% (1..36).each do |index| %>
+                                <% if _student = @student_settings[index] %>
+                                <div class="desktile" position="<%= index %>">
+                                    <div class="deskcontainer white" style="<%= 'background-color: ' + @id_color[_student.first.user_id] if @id_color[_student.first.user_id] %>" position="<%= index %>" userid="<%= _student.first.user_id %>">
+                                        <div class="deskclose"><img src="/Images/close.png"></div>
+                                        <div class="deskicon">
+                                            <img src="/Images/header.png" realheader="<%= get_user_photo_url(_student.first.user_id) %>">
+                                        </div>
+                                    <div class="stuname"><%= @id_name[_student.first.user_id] %></div>
+                                    </div>
+                                </div>
+                                <% else %>
+                                    <div class="desktile" position="<%= index %>"></div>
+                                <% end %>
+                            <% end %>
                         </div>
                     </div>
                 </div>
@@ -274,6 +234,6 @@ See LICENSE in the project root for license information.   -->
         </div>
     </div>
 </div>
-<input type="hidden" name="hidSectionid" id="hidSectionid" value="64e0c4a4-8fc9-4d2a-9d95-63316ac82a31" />
+<input type="hidden" name="hidSectionid" id="hidSectionid" value="<%= @myclass['objectId'] %>" />
 
 <%= javascript_include_tag "classdetail" %>

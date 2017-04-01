@@ -6,6 +6,12 @@ class SchoolsController < ApplicationController
 
 	def index
 		# 根据 access_token 获取登录用户信息
+		account = Account.find_by_email(session[:current_user][:email]) || Account.find_by_o365_email(cookies[:o365_login_email])
+		if !account || account.o365_email.blank? || account.email.blank?
+			redirect_to link_index_path 
+			return
+		end
+
 		@me = graph_request({
 			host: 'graph.windows.net',
 			tenant_name: Settings.tenant_name,
@@ -42,7 +48,7 @@ class SchoolsController < ApplicationController
 		})['value']
 
 		all_schools = all_schools.map do |_school| 
-			_school.merge(location: get_longitude_and_latitude_by_address(_school[Constant.get(:edu_address)]))
+			_school.merge(location: get_longitude_and_latitude_by_address("#{_school[Constant.get(:edu_state)]}/#{_school[Constant.get(:edu_city)]}/#{_school[Constant.get(:edu_address)]}"))
 		end
 
 		schools = []
@@ -56,7 +62,7 @@ class SchoolsController < ApplicationController
 			res
 		end
 
-		@schools = schools.concat other_schools
+		@schools = schools.concat other_schools.sort_by{|_| _['displayName'][0] }
 		
 	end
 
@@ -182,6 +188,10 @@ class SchoolsController < ApplicationController
 		}
 
 		@user_info = Account.find_by_o365_email(cookies[:o365_login_email])
+		student_setting_info = StudentSetting.where("class_id = ? and position != 0", class_id).order("position asc")
+
+		@student_settings = student_setting_info.group_by{ |_| _.position }
+		student_ids = student_setting_info.map{|_| _.user_id }
 
 		graph = graph_request({
 			host: 'graph.microsoft.com',
@@ -207,6 +217,8 @@ class SchoolsController < ApplicationController
 		})
 
 		@student_info = []
+		@id_name = {}
+		@id_color = {}
 
 		members["value"].each do |member|
 			_tmp = graph_request({
@@ -216,13 +228,19 @@ class SchoolsController < ApplicationController
 				resource_name: member['url'].split("#{Settings.tenant_name}/").last
 			})
 
+			@id_name[_tmp[Constant.get(:object_id)]] = _tmp[Constant.get(:display_name)]
+
+			account = Account.find_by_o365_email(_tmp['mail'])
+			@id_color[_tmp[Constant.get(:object_id)]] = account.try(:favorite_color)
+
 			@student_info << {
 				user_id: _tmp[Constant.get(:object_id)], 
 				displayName: _tmp[Constant.get(:display_name)], 
 				object_type: _tmp[Constant.get(:edu_object_type)],
 				email: _tmp[Constant.get(:principal_name)],
 				grade: _tmp[Constant.get(:edu_grade)],
-				photo: get_user_photo_url(_tmp[Constant.get(:object_id)])
+				photo: get_user_photo_url(_tmp[Constant.get(:object_id)]),
+				has_seat: student_ids.include?(_tmp[Constant.get(:object_id)]) ? true : false
 			}
 		end
 
@@ -350,6 +368,24 @@ class SchoolsController < ApplicationController
 				}
 			end
 		}
+	end
+
+	def save_settings
+		params[:postions].values.each do |info|
+			user_set = StudentSetting.find_by({class_id: info['ClassId'],user_id: info['O365UserId']})
+			if user_set
+				user_set.position = info['Position']
+				user_set.save
+			else
+				StudentSetting.create({
+					class_id: info['ClassId'],
+					user_id: info['O365UserId'],
+					position: info['Position']
+				})
+			end
+		end
+
+		render json: {status: 'success'}
 	end
 
 	class << self

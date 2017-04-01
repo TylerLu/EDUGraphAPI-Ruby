@@ -10,7 +10,7 @@ class AdminController < ApplicationController
   end
 
   def consent
-  	consent_url = "https://login.microsoftonline.com/common/oauth2/authorize?response_type=code&client_id=#{Settings.edu_graph_api.app_id}&resource=https://graph.windows.net&redirect_uri=#{Settings.redirect_uri}&state=12345&prompt=admin_consent"
+  	consent_url = "https://login.microsoftonline.com/common/oauth2/authorize?response_type=code&client_id=#{Settings.edu_graph_api.app_id}&resource=https://graph.windows.net&redirect_uri=#{request.protocol}#{request.host}:#{request.port}#{Settings.redirect_uri}&state=12345&prompt=admin_consent"
 
   	redirect_to consent_url
   end
@@ -26,9 +26,12 @@ class AdminController < ApplicationController
       host: 'graph.windows.net',
       tenant_name: Settings.tenant_name,
       resource_name: 'servicePrincipals',
-      access_token: session[:gwn_access_token]
+      access_token: session[:gwn_access_token],
+      query: {
+        "$filter" => "appId eq '#{Settings.edu_graph_api.app_id}'"
+      }
     })['value']
-    
+
     obj = res.find{ |_| _['appId'] == Settings.edu_graph_api.app_id }
 
     if obj

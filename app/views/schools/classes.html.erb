@@ -1,5 +1,6 @@
 <!-- Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT license.  
 See LICENSE in the project root for license information.   -->
+<%= content_for :title, 'CLASSES - EDUGraphAPI' %>
 
 <% content_for :header_list do %>
   <%= render 'common/header_list', class_info: @class_info %>
@@ -35,7 +36,11 @@ See LICENSE in the project root for license information.   -->
         <div>
             <div class="col-md-4 usericon">
                 <div class="icon"></div>
+                <% if session[:current_user][:user_identify] == 'Student' %>
                     <div>Not Enrolled</div>
+                <% else %>
+                    <div>Not Teaching</div>
+                <% end %>
                 <div class="icon my-class"></div><div>My Class</div>
             </div>
             <div class="col-md-3 filterlink-container">
@@ -49,22 +54,23 @@ See LICENSE in the project root for license information.   -->
         <div id="allclasses" class="tiles-secondary-container">
             <div class="section-tiles">
                 <div class="content clearfix" id="class_content">
+                    <% if @allclasses.empty? %>
+                        <div class="nodata"> No classes in this school.</div>
+                    <% end %>
                     <% @allclasses.each_with_index do |all_class, index| %>
                     <div class="tile-container <%= 'hidden_course' if index > 11 %>" id="course_<%= index %>">
                         <% if @mycourseids.include? all_class['extension_fe2174665583431c953114ff7268b7b3_Education_SyncSource_CourseId'] %>
                         <a class="mysectionlink" href="/schools/<%= @school_id %>/classes/<%= all_class['objectId'] %>?<%= URI.encode "school_name=#{@class_info[:school_name]}&low_grade=#{@class_info[:low_grade]}&high_grade=#{@class_info[:high_grade]}&principal=#{@class_info[:principal]}&school_number=#{@class_info[:school_number]}" %>">
                             <div class="tile">
                                 <h5><%= all_class['displayName'] %></h5>
-                                <h2><%= all_class['extension_fe2174665583431c953114ff7268b7b3_Education_CourseSubject'][0..2].upcase rescue '' %>
-                                    <%= all_class['extension_fe2174665583431c953114ff7268b7b3_Education_CourseNumber'] %>
+                                <h2><%= all_class['extension_fe2174665583431c953114ff7268b7b3_Education_CourseSubject'][0..2].upcase rescue '' %><%= all_class['extension_fe2174665583431c953114ff7268b7b3_Education_CourseNumber'] %>
                                 </h2>
                             </div>
                         </a>
                         <% else %>
                         <div class="tile">
                             <h5><%= all_class['displayName'] %></h5>
-                            <h2><%= all_class['extension_fe2174665583431c953114ff7268b7b3_Education_CourseSubject'][0..2].upcase rescue '' %>
-                                <%= all_class['extension_fe2174665583431c953114ff7268b7b3_Education_CourseNumber'] %>
+                            <h2><%= all_class['extension_fe2174665583431c953114ff7268b7b3_Education_CourseSubject'][0..2].upcase rescue '' %><%= all_class['extension_fe2174665583431c953114ff7268b7b3_Education_CourseNumber'] %>
                             </h2>
                         </div>
                         <% end %>
@@ -79,7 +85,7 @@ See LICENSE in the project root for license information.   -->
                             <h5>Start/Finish Date:</h5>
                             <h6>
                                 <span id="termdate"><%= Date.strptime(all_class['extension_fe2174665583431c953114ff7268b7b3_Education_TermStartDate'], '%m/%d/%Y').to_s rescue '' %></span>
-                                <span> ~ </span>
+                                <span> - </span>
                                 <span id="termdate"><%= Date.strptime(all_class['extension_fe2174665583431c953114ff7268b7b3_Education_TermEndDate'], '%m/%d/%Y').to_s rescue '' %></span>
                             </h6>
                             <h5>Period:</h5>
@@ -100,15 +106,18 @@ See LICENSE in the project root for license information.   -->
             <div class="section-tiles">
                 <div class="content clearfix">
                     <% if @myclasses.empty? %>
-                        <div class="nodata"> Not enrolled in any classes.</div>
+                        <% if session[:current_user][:user_identify] == 'Student' %>
+                            <div class="nodata"> Not enrolled in any classes.</div>
+                        <% else %>
+                            <div class="nodata"> Not teaching any classes.</div>
+                        <% end %>
                     <% else %>
                         <% @myclasses.each_with_index do |myclass, index| %>
                         <div class="tile-container <%= 'hidden_course' if index > 11 %>" id="my_course_<%= index %>">
                             <a class="mysectionlink" href="/schools/<%= @school_id %>/classes/<%= myclass['objectId'] %>?<%= URI.encode "school_name=#{@class_info[:school_name]}&low_grade=#{@class_info[:low_grade]}&high_grade=#{@class_info[:high_grade]}&principal=#{@class_info[:principal]}&school_number=#{@class_info[:school_number]}" %>">
                             <div class="tile">
                                 <h5><%= myclass['displayName'] %></h5>
-                                <h2><%= myclass['extension_fe2174665583431c953114ff7268b7b3_Education_CourseSubject'][0..2].upcase %>
-                                    <%= myclass['extension_fe2174665583431c953114ff7268b7b3_Education_CourseNumber'] %>
+                                <h2><%= myclass['extension_fe2174665583431c953114ff7268b7b3_Education_CourseSubject'][0..2].upcase %><%= myclass['extension_fe2174665583431c953114ff7268b7b3_Education_CourseNumber'] %>
                                 </h2>
                             </div>
                             </a>

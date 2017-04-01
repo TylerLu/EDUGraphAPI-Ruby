@@ -1,7 +1,7 @@
 
 default_password: '111111'
 
-redirect_uri: 'http://localhost:44311/Account/Callback'
+redirect_uri: '/Account/Callback'
 
 bing_map_key: "Anu3xoioQvqyG6b3eZ30IyR8TwyeQYpeag6OBdQvrsfUn0FwsVwFH9OnkJZvX-8a"
 

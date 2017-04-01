@@ -1,7 +1,10 @@
-function iniTiles() { $(".deskcontainer:not([position='0']").each(function() {
+function iniTiles() {
+    $(".deskcontainer:not([position='0']").each(function() {
         var n = $(this).attr("position"),
             t = $(".desktile[position='" + n + "']");
-        $(this).appendTo(t) }) }
+        $(this).appendTo(t) 
+    }) 
+}
 
 function iniControl() {
     function t() { $("#imgsave").hide();
@@ -94,15 +97,24 @@ function disableDragAndDrop() { $("#lstproducts li, .deskcontainer").off("dragst
     $(".deskclose").off("click") }
 
 function saveEditDesk() {
-    var n = [],
-        t = $("#hidSectionid").val();
+    var n = [], t = $("#hidSectionid").val();
     $(".deskcontainer").each(function() {
-        var i = $(this).attr("userid"),
-            r;
-        i && (r = $(this).attr("position"), n.push({ O365UserId: i, Position: r, ClassId: t })) });
-    $.ajax({ type: "POST", url: "/Schools/SaveSeatingArrangements", dataType: "json", data: JSON.stringify(n), contentType: "application/json; charset=utf-8", success: function() { $(".desktile .deskcontainer.unsaved").removeClass("unsaved");
-            $(".desktile .deskcontainer[prev-position]").removeAttr("prev-position");
-            $('<div id="saveResult"><div>Seating map changes saved.<\/div><\/div>').insertBefore($("#dvleft")).fadeIn("slow", function() { $(this).delay(3e3).fadeOut("slow") }) }, error: function() {} }) }
+	    var i = $(this).attr("userid"),r;
+	    i && (r = $(this).attr("position"), n.push({ O365UserId: i, Position: r, ClassId: t })) 
+    });
+    $.ajax({ 
+    	type: "POST", 
+    	url: "/schools/save_settings", 
+    	dataType: "json", 
+    	data: {postions: n},
+    	success: function() { 
+    		$(".desktile .deskcontainer.unsaved").removeClass("unsaved");
+        $(".desktile .deskcontainer[prev-position]").removeAttr("prev-position");
+        $('<div id="saveResult"><div>Seating map changes saved.<\/div><\/div>').insertBefore($("#dvleft")).fadeIn("slow", function() { $(this).delay(3e3).fadeOut("slow") }) 
+      }, 
+     	error: function() {} 
+    }) 
+}
 
 function cancelEditDesk() { $(".desktile .deskcontainer.unsaved").appendTo($("#hidtiles")).attr("position", 0).each(function(n, t) { $("#" + $(t).attr("userid")).find(".seated").addClass("hideitem") });
     $("#hidtiles .deskcontainer:not(.unsaved)").each(function(n, t) {
@@ -1801,11 +1813,14 @@ function addParam(n, t, i) {
         nf = Math.abs,
         e = nr.prototype;
     return e.abs = cv, e.add = lv, e.subtract = av, e.as = yv, e.asMilliseconds = up, e.asSeconds = fp, e.asMinutes = ep, e.asHours = op, e.asDays = sp, e.asWeeks = hp, e.asMonths = cp, e.asYears = lp, e.valueOf = pv, e._bubble = vv, e.get = wv, e.milliseconds = ap, e.seconds = vp, e.minutes = yp, e.hours = pp, e.days = wp, e.weeks = bv, e.months = bp, e.years = kp, e.humanize = ty, e.toISOString = rr, e.toString = rr, e.toJSON = rr, e.locale = ee, e.localeData = oe, e.toIsoString = d("toIsoString() is deprecated. Please use toISOString() instead (notice the capitals)", rr), e.lang = du, r("X", 0, 0, "unix"), r("x", 0, 0, "valueOf"), i("x", sr), i("X", /[+-]?\d+(\.\d{1,3})?/), s("X", function(n, t, i) { i._d = new Date(1e3 * parseFloat(n, 10)) }), s("x", function(n, t, i) { i._d = new Date(f(n)) }), t.version = "2.17.1", po(h), t.fn = n, t.min = ac, t.max = vc, t.now = rp, t.utc = rt, t.unix = rv, t.months = fv, t.isDate = wi, t.locale = fi, t.invalid = bi, t.duration = yt, t.isMoment = at, t.weekdays = ov, t.parseZone = uv, t.localeData = vt, t.isDuration = ru, t.monthsShort = ev, t.weekdaysMin = hv, t.defineLocale = gr, t.updateLocale = ic, t.locales = rc, t.weekdaysShort = sv, t.normalizeUnits = g, t.relativeTimeRounding = gv, t.relativeTimeThreshold = ny, t.calendarFormat = ul, t.prototype = n, t });
-$(document).ready(function() { iniTiles();
+	$(document).ready(function() { 
+		// iniTiles();
     iniControl();
     formatDateTime();
     loadImages();
-    iniTableSort() });
-$.urlParam = function(n) {
-    var t = new RegExp("[?&]" + n + "=([^&#]*)").exec(window.location.href);
-    return t == null ? null : t[1] || 0 }
+    iniTableSort() 
+  });
+	$.urlParam = function(n) {
+  	var t = new RegExp("[?&]" + n + "=([^&#]*)").exec(window.location.href);
+  	return t == null ? null : t[1] || 0 
+  }

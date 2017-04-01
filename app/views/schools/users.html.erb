@@ -1,5 +1,6 @@
 <!-- Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT license.  
 See LICENSE in the project root for license information.   -->
+<%= content_for :title, 'Teachers & Students - EDUGraphAPI' %>
 
 <% content_for :header_list do %>
   <%= render 'common/header_list', class_info: @class_info %>
@@ -20,7 +21,7 @@ See LICENSE in the project root for license information.   -->
             <div class="section-school-name"><%= @school_name %></div>
             <div class="infocontainer">
                 <div class="infoheader">PRINCIPAL</div>
-                <div class="infobody" title="Harry James">
+                <div class="infobody" title="<%= @principal %>">
                     <%= @principal %>
                 </div>
             </div>
@@ -37,10 +38,10 @@ See LICENSE in the project root for license information.   -->
                 <div class="teacicon"></div><div>Teacher</div>
             </div>
             <div class="col-md-6 filterlink-container">
-                <div class="search-container ">
+                <!-- <div class="search-container ">
                     <input type="text" placeholder="Search" class="txtsearch" />
                     <button type="submit" id="btnsearch" title="Search" data-bi-dnt="" tabindex="40" class="btnsubmit"></button>
-                </div>
+                </div> -->
                 <span>FILTER:</span> <a id="filterteacher" class="filterlink" data-type="teachers">Teachers</a> | <a id="filterstudnet" class="filterlink" data-type="students">Students</a> | <a id="filterall" class="filterlink selected" data-type="users">All</a>
             </div>
         </div>
@@ -49,6 +50,9 @@ See LICENSE in the project root for license information.   -->
     <div class="users-container tiles-root-container">
         <div id="users" class="tiles-secondary-container">        
             <div class="content" id='users_1'>
+              <% if @all.empty? %>
+                <div class="nodata"> There is no data available for this page at this time.</div>
+              <% end %>
               <% @all.each do |_one| %>
                 <div class="element <%= _one['extension_fe2174665583431c953114ff7268b7b3_Education_ObjectType'] == 'Teacher' ? 'teacher-bg' : 'student-bg' %>">
                     <div class="userimg">
@@ -67,6 +71,9 @@ See LICENSE in the project root for license information.   -->
 		</div>
         <div id="students" class="tiles-secondary-container">        
         	<div class="content" id='students_1'>
+                <% if @students.empty? %>
+                    <div class="nodata"> There is no data available for this page at this time.</div>
+                <% end %>
         		<% @students.each do |student| %>
                 <div class="element student-bg">
                     <div class="userimg">
@@ -85,6 +92,9 @@ See LICENSE in the project root for license information.   -->
 		</div>
         <div id="teachers" class="tiles-secondary-container">
         	<div class="content" id="teachers_1">
+                <% if @teachers.empty? %>
+                    <div class="nodata"> There is no data available for this page at this time.</div>
+                <% end %>
         		<% @teachers.each do |teacher| %>
                 <div class="element teacher-bg">
                     <div class="userimg">

@@ -19,6 +19,8 @@ class Constant
 		edu_period: 'extension_fe2174665583431c953114ff7268b7b3_Education_Period',
 		principal_name: 'userPrincipalName',
 		edu_grade: 'extension_fe2174665583431c953114ff7268b7b3_Education_Grade',
+		edu_state: 'extension_fe2174665583431c953114ff7268b7b3_Education_State',
+		edu_city: 'extension_fe2174665583431c953114ff7268b7b3_Education_City',
 		errors: {
 			token_expired: 'Directory_ExpiredPageToken'
 		}

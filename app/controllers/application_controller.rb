@@ -12,7 +12,7 @@ class ApplicationController < ActionController::Base
   	#验证token是否过期，过期则重新登录
   	if session[:logout] || (session[:expires_on] && Time.now.to_i > session[:expires_on].to_i)
       session[:logout] = false
-  		if cookies[:o365_login_name]
+  		if cookies[:o365_login_email].present?
   			redirect_to '/account/o365login'
   		else
   			redirect_to '/account/login'

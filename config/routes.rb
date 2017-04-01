@@ -25,6 +25,10 @@ Rails.application.routes.draw do
   	  get :users
       post :next_users
   	end
+
+    collection do 
+      post :save_settings
+    end
   end
 
   match '/Account/Callback' => 'account#callback', via: [:get, :post]
