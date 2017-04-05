@@ -85,19 +85,13 @@ setLatestNodeVersion(){
 # Deployment
 # ----------
 
-echo Ruby on Rails customized deployment.
+echo Ruby on Rails deployment.
 
 # 1. KuduSync
 if [[ "$IN_PLACE_DEPLOYMENT" -ne "1" ]]; then
   "$KUDU_SYNC_CMD" -v 50 -f "$DEPLOYMENT_SOURCE" -t "$DEPLOYMENT_TARGET" -n "$NEXT_MANIFEST_PATH" -p "$PREVIOUS_MANIFEST_PATH" -i ".git;.hg;.deployment;deploy.sh"
   exitWithMessageOnError "Kudu Sync failed"
 fi
-
-# echo "apt-get install libmysqlclient-dev"
-# eval apt-get install libmysqlclient-dev
-
-echo "gem install mysql2 -v '0.4.5'"
-eval gem install mysql2 -v '0.4.5' 
 
 initializeDeploymentConfig
 
@@ -109,9 +103,8 @@ if [ -e "$DEPLOYMENT_TARGET/Gemfile" ]; then
   exitWithMessageOnError "init failed"
   rbenv global $WEBSITES_LATEST_NODE_VERSION
   exitWithMessageOnError "Failed to switch ruby versions"
-  
   eval bundle install --deployment $OPTIONS
-  exitWithMessageOnError "bundler failed"
+  # exitWithMessageOnError "bundler failed"
   if [ "$ASSETS_PRECOMPILE" == true ]; then 
 	echo "running rake assets:precompile"
     bundle exec rake --trace assets:precompile

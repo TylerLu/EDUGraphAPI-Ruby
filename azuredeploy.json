@@ -1,0 +1,165 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "siteName": {
+      "type": "string",
+      "defaultValue": "EDUGraphAPIRuby",
+      "metadata": {
+        "description": "The name of the web client app that you wish to create."
+      }
+    },
+    "hostingPlanName": {
+      "type": "string",
+      "defaultValue": "EDUGraphAPIRuby",
+      "metadata": {
+        "description": "The hosting service plan name that you wish to create."
+      }
+    },
+    "DockerCustomImageName": {
+      "type": "string",
+      "defaultValue": "tylerlu/ruby:2.3",
+      "metadata": {
+        "description": ""
+      }
+    },
+    "sourceCodeRepositoryURL": {
+      "type": "string",
+      "defaultValue": "https://github.com/<YOUR REPOSITORY>/O365-EDU-Ruby-Samples",
+      "metadata": {
+        "description": "Source code repository URL"
+      }
+    },
+    "sourceCodeBranch": {
+      "type": "string",
+      "defaultValue": "master",
+      "metadata": {
+        "description": "Sourcecode Repo branch"
+      }
+    },
+    "sourceCodeManualIntegration": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Use 'true' if you are deploying from the base repo, 'false' if you are deploying from your own fork. If you're using 'false', make sure you have admin permissions to the repo. If you get an error, you should add GitHub integration to another web app manually, so that you get a GitHub access token associated with your Azure Subscription."
+      }
+    },
+    "clientId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": ""
+      }
+    },
+    "clientSecret": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": ""
+      }
+    },
+    "bingMapKey": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": ""
+      }
+    }
+  },
+  "variables": {
+    "location": "[resourceGroup().location]",
+    "lowerSiteName": "[toLower(parameters('siteName'))]",
+    "webSiteName": "[variables('lowerSiteName')]",
+    "databaseName": "[variables('lowerSiteName')]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Web/serverfarms",
+      "sku": {
+        "name": "B1",
+        "tier": "Basic",
+        "size": "B1",
+        "family": "B",
+        "capacity": 1
+      },
+      "kind": "linux",
+      "name": "[parameters('hostingPlanName')]",
+      "apiVersion": "2016-03-01",
+      "location": "[variables('location')]",
+      "properties": {
+        "workerSizeId": 0,
+        "reserved": true,
+        "hostingEnvironment": ""
+      }
+    },
+    {
+      "type": "SuccessBricks.ClearDB/databases",
+      "name": "[variables('databaseName')]",
+      "apiVersion": "2014-04-01",
+      "location": "[variables('location')]",
+      "plan": {
+        "name": "Free"
+      },
+      "tags": { },
+      "properties": {
+        "name": "[variables('databaseName')]"
+      }
+    },
+    {
+      "type": "Microsoft.Web/sites",
+      "kind": "app",
+      "name": "[variables('webSiteName')]",
+      "apiVersion": "2016-03-01",
+      "location": "[variables('location')]",
+      "properties": {
+        "name": "[variables('webSiteName')]",
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('hostingPlanName'))]",
+        "siteConfig": {
+          "linuxFxVersion": "RUBY|2.3"
+        }
+      },
+      "resources": [
+        {
+          "apiVersion": "2015-08-01",
+          "type": "config",
+          "name": "appsettings",
+          "dependsOn": [
+            "[resourceId('Microsoft.Web/sites/', variables('webSiteName'))]"
+          ],
+          "properties": {
+            "DOCKER_CUSTOM_IMAGE_NAME": "[parameters('DockerCustomImageName')]",
+            "RAILS_ENV": "production",
+            "SECRET_KEY_BASE": "ae3672e1df60753ca80d3e18d8f839c9753cd2ee60d466e1b6e9a13e8b4b10596846cdf077e17854690e700081fbe03e94c8b47027fda17feb8a53b4a1204f30",
+            "ida:ClientId": "[parameters('clientId')]",
+            "ida:ClientSecret": "[parameters('clientSecret')]",
+            "DB_HOST": "[listConnectionString(resourceId('SuccessBricks.ClearDB/databases/', variables('databaseName')), '2014-04-01').properties.hostname]",
+            "DB_USERNAME": "[listConnectionString(resourceId('SuccessBricks.ClearDB/databases/', variables('databaseName')), '2014-04-01').properties.username]",
+            "DB_PASSWORD": "[listConnectionString(resourceId('SuccessBricks.ClearDB/databases/', variables('databaseName')), '2014-04-01').properties.password]",
+            "DB_DATABASE": "[variables('databaseName')]",
+            "BingMapKey": "[parameters('bingMapKey')]",
+            "SourceCodeRepositoryUrl": "[parameters('SourceCodeRepositoryUrl')]",
+            "command": "deploy.sh"
+          }
+        },
+        {
+          "apiVersion": "2015-08-01",
+          "name": "web",
+          "type": "sourcecontrols",
+          "dependsOn": [
+            "[resourceId('Microsoft.Web/sites/', variables('webSiteName'))]",
+            "[resourceId('Microsoft.Web/Sites/config', variables('webSiteName'), 'appsettings')]",
+            "[resourceId('SuccessBricks.ClearDB/databases/', variables('databaseName'))]"
+          ],
+          "properties": {
+            "RepoUrl": "[parameters('sourceCodeRepositoryURL')]",
+            "branch": "[parameters('sourceCodeBranch')]",
+            "IsManualIntegration": "parameters('sourceCodeManualIntegration')]"
+          }
+        }
+      ],
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/serverfarms', parameters('hostingPlanName'))]"
+      ]
+    }
+  ]
+}
