@@ -16,13 +16,6 @@
         "description": "The hosting service plan name that you wish to create."
       }
     },
-    "DockerCustomImageName": {
-      "type": "string",
-      "defaultValue": "tylerlu/ruby:2.3",
-      "metadata": {
-        "description": ""
-      }
-    },
     "sourceCodeRepositoryURL": {
       "type": "string",
       "defaultValue": "https://github.com/<YOUR REPOSITORY>/O365-EDU-Ruby-Samples",
@@ -127,7 +120,6 @@
             "[resourceId('Microsoft.Web/sites/', variables('webSiteName'))]"
           ],
           "properties": {
-            "DOCKER_CUSTOM_IMAGE_NAME": "[parameters('DockerCustomImageName')]",
             "RAILS_ENV": "production",
             "SECRET_KEY_BASE": "ae3672e1df60753ca80d3e18d8f839c9753cd2ee60d466e1b6e9a13e8b4b10596846cdf077e17854690e700081fbe03e94c8b47027fda17feb8a53b4a1204f30",
             "ida:ClientId": "[parameters('clientId')]",
