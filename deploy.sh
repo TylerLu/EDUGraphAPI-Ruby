@@ -93,6 +93,9 @@ if [[ "$IN_PLACE_DEPLOYMENT" -ne "1" ]]; then
   exitWithMessageOnError "Kudu Sync failed"
 fi
 
+echo Installing nokogiri 1.6.8.1
+gem install nokogiri -v 1.6.8.1
+
 # initializeDeploymentConfig
 
 # echo "$DEPLOYMENT_TARGET"
