@@ -93,35 +93,25 @@ if [[ "$IN_PLACE_DEPLOYMENT" -ne "1" ]]; then
   exitWithMessageOnError "Kudu Sync failed"
 fi
 
-pushd "$DEPLOYMENT_TARGET"
-eval "$(rbenv init -)"
-exitWithMessageOnError "init failed"
-rbenv global $WEBSITES_LATEST_NODE_VERSION
-exitWithMessageOnError "Failed to switch ruby versions"
-echo Installing nokogiri 1.6.8.1
-bundle exec gem install nokogiri -v 1.6.8.1
-exitWithMessageOnError "bundler failed"
-popd
+initializeDeploymentConfig
 
-# initializeDeploymentConfig
-
-# echo "$DEPLOYMENT_TARGET"
-# if [ -e "$DEPLOYMENT_TARGET/Gemfile" ]; then
-#   echo "Found gemfile"
-#   pushd "$DEPLOYMENT_TARGET"
-#   eval "$(rbenv init -)"
-#   exitWithMessageOnError "init failed"
-#   rbenv global $WEBSITES_LATEST_NODE_VERSION
-#   exitWithMessageOnError "Failed to switch ruby versions"
-#   eval bundle install --deployment $OPTIONS
-#   exitWithMessageOnError "bundler failed"
-#   if [ "$ASSETS_PRECOMPILE" == true ]; then 
-# 	echo "running rake assets:precompile"
-#     bundle exec rake --trace assets:precompile
-#   fi
-#   exitWithMessageOnError "precompilation failed"
-#   popd
-# fi
+echo "$DEPLOYMENT_TARGET"
+if [ -e "$DEPLOYMENT_TARGET/Gemfile" ]; then
+  echo "Found gemfile"
+  pushd "$DEPLOYMENT_TARGET"
+  eval "$(rbenv init -)"
+  exitWithMessageOnError "init failed"
+  rbenv global $WEBSITES_LATEST_NODE_VERSION
+  exitWithMessageOnError "Failed to switch ruby versions"
+  eval bundle install --deployment $OPTIONS
+  # exitWithMessageOnError "bundler failed"
+  if [ "$ASSETS_PRECOMPILE" == true ]; then 
+	echo "running rake assets:precompile"
+    bundle exec rake --trace assets:precompile
+  fi
+  exitWithMessageOnError "precompilation failed"
+  popd
+fi
 
 ##################################################################################################################################
 
