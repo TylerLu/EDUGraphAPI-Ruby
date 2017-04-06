@@ -103,13 +103,14 @@ if [ -e "$DEPLOYMENT_TARGET/Gemfile" ]; then
   exitWithMessageOnError "init failed"
   rbenv global $WEBSITES_LATEST_NODE_VERSION
   exitWithMessageOnError "Failed to switch ruby versions"
+  eval gem install mysql2 -v '0.4.5' 
   eval bundle install --deployment $OPTIONS
   # exitWithMessageOnError "bundler failed"
   if [ "$ASSETS_PRECOMPILE" == true ]; then 
-    echo "running rake assets:precompile"
+	echo "running rake assets:precompile"
     bundle exec rake --trace assets:precompile
-    exitWithMessageOnError "precompilation failed"
   fi
+  exitWithMessageOnError "precompilation failed"
   popd
 fi
 
