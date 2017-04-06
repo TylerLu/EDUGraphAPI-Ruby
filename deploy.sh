@@ -106,10 +106,10 @@ if [ -e "$DEPLOYMENT_TARGET/Gemfile" ]; then
   eval bundle install --deployment $OPTIONS
   # exitWithMessageOnError "bundler failed"
   if [ "$ASSETS_PRECOMPILE" == true ]; then 
-	echo "running rake assets:precompile"
+    echo "running rake assets:precompile"
     bundle exec rake --trace assets:precompile
+    exitWithMessageOnError "precompilation failed"
   fi
-  exitWithMessageOnError "precompilation failed"
   popd
 fi
 
