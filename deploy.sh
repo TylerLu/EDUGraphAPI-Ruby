@@ -94,7 +94,7 @@ if [[ "$IN_PLACE_DEPLOYMENT" -ne "1" ]]; then
 fi
 
 echo Installing nokogiri 1.6.8.1
-gem install nokogiri -v 1.6.8.1
+bundle exec gem install nokogiri -v 1.6.8.1
 
 # initializeDeploymentConfig
 
