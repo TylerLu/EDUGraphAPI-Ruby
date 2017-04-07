@@ -113,10 +113,7 @@
       "location": "[variables('location')]",
       "properties": {
         "name": "[variables('webSiteName')]",
-        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('hostingPlanName'))]",
-        "siteConfig": {
-          "linuxFxVersion": "RUBY|2.3"
-        }
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('hostingPlanName'))]"
       },
       "resources": [
         {
