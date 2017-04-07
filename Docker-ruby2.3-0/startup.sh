@@ -35,7 +35,7 @@ if [ -n "$APP_COMMAND_LINE" ]
     $APP_COMMAND_LINE
   else
     echo 'defaulting to command: "bundle install \n rails db:migrate; \n rails server"'
-    bundle install 
+    bundle install
     rails db:migrate 
     rails server
 fi
