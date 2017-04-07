@@ -11,18 +11,24 @@ default: &default
 
 development:
   <<: *default
-  database: edu_graph_development
+  database: <%= ENV["DB_DATABASE"] %>
+  host: <%= ENV["DB_HOST"] %>
+  username: <%= ENV["DB_USERNAME"] %>
+  password: <%= ENV["DB_PASSWORD"] %>
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
 # Do not set this db to the same as development or production.
 test:
   <<: *default
-  database: edu_graph_test
+  database: <%= ENV["DB_DATABASE"] %>
+  host: <%= ENV["DB_HOST"] %>
+  username: <%= ENV["DB_USERNAME"] %>
+  password: <%= ENV["DB_PASSWORD"] %>
 
 production:
   <<: *default
-  database: edugraphapirubydev
-  host: 'us-cdbr-azure-west-b.cleardb.com'
-  username: 'bfdc2838b4689e'
-  password: '84b10a2e'
+  database: <%= ENV["DB_DATABASE"] %>
+  host: <%= ENV["DB_HOST"] %>
+  username: <%= ENV["DB_USERNAME"] %>
+  password: <%= ENV["DB_PASSWORD"] %>
