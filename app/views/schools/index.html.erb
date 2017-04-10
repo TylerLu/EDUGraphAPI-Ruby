@@ -32,6 +32,9 @@ See LICENSE in the project root for license information.   -->
       </div>
       <div style="clear:both;" />
   </div>
+      <% if @schools.blank? %>
+        <div class="nodata">There is no data available for this page at this time.</div>
+      <% else %>
       <table class="table  table-green table-schools">
           <tr class="table-green-header">
               <th class="tdleft">School Name</th>
@@ -65,8 +68,9 @@ See LICENSE in the project root for license information.   -->
                   <a class="btnlink" href="/schools/<%= school["objectId"] %>/users?<%= URI.encode "school_name=#{school['displayName']}&low_grade=#{low_grade}&high_grade=#{high_grade}&principal=#{principal}&school_number=#{school_number}" %>">Teachers/students</a>
               </td>
           </tr>
-          <% end %>  
+          <% end %> 
       </table>
+      <% end %> 
 </div>
 <div id='myMap'></div>
 <input type="hidden" name="BingMapKey" id="BingMapKey" value="<%= Settings.bing_map_key %>" />

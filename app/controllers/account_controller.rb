@@ -197,6 +197,7 @@ class AccountController < ApplicationController
 		else
 			# o365账户登录的话，判断是否关联本地账号，没有则关联
 			account = Account.find_by_o365_email(id_token.raw_attributes["unique_name"])
+			session[:current_user] = {}
 			unless account && account.email
 				session[:current_user] = {
 					display_name: cookies[:o365_login_name],

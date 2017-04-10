@@ -21,7 +21,6 @@ class AdminController < ApplicationController
     #   "Authorization" => "#{session[:token_type]} #{session[:gwn_access_token]}",
     #   "Content-Type" => "application/x-www-form-urlencoded"
     # }).body)['value']
-
     res = graph_request({
       host: 'graph.windows.net',
       tenant_name: Settings.tenant_name,

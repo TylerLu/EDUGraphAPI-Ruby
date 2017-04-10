@@ -80,6 +80,7 @@ See LICENSE in the project root for license information.   -->
                             <h5>Description:</h5>
                             <h6><%= all_class['extension_fe2174665583431c953114ff7268b7b3_Education_CourseDescription'] %></h6>
                             <h5>Teachers:</h5>
+                            <h6></h6>
                             <h5>Term Name:</h5>
                             <h6><%= all_class['extension_fe2174665583431c953114ff7268b7b3_Education_TermName'] %></h6>
                             <h5>Start/Finish Date:</h5>
@@ -128,12 +129,13 @@ See LICENSE in the project root for license information.   -->
                                 <h5>Description:</h5>
                                 <h6><%= myclass['extension_fe2174665583431c953114ff7268b7b3_Education_CourseDescription'] %></h6>
                                 <h5>Teachers:</h5>
+                                <h6><%= @class_teacher_mapping[myclass['objectId']]  %></h6>
                                 <h5>Term Name:</h5>
                                 <h6><%= myclass['extension_fe2174665583431c953114ff7268b7b3_Education_TermName'] %></h6>
                                 <h5>Start/Finish Date:</h5>
                                 <h6>
                                     <span id="termdate"><%= Date.strptime(myclass['extension_fe2174665583431c953114ff7268b7b3_Education_TermStartDate'], '%m/%d/%Y').to_s %></span>
-                                    <span> ~ </span>
+                                    <span> - </span>
                                     <span id="termdate"><%= Date.strptime(myclass['extension_fe2174665583431c953114ff7268b7b3_Education_TermEndDate'], '%m/%d/%Y').to_s %></span>
                                 </h6>
                                 <h5>Period:</h5>

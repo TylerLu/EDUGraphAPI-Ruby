@@ -12,6 +12,9 @@ class SchoolsController < ApplicationController
 			return
 		end
 
+		ENV['tenant_name'] = account.o365_email[/(?<=@).*/]
+		Settings.tenant_name = ENV['tenant_name']
+
 		@me = graph_request({
 			host: 'graph.windows.net',
 			tenant_name: Settings.tenant_name,
@@ -26,6 +29,7 @@ class SchoolsController < ApplicationController
 			photo: get_user_photo_url(@me[Constant.get(:object_id)])
 		}
 
+		# p Settings.tenant_name
 		classes = if is_admin?
 			[]
 		else
@@ -47,7 +51,8 @@ class SchoolsController < ApplicationController
 			access_token: session[:gwn_access_token]
 		})['value']
 
-		all_schools = all_schools.map do |_school| 
+		# p all_schools
+		all_schools = (all_schools || []).map do |_school| 
 			_school.merge(location: get_longitude_and_latitude_by_address("#{_school[Constant.get(:edu_state)]}/#{_school[Constant.get(:edu_city)]}/#{_school[Constant.get(:edu_address)]}"))
 		end
 
@@ -96,6 +101,24 @@ class SchoolsController < ApplicationController
 			[]
 		end
 
+		@class_teacher_mapping = {}
+		@myclasses.each do |_class|
+			res = graph_request({
+				host: 'graph.windows.net',
+				tenant_name: Settings.tenant_name,
+				access_token: session[:gwn_access_token],
+				resource_name: "groups/#{_class["objectId"]}",
+				query: {
+					"$expand" => "members"
+				}
+			})
+			_teacher = res['members'].select do |_member|
+				_member[Constant.get(:edu_object_type)] == "Teacher"
+			end.first
+
+			@class_teacher_mapping[res['objectId'].to_s] = _teacher['displayName']
+		end
+
 		@mycourseids = @myclasses.map do |myclass| 
 			myclass[Constant.get(:edu_course_id)]
 		end
@@ -112,6 +135,25 @@ class SchoolsController < ApplicationController
 				"$filter" => "#{Constant.get(:edu_object_type)} eq 'Section' and #{Constant.get(:edu_school_id)} eq '#{school_number}'"
 			}
 		})
+
+		# p res
+
+		# teachers = graph_request({
+		# 	host: 'graph.windows.net',
+		# 	tenant_name: Settings.tenant_name,
+		# 	resource_name: 'users',
+		# 	access_token: session[:gwn_access_token],
+		# 	api_version: 1.5,
+		# 	query: {
+		# 		"$filter" => "#{Constant.get(:edu_object_type)} eq 'Teacher' and #{Constant.get(:edu_school_id)} eq '#{school_number}'"
+		# 	}
+		# })
+
+		# p teachers
+		# 
+		# 获取我所有课程的老师信息
+		# 
+		
 
 		next_link = (res['odata.nextLink'] || "").match(/skiptoken=(.*)$/)
 

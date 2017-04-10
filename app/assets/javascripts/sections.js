@@ -169,7 +169,11 @@ $(document).ready(function () {
                             '<span id="termdate">'+value['end_time']+'</span></h6><h5>Period:</h5><h6>' + value['period'] + '</h6></div>';
                         html += '</div>';
                     })
-                    $("#class_content").append(html);
+                    _ = $(html);
+                    _.appendTo($('#class_content')).hide().fadeIn("slow");
+                    bindShowDetail(_);
+                    // $("#class_content").append(html);
+                    // bindShowDetail($("#class_content"));
                     element.data('token', res['skip_token']);
                     element.find('span').removeClass('disabled');
                 }
