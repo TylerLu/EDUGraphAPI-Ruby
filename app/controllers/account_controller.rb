@@ -91,6 +91,8 @@ class AccountController < ApplicationController
 		# authorize_url = "https://login.microsoftonline.com/common/oauth2/authorize?client_id=4e3fa16f-9909-4bf6-9a66-5560e97e7082&response_mode=form_post&response_type=code+id_token&scope=openid+profile&state=OpenIdConnect.AuthenticationProperties%3dFGIkOZJ1POGoP0oT-TN3C1Blh3vzoO4gaudl1Q5Kd6H9AN87Kudcm7JRKqmdkbXCBWNPBnzBa-fwge4lAKyU7lBpK0M8Ff8dpzYf1e3h0eQ5ZHtxCoZn5cUOpWWNik7d14x-Lqh0uIdNRV9ImTZPZA&nonce=636243821732871340.MzA5ZjM3ZWUtMWE2YS00OTE0LThlN2ItYTUzZGZhYzVhMzMzMzgzNTExYjEtOGFlZi00MmI2LWExMTUtYzlmZGI0NTI3MTM2&redirect_uri=https%3a%2f%2fedugraphapidev.azurewebsites.net%2f&post_logout_redirect_uri=https%3a%2f%2fedugraphapidev.azurewebsites.net"
 	
 		redirect_to authorize_url
+
+		# redirect_to '/auth/azureactivedirectory'
 	end
 
 	def register
@@ -152,17 +154,26 @@ class AccountController < ApplicationController
 		session[:gwn_refresh_token] = res["refresh_token"]
 		session[:gwn_access_token] = res["access_token"]
 
-		res = JSON.parse HTTParty.post('https://login.microsoftonline.com/common/oauth2/token', body: {
-			grant_type: 'refresh_token',
-			client_id: Settings.edu_graph_api.app_id,
-			refresh_token: res["refresh_token"],
-			client_secret: Settings.edu_graph_api.default_key,
-			resource: 'https://graph.microsoft.com'
-		}).body
+		adal = ADAL::AuthenticationContext.new
+		client_cred = ADAL::ClientCredential.new(Settings.edu_graph_api.app_id, Settings.edu_graph_api.default_key)
+
+
+		tmp_res = adal.acquire_token_with_refresh_token(res["refresh_token"], client_cred, 'https://graph.microsoft.com')
+		session[:gmc_refresh_token] = tmp_res.refresh_token
+		session[:gmc_access_token] = tmp_res.access_token
+
+		# res = JSON.parse HTTParty.post('https://login.microsoftonline.com/common/oauth2/token', body: {
+		# 	grant_type: 'refresh_token',
+		# 	client_id: Settings.edu_graph_api.app_id,
+		# 	refresh_token: res["refresh_token"],
+		# 	client_secret: Settings.edu_graph_api.default_key,
+		# 	resource: 'https://graph.microsoft.com'
+		# }).body
+		# p res
 
 		# session[:gmc_expires_in] = res["expires_in"]
-		session[:gmc_refresh_token] = res["refresh_token"]
-		session[:gmc_access_token] = res["access_token"]
+		# session[:gmc_refresh_token] = res["refresh_token"]
+		# session[:gmc_access_token] = res["access_token"]
 
 
 		if id_token

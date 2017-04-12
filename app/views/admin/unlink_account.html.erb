@@ -2,6 +2,14 @@
 See LICENSE in the project root for license information.   -->
 <%= content_for :title, 'Unlink Account - EDUGraphAPI' %>
 
+<% content_for :user_login_info do %>
+    <%= render 'common/user_login_info', userinfo: session[:current_user] %>
+<% end %>
+
+<% content_for :header_list do %>
+  <%= render 'common/header_list' %>
+<% end %>
+
 <h2>Unlink Accounts</h2>
 <h3>Are you sure you want to unlink the accounts?</h3>
 <div>

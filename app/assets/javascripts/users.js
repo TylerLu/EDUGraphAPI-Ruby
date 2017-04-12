@@ -57,11 +57,22 @@ $(document).ready(function() {
         		}
         	}else{
         		//向后， 先判断是否存在， 如果存在则show， 不存在 则请求
-        		var next_page = $('#' + type + '_' + (current_page + 1))
+        		var next_page = $('#' + type + '_' + (current_page + 1));
+                var prev_obj = $(".teacher-student .tiles-root-container .pagination .prev");
+                prev_obj.addClass("disabled");
 
         		if(next_page.length){
-							$('#' + type + '_' + current_page).hide(); //隐藏之前的
+					$('#' + type + '_' + current_page).hide(); //隐藏之前的
         			next_page.show();
+
+                    if(current_page + 1 > 1){
+                        _this.siblings('.prev').removeClass('current');
+                    }else{
+                        _this.siblings('.prev').addClass('current');
+                    }
+
+                    _this.siblings('#curpage').val(current_page + 1); //更改current page 的值
+                    prev_obj.removeClass("disabled");
         		}else{
         			var next_link = _this.siblings('#nextlink').val();
 	        		var school_number = $('#school-objectid').val();
@@ -92,19 +103,27 @@ $(document).ready(function() {
 	        				_this.closest(".tiles-secondary-container").prepend(html);
 	        				_this.siblings('#nextlink').val(res['skip_token']);
 	        				_this.removeClass('disabled');
+                            $('#'+ type +'_' + current_page).hide(); //隐藏之前的页面
+
+                            if(current_page + 1 > 1){
+                                _this.siblings('.prev').removeClass('current');
+                            }else{
+                                _this.siblings('.prev').addClass('current');
+                            }
+
+                            _this.siblings('#curpage').val(current_page + 1); //更改current page 的值
+                            prev_obj.removeClass("disabled");
 	        			}
 	        		})
         		}
-        		
-        		$('#'+ type +'_' + current_page).hide(); //隐藏之前的页面
 
-        		if(current_page + 1 > 1){
-        			_this.siblings('.prev').removeClass('current');
-        		}else{
-        			_this.siblings('.prev').addClass('current');
-        		}
+        		// if(current_page + 1 > 1){
+        		// 	_this.siblings('.prev').removeClass('current');
+        		// }else{
+        		// 	_this.siblings('.prev').addClass('current');
+        		// }
 
-        		_this.siblings('#curpage').val(current_page + 1); //更改current page 的值
+        		// _this.siblings('#curpage').val(current_page + 1); //更改current page 的值
         	}
 
             // var h = i.siblings("#curpage"),

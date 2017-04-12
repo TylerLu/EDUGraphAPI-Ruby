@@ -63,14 +63,14 @@ See LICENSE in the project root for license information.   -->
                         <a class="mysectionlink" href="/schools/<%= @school_id %>/classes/<%= all_class['objectId'] %>?<%= URI.encode "school_name=#{@class_info[:school_name]}&low_grade=#{@class_info[:low_grade]}&high_grade=#{@class_info[:high_grade]}&principal=#{@class_info[:principal]}&school_number=#{@class_info[:school_number]}" %>">
                             <div class="tile">
                                 <h5><%= all_class['displayName'] %></h5>
-                                <h2><%= all_class['extension_fe2174665583431c953114ff7268b7b3_Education_CourseSubject'][0..2].upcase rescue '' %><%= all_class['extension_fe2174665583431c953114ff7268b7b3_Education_CourseNumber'] %>
+                                <h2><%= all_class['extension_fe2174665583431c953114ff7268b7b3_Education_CourseName'][0..2].upcase rescue '' %><%= all_class['extension_fe2174665583431c953114ff7268b7b3_Education_CourseNumber'] %>
                                 </h2>
                             </div>
                         </a>
                         <% else %>
                         <div class="tile">
                             <h5><%= all_class['displayName'] %></h5>
-                            <h2><%= all_class['extension_fe2174665583431c953114ff7268b7b3_Education_CourseSubject'][0..2].upcase rescue '' %><%= all_class['extension_fe2174665583431c953114ff7268b7b3_Education_CourseNumber'] %>
+                            <h2><%= all_class['extension_fe2174665583431c953114ff7268b7b3_Education_CourseName'][0..2].upcase rescue '' %><%= all_class['extension_fe2174665583431c953114ff7268b7b3_Education_CourseNumber'] %>
                             </h2>
                         </div>
                         <% end %>
@@ -118,7 +118,7 @@ See LICENSE in the project root for license information.   -->
                             <a class="mysectionlink" href="/schools/<%= @school_id %>/classes/<%= myclass['objectId'] %>?<%= URI.encode "school_name=#{@class_info[:school_name]}&low_grade=#{@class_info[:low_grade]}&high_grade=#{@class_info[:high_grade]}&principal=#{@class_info[:principal]}&school_number=#{@class_info[:school_number]}" %>">
                             <div class="tile">
                                 <h5><%= myclass['displayName'] %></h5>
-                                <h2><%= myclass['extension_fe2174665583431c953114ff7268b7b3_Education_CourseSubject'][0..2].upcase %><%= myclass['extension_fe2174665583431c953114ff7268b7b3_Education_CourseNumber'] %>
+                                <h2><%= myclass['extension_fe2174665583431c953114ff7268b7b3_Education_CourseName'][0..2].upcase %><%= myclass['extension_fe2174665583431c953114ff7268b7b3_Education_CourseNumber'] %>
                                 </h2>
                             </div>
                             </a>

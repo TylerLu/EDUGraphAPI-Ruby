@@ -48,7 +48,9 @@ EDUGraphAPI is based on NodeJS (the server side) and Angular 2 (the client side)
 
   - The [Ruby](https://www.ruby-lang.org/en/downloads) language version 2.2.2 or newer.
   - The [RubyGems](https://rubygems.org/) packaging system, which is installed with Ruby by default. To learn more about RubyGems, please read the [RubyGems Guides](http://guides.rubygems.org/).
-  - A working installation of the [SQLite3 Database](https://www.sqlite.org/).*Optional configuration**:
+  - A working installation of the [SQLite3 Database](https://www.sqlite.org/).
+
+**Optional configuration**:
 
 A feature in this sample demonstrates calling the Bing Maps API which requires a key to enable the Bing Maps feature. 
 

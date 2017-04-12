@@ -16,7 +16,7 @@ See LICENSE in the project root for license information.   -->
         <b>Username:</b><br /> <%= session[:current_user][:display_name] %> <img src='<%= session[:current_user][:photo] %>'/>
     </div>
     <div class="margin-top-12 margin-btm-12">
-        <b>Logged in as:</b><br /> <%= is_admin? ? 'admin' : session[:current_user][:user_identify] %>
+        <b>Logged in as:</b><br /> <%= is_admin? ? 'Admin' : session[:current_user][:user_identify] %>
     </div>
     <% if @account %>
     <div class="margin-btm-12">
@@ -29,7 +29,7 @@ See LICENSE in the project root for license information.   -->
             <option value="#535353" <%= 'selected' if @account.try(:favorite_color) == '#535353' %>>Grey</option>
     		</select>
         <input type="submit" value="Save" />
-        <% if flash[:notice] %>
+        <% if flash[:notice] && !is_admin? %>
             <span class='saveresult'><%= flash[:notice] %></span>
         <% end %>
 	   </form>

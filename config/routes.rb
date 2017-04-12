@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  root to: redirect('/account/login')
 
   resources :admin, only: :index do 
     collection do 
@@ -30,6 +31,9 @@ Rails.application.routes.draw do
       post :save_settings
     end
   end
+
+  # get '/auth/azureactivedirectory', as: :sign_in
+  # match '/auth/:provider/callback', to: 'account#callback', via: [:get, :post]
 
   match '/Account/Callback' => 'account#callback', via: [:get, :post]
 

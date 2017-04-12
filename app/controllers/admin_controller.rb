@@ -138,6 +138,6 @@ class AdminController < ApplicationController
   end
 
   def linked_accounts
-  	@accounts = Account.where("o365_email is not null and email is not null")
+  	@accounts = Account.where("o365_email is not null and email is not null").select{|obj| obj.o365_email.end_with? Settings.tenant_name }
   end
 end

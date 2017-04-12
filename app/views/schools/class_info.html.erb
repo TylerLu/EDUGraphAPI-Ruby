@@ -16,7 +16,7 @@ See LICENSE in the project root for license information.   -->
         <div class="container">
             <div class="col-md-6 secondnav">
                 <a href="/schools"> All Schools</a>
-                > <a href="/schools/<%= @class_info[:school_id] %>/classes"><%= @class_info[:school_name] %></a>
+                > <a href='/schools/<%= @class_info[:school_id] %>/classes?<%= URI.encode("id=#{@class_info[:school_id]}&school_number=#{@class_info[:school_number]}&school_name=#{@class_info[:school_name]}&low_grade=#{@class_info[:low_grade]}&high_grade=#{@class_info[:high_grade]}&principal=#{@class_info[:principal]}") %>'><%= @class_info[:school_name] %></a>
                 > <%= @myclass['extension_fe2174665583431c953114ff7268b7b3_Education_CourseName'] %>
             </div>
         </div>

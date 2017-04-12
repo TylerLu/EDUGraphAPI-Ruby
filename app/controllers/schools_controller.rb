@@ -392,7 +392,7 @@ class SchoolsController < ApplicationController
 		end
 
 		if res['odata.error'] && 
-			 res['odata.error']['code'] == Constant.get[:errors][:token_expired]
+			 res['odata.error']['code'] == Constant.get(:errors)[:token_expired]
 			render json: {
 				expired: true
 			}
