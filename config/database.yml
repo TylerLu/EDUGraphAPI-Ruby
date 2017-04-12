@@ -27,7 +27,7 @@ test:
   database: edu_graph_development
 
 production:
-  <<: *mysql2
+  <<: *mysql
   database: <%= ENV["DB_DATABASE"] %>
   host: <%= ENV["DB_HOST"] %>
   username: <%= ENV["DB_USERNAME"] %>
