@@ -34,8 +34,10 @@ if [ -n "$APP_COMMAND_LINE" ]
     echo "Executing $APP_COMMAND_LINE"
     $APP_COMMAND_LINE
   else
-    echo 'defaulting to command: "bundle install \n rails db:migrate; \n rails server"'
+    echo 'defaulting to command: "bundle install \n rails db:migrate \n rake assets:precompile \n rails server"'
     bundle install
     rails db:migrate 
+    rake assets:precompile
     rails server
+    #puma -p 443  -b tcp://localhost:80 
 fi
