@@ -4,30 +4,30 @@
 #   Ensure the SQLite 3 gem is defined in your Gemfile
 #   gem 'sqlite3'
 #
-default: &default
+
+sqlite:&sqlite
+  adapter: sqlite3
+  pool: 5
+  timeout: 5000
+
+mysql: &mysql
   adapter: mysql2
   pool: 5
   timeout: 5000
 
 development:
-  <<: *default
-  database: <%= ENV["DB_DATABASE"] %>
-  host: <%= ENV["DB_HOST"] %>
-  username: <%= ENV["DB_USERNAME"] %>
-  password: <%= ENV["DB_PASSWORD"] %>
+  <<: *sqlite
+  database: edu_graph_development
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
 # Do not set this db to the same as development or production.
 test:
-  <<: *default
-  database: <%= ENV["DB_DATABASE"] %>
-  host: <%= ENV["DB_HOST"] %>
-  username: <%= ENV["DB_USERNAME"] %>
-  password: <%= ENV["DB_PASSWORD"] %>
+  <<: *sqlite
+  database: edu_graph_development
 
 production:
-  <<: *default
+  <<: *mysql2
   database: <%= ENV["DB_DATABASE"] %>
   host: <%= ENV["DB_HOST"] %>
   username: <%= ENV["DB_USERNAME"] %>
