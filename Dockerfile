@@ -11,3 +11,4 @@ run gem install bundler && bundle install
 add . /msgraph
 add config/database.yml.docker /msgraph/config/database.yml
 run bundle exec rake assets:precompile
+#
