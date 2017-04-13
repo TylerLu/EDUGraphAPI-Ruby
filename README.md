@@ -32,7 +32,7 @@ The sample demonstrates:
 
   - [Office 365 Schools REST API reference](https://msdn.microsoft.com/office/office365/api/school-rest-operations)
 
-EDUGraphAPI is based on NodeJS (the server side) and Angular 2 (the client side).
+The sample is implemented with Ruby on Rail.
 
 ## Prerequisites
 
@@ -48,6 +48,7 @@ EDUGraphAPI is based on NodeJS (the server side) and Angular 2 (the client side)
 
   - The [Ruby](https://www.ruby-lang.org/en/downloads) language version 2.2.2 or newer.
   - The [RubyGems](https://rubygems.org/) packaging system, which is installed with Ruby by default. To learn more about RubyGems, please read the [RubyGems Guides](http://guides.rubygems.org/).
+  - The [Rails](http://rubyonrails.org/) web application development framework, version 5.0.0 or above
   - A working installation of the [SQLite3 Database](https://www.sqlite.org/).
 
 **Optional configuration**:
