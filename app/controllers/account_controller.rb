@@ -62,7 +62,7 @@ class AccountController < ApplicationController
 					cookies[:o365_login_email] = account.o365_email
 					redirect_to schools_path
 				else
-					redirect_to URI.encode("https://login.microsoftonline.com/common/oauth2/authorize?client_id=#{Settings.edu_graph_api.app_id}&response_type=id_token+code&response_mode=form_post&scope=openid+profile&nonce=luyao&redirect_uri=#{request.protocol}#{request.host}:#{request.port}#{Settings.redirect_uri}&state=12345&login_hint=#{account.o365_email}")
+					redirect_to URI.encode("https://login.microsoftonline.com/common/oauth2/authorize?client_id=#{Settings.edu_graph_api.app_id}&response_type=id_token+code&response_mode=form_post&scope=openid+profile&nonce=luyao&redirect_uri=#{request.headers['HTTP_X_ARR_SSL'] || request.protocol}#{request.host}:#{request.port}#{Settings.redirect_uri}&state=12345&login_hint=#{account.o365_email}")
 				end
 			end
 
@@ -76,7 +76,7 @@ class AccountController < ApplicationController
 	def logoff
 		session.clear
 		session[:logout] = true
-		logoff_url = URI.encode "https://login.microsoftonline.com/common/oauth2/logout?post_logout_redirect_uri=#{request.protocol}#{request.host}:#{request.port}/account/login"
+		logoff_url = URI.encode "https://login.microsoftonline.com/common/oauth2/logout?post_logout_redirect_uri=#{request.headers['HTTP_X_ARR_SSL'] || request.protocol}#{request.host}:#{request.port}/account/login"
 
 		redirect_to logoff_url
 	end
@@ -84,9 +84,9 @@ class AccountController < ApplicationController
 	def externalLogin
 		if cookies[:o365_login_name].present?
 		# if cookies[:o365_login_email].present?
-			authorize_url = URI.encode("https://login.microsoftonline.com/common/oauth2/authorize?client_id=#{Settings.edu_graph_api.app_id}&response_type=id_token+code&response_mode=form_post&scope=openid+profile&nonce=luyao&redirect_uri=#{request.protocol}#{request.host}:#{request.port}#{Settings.redirect_uri}&state=12345&login_hint=#{cookies[:o365_login_email]}")
+			authorize_url = URI.encode("https://login.microsoftonline.com/common/oauth2/authorize?client_id=#{Settings.edu_graph_api.app_id}&response_type=id_token+code&response_mode=form_post&scope=openid+profile&nonce=luyao&redirect_uri=#{request.headers['HTTP_X_ARR_SSL'] || request.protocol}#{request.host}:#{request.port}#{Settings.redirect_uri}&state=12345&login_hint=#{cookies[:o365_login_email]}")
 		else
-			authorize_url = URI.encode("https://login.microsoftonline.com/common/oauth2/authorize?client_id=#{Settings.edu_graph_api.app_id}&response_type=id_token+code&response_mode=form_post&scope=openid+profile&nonce=luyao&redirect_uri=#{request.protocol}#{request.host}:#{request.port}#{Settings.redirect_uri}&state=12345")
+			authorize_url = URI.encode("https://login.microsoftonline.com/common/oauth2/authorize?client_id=#{Settings.edu_graph_api.app_id}&response_type=id_token+code&response_mode=form_post&scope=openid+profile&nonce=luyao&redirect_uri=#{request.headers['HTTP_X_ARR_SSL'] || request.protocol}#{request.host}:#{request.port}#{Settings.redirect_uri}&state=12345")
 		end
 		# authorize_url = "https://login.microsoftonline.com/common/oauth2/authorize?client_id=4e3fa16f-9909-4bf6-9a66-5560e97e7082&response_mode=form_post&response_type=code+id_token&scope=openid+profile&state=OpenIdConnect.AuthenticationProperties%3dFGIkOZJ1POGoP0oT-TN3C1Blh3vzoO4gaudl1Q5Kd6H9AN87Kudcm7JRKqmdkbXCBWNPBnzBa-fwge4lAKyU7lBpK0M8Ff8dpzYf1e3h0eQ5ZHtxCoZn5cUOpWWNik7d14x-Lqh0uIdNRV9ImTZPZA&nonce=636243821732871340.MzA5ZjM3ZWUtMWE2YS00OTE0LThlN2ItYTUzZGZhYzVhMzMzMzgzNTExYjEtOGFlZi00MmI2LWExMTUtYzlmZGI0NTI3MTM2&redirect_uri=https%3a%2f%2fedugraphapidev.azurewebsites.net%2f&post_logout_redirect_uri=https%3a%2f%2fedugraphapidev.azurewebsites.net"
 	
@@ -136,13 +136,15 @@ class AccountController < ApplicationController
 			return 
 		end
 
+		session.clear
+
 		# 利用authorization_code继续请求access_token
 		# token_url = URI.encode("https://login.microsoftonline.com/common/oauth2/token?grant_type=authorization_code&client_id=#{Settings.edu_graph_api.app_id}&code=#{authorization_code}&redirect_uri=#{Settings.redirect_uri_token}")
 		res = JSON.parse HTTParty.post('https://login.microsoftonline.com/common/oauth2/token', body: {
 			grant_type: 'authorization_code',
 			client_id: Settings.edu_graph_api.app_id,
 			code: authorization_code,
-			redirect_uri: "#{request.protocol}#{request.host}:#{request.port}#{Settings.redirect_uri}",
+			redirect_uri: "#{request.headers['HTTP_X_ARR_SSL'] || request.protocol}#{request.host}:#{request.port}#{Settings.redirect_uri}",
 			client_secret: Settings.edu_graph_api.default_key,
 			resource: 'https://graph.windows.net'
 		}).body

@@ -22,24 +22,52 @@ class SchoolsController < ApplicationController
 			access_token: session[:gwn_access_token]
 		})
 
+		roles = []
+		if @me['assignedLicenses'].find{|_| _['skuId'] == Constant.get(:teacher_sku_id) || _['skuId'] == Constant.get(:teacher_pro_sku_id) }
+			roles << 'Teacher'
+		end
+
+		if @me['assignedLicenses'].find{|_| _['skuId'] == Constant.get(:student_sku_id) || _['skuId'] == Constant.get(:student_pro_sku_id) }
+			roles << 'Student'
+		end
+
+		myroles = graph_request({
+			host: 'graph.windows.net',
+			tenant_name: Settings.tenant_name,
+			resource_name: 'directoryRoles',
+			access_token: session[:gwn_access_token],
+			query: {
+				"$expand" => 'members'
+			}
+		})['value'].select{|_| _['displayName'] == Constant.get(:aad_company_admin_role_name) }
+
+		myroles.each do |_role|
+			if _role['members'].find{|_| _['objectId'] == @me['objectId'] }
+				roles << 'Admin'
+			end
+		end
+
+		session[:roles] = roles
+
 		session[:current_user] = {
 			user_identify: @me[Constant.get(:edu_object_type)],
 			display_name: @me[Constant.get(:display_name)],
 			school_number: @me[Constant.get(:edu_school_id)],
+			surname: @me[Constant.get(:surname)],
 			photo: get_user_photo_url(@me[Constant.get(:object_id)])
 		}
 
 		# p Settings.tenant_name
-		classes = if is_admin?
-			[]
-		else
-			graph_request({
+		begin
+			classes = graph_request({
 				host: 'graph.microsoft.com',
 				tenant_name: Settings.tenant_name,
 				access_token: session[:gmc_access_token]
 			}).me.member_of.map do |_class|
 				_class.display_name
 			end
+		rescue => e
+			classes = []
 		end
 
 		session[:current_user][:myclasses] = classes

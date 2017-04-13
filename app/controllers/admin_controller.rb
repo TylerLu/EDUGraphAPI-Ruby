@@ -10,7 +10,7 @@ class AdminController < ApplicationController
   end
 
   def consent
-  	consent_url = "https://login.microsoftonline.com/common/oauth2/authorize?response_type=code&client_id=#{Settings.edu_graph_api.app_id}&resource=https://graph.windows.net&redirect_uri=#{request.protocol}#{request.host}:#{request.port}#{Settings.redirect_uri}&state=12345&prompt=admin_consent"
+  	consent_url = "https://login.microsoftonline.com/common/oauth2/authorize?response_type=code&client_id=#{Settings.edu_graph_api.app_id}&resource=https://graph.windows.net&redirect_uri=#{request.headers['HTTP_X_ARR_SSL'] || request.protocol}#{request.host}:#{request.port}#{Settings.redirect_uri}&state=12345&prompt=admin_consent"
 
   	redirect_to consent_url
   end

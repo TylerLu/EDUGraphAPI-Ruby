@@ -17,14 +17,6 @@ module ApplicationHelper
 						"Content-Type" => "application/x-www-form-urlencoded"
 					}
 				).body
-				# HTTParty.get(
-				# 	"https://#{row[:host]}/#{row[:tenant_name]}/#{row[:resource_name]}?api-version=#{row[:api_version] || 'beta'}",
-				# 	query: row[:query],
-				# 	headers: {
-				# 		"Authorization" => "Bearer #{row[:access_token]}",
-				# 		"Content-Type" => "application/x-www-form-urlencoded"
-				# 	}
-				# ).body
 			) rescue {}
 		elsif row[:host] == Settings.host.gmc
 			callback = Proc.new { |r| r.headers["Authorization"] = "Bearer #{row[:access_token]}" }
@@ -34,22 +26,23 @@ module ApplicationHelper
 			  cached_metadata_file: File.join(MicrosoftGraph::CACHED_METADATA_DIRECTORY, "metadata_v1.0.xml"),
 			  &callback
 			)
-			# JSON.parse(
-			# 	HTTParty.get(
-			# 		"https://#{row[:host]}/v#{row[:api_version] || '1.0'}/me/memberOf",
-			# 		headers: {
-			# 			"Authorization" => "#{session[:token_type]} #{session[:gmc_access_token]}",
-			# 			"Content-Type" => "application/x-www-form-urlencoded"
-			# 		}
-			# 	).body
-			# )["value"].map{ |_class| _class['displayName'] }
 		end
 	end
 
 	def is_admin?
-    !session[:current_user][:email] && \
-    !session[:current_user][:user_identify] && \
-    !session[:current_user][:o365_email]
+    # !session[:current_user][:email] && \
+    # !session[:current_user][:user_identify] && \
+    # !session[:current_user][:o365_email]
+    
+    (session[:roles] || []).include? 'Admin'
+  end
+
+  def user_roles
+  	graph_request({
+			host: 'graph.microsoft.com',
+			tenant_name: Settings.tenant_name,
+			access_token: session[:gmc_access_token]
+		})
   end
 
   def get_user_photo_url(objectId)

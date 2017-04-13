@@ -11,7 +11,7 @@ class LinkController < ApplicationController
   end
 
   def loginO365
-    authorize_url = "https://login.microsoftonline.com/common/oauth2/authorize?response_type=id_token+code&client_id=#{Settings.edu_graph_api.app_id}&response_mode=form_post&scope=openid+profile&nonce=luyao&redirect_uri=#{request.protocol}#{request.host}:#{request.port}#{Settings.redirect_uri}&state=12345&prompt=login"
+    authorize_url = "https://login.microsoftonline.com/common/oauth2/authorize?response_type=id_token+code&client_id=#{Settings.edu_graph_api.app_id}&response_mode=form_post&scope=openid+profile&nonce=luyao&redirect_uri=#{request.headers['HTTP_X_ARR_SSL'] || request.protocol}#{request.host}:#{request.port}#{Settings.redirect_uri}&state=12345&prompt=login"
 
     redirect_to authorize_url
   end
