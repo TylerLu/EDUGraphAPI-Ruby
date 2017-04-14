@@ -3,7 +3,7 @@ See LICENSE in the project root for license information.   -->
 
 <form action="/account/logoff" class="navbar-right" id="logoutForm" method="post">
     <div class="userinfo">
-    <a href="javascript:void(0);" id="userinfolink">Logged in as: <%= is_admin? ? 'Admin' : userinfo[:user_identify] %>. Hello <%= userinfo[:display_name] %> <%= is_admin? ? userinfo[:surname] : '' %>
+    <a href="javascript:void(0);" id="userinfolink">Logged in as: <%= is_admin? ? 'Admin' : userinfo[:user_identify] %>. Hello <%= userinfo[:display_name] %> <%= userinfo[:surname] %>
     <% if session[:current_user] && session[:current_user][:photo] %>
         <img src='<%= session[:current_user][:photo] %>'/>
     <% end %>

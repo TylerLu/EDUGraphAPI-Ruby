@@ -11,6 +11,15 @@ See LICENSE in the project root for license information.   -->
 	<%= render 'common/user_login_info', userinfo: session[:current_user] %>
 <% end %>
 
+<% unless is_linked? %>
+  <br />
+  <p>You will need to link your O365 and local accounts in order to use the functionality of this demo application. Please click on the browser 'Back' button to go back and link your existing local account or create a local account.</p>
+<% else %>
+<% if flash[:notice] == 'linked' %>
+<div class="message-container bg-success">
+    <p>Your local account has been successfully linked to your Office 365 account.</p>
+</div>
+<% end %>
 <div class="row schools">
   <div class="tophero">
       <div class="col-md-6">
@@ -76,3 +85,5 @@ See LICENSE in the project root for license information.   -->
 <input type="hidden" name="BingMapKey" id="BingMapKey" value="<%= Settings.bing_map_key %>" />
 <script type='text/javascript' src='https://www.bing.com/api/maps/mapcontrol' async defer></script>
 <%= javascript_include_tag "schools" %>
+
+<% end %>

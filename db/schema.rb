@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170324061740) do
+ActiveRecord::Schema.define(version: 20170414042328) do
 
   create_table "accounts", force: :cascade do |t|
     t.string   "first_name",      limit: 40, default: ""
@@ -32,6 +32,7 @@ ActiveRecord::Schema.define(version: 20170324061740) do
     t.datetime "updated_at",                              null: false
     t.integer  "token_id"
     t.boolean  "is_consent"
+    t.string   "unlink_email",               default: ""
   end
 
   create_table "organizations", force: :cascade do |t|

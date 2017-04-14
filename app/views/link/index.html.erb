@@ -10,6 +10,12 @@ See LICENSE in the project root for license information.   -->
   <%= render 'common/header_list' %>
 <% end %>
 
+<% if flash[:notice] %>
+  <div class="message-container bg-danger">
+      <p><%= flash[:notice] %></p>
+  </div>
+<% end %>
+
 <h2>Link Office 365 &amp; Local Account</h2>
 
 <% if @link_info && !@link_info.o365_email %>
@@ -22,8 +28,11 @@ See LICENSE in the project root for license information.   -->
 <% elsif session[:current_user][:o365_email] %>
 <p>This page will enable you to link your Office 365 & Local Account together to successfully use the demo application.</p><hr />
 <div class="form-horizontal">
+    <% if @has_local_account %>
+    <p>There is a local account: <%= session[:current_user][:o365_email] %> matching your O365 account.</p>
+    <% end %>
     <p>
-<a class="btn btn-primary" href="/link/create_local_account">Continue with new Local Account</a>                    &nbsp; &nbsp;
+<a class="btn btn-primary" <%= 'disabled' if @has_local_account %> href="/link/create_local_account">Continue with new Local Account</a>                    &nbsp; &nbsp;
 <a class="btn btn-primary" href="/link/login_local">Link with existing Local Account</a> &nbsp; &nbsp;
     </p>
 </div>

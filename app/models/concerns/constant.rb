@@ -6,6 +6,7 @@ class Constant
 		object_id: 'objectId',
 		edu_object_type: 'extension_fe2174665583431c953114ff7268b7b3_Education_ObjectType',
 		display_name: 'displayName',
+		given_name: 'givenName',
 		edu_school_id: 'extension_fe2174665583431c953114ff7268b7b3_Education_SyncSource_SchoolId',
 		edu_address: 'extension_fe2174665583431c953114ff7268b7b3_Education_Address',
 		edu_school_number: 'extension_fe2174665583431c953114ff7268b7b3_Education_SchoolNumber',

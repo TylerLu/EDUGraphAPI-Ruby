@@ -6,12 +6,21 @@ class LinkController < ApplicationController
 
   def index
     # 判断当前用户是否已经link, 如果link了，则展示账号信息
-    # email = session[:current_user][:email]
+    # p Account.find_by_email(session[:current_user][:email])
     @link_info = Account.find_by_email(session[:current_user][:email]) || Account.find_by_o365_email(cookies[:o365_login_email])
+
+    @has_local_account = true if Account.find_by_email(cookies[:o365_login_email]).try(:email) == cookies[:o365_login_email]
+
+    if !@link_info && (account = Account.find_by_unlink_email(cookies[:o365_login_email]))
+      account.unlink_email = ''
+      account.save
+      redirect_to login_o365_required_link_index_path
+      return 
+    end
   end
 
   def loginO365
-    authorize_url = "https://login.microsoftonline.com/common/oauth2/authorize?response_type=id_token+code&client_id=#{Settings.edu_graph_api.app_id}&response_mode=form_post&scope=openid+profile&nonce=luyao&redirect_uri=#{request.headers['HTTP_X_ARR_SSL'] || request.protocol}#{request.host}:#{request.port}#{Settings.redirect_uri}&state=12345&prompt=login"
+    authorize_url = "https://login.microsoftonline.com/common/oauth2/authorize?response_type=id_token+code&client_id=#{Settings.edu_graph_api.app_id}&response_mode=form_post&scope=openid+profile&nonce=luyao&redirect_uri=#{request.headers['HTTP_X_ARR_SSL'].blank? ? request.protocol : 'https://' }#{request.host}:#{request.port}#{Settings.redirect_uri}&state=12345&prompt=login"
 
     redirect_to authorize_url
   end
@@ -20,7 +29,19 @@ class LinkController < ApplicationController
   end
 
   def login_local
+    if account = Account.find_by_email(cookies[:o365_login_email])
+      account.o365_email = cookies[:o365_login_email]
+      account.save
+      redirect_to schools_path, notice: 'linked'
+      return
+    end
+  end
 
+  def login_o365_required
+  end
+
+  def relogin_o365
+    redirect_to URI.encode("https://login.microsoftonline.com/common/oauth2/authorize?client_id=#{Settings.edu_graph_api.app_id}&response_type=id_token+code&response_mode=form_post&scope=openid+profile&nonce=luyao&redirect_uri=#{request.headers['HTTP_X_ARR_SSL'].blank? ? request.protocol : 'https://'}#{request.host}:#{request.port}#{Settings.redirect_uri}&state=12345&login_hint=#{cookies[:o365_login_email]}")
   end
 
   def link_to_local_account

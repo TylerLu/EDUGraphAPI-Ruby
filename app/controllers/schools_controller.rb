@@ -3,100 +3,119 @@
 
 class SchoolsController < ApplicationController
 	include BingMapHelper
+	include SchoolsHelper
+	
+	include Education::School
 
 	def index
 		# 根据 access_token 获取登录用户信息
-		account = Account.find_by_email(session[:current_user][:email]) || Account.find_by_o365_email(cookies[:o365_login_email])
-		if !account || account.o365_email.blank? || account.email.blank?
-			redirect_to link_index_path 
-			return
-		end
+		# account = Account.find_by_email(session[:current_user][:email]) || Account.find_by_o365_email(cookies[:o365_login_email])
+		# if !account || account.o365_email.blank? || account.email.blank?
+		# 	redirect_to link_index_path 
+		# 	return
+		# end
+		# 
+		redirect_to(link_index_path) && return if user_unlinked?
 
-		ENV['tenant_name'] = account.o365_email[/(?<=@).*/]
-		Settings.tenant_name = ENV['tenant_name']
+		# ENV['tenant_name'] = account.o365_email[/(?<=@).*/]
+		# Settings.tenant_name = ENV['tenant_name']
+		set_tenant_name!(cookies[:o365_login_email][/(?<=@).*/])
 
-		@me = graph_request({
-			host: 'graph.windows.net',
-			tenant_name: Settings.tenant_name,
-			resource_name: 'me',
-			access_token: session[:gwn_access_token]
-		})
+		# @me = graph_request({
+		# 	host: 'graph.windows.net',
+		# 	tenant_name: Settings.tenant_name,
+		# 	resource_name: 'me',
+		# 	access_token: session[:gwn_access_token]
+		# })
 
-		roles = []
-		if @me['assignedLicenses'].find{|_| _['skuId'] == Constant.get(:teacher_sku_id) || _['skuId'] == Constant.get(:teacher_pro_sku_id) }
-			roles << 'Teacher'
-		end
+		# @me = get_user_info
 
-		if @me['assignedLicenses'].find{|_| _['skuId'] == Constant.get(:student_sku_id) || _['skuId'] == Constant.get(:student_pro_sku_id) }
-			roles << 'Student'
-		end
+		# roles = []
+		# if @me['assignedLicenses'].find{|_| _['skuId'] == Constant.get(:teacher_sku_id) || _['skuId'] == Constant.get(:teacher_pro_sku_id) }
+		# 	roles << 'Teacher'
+		# end
 
-		myroles = graph_request({
-			host: 'graph.windows.net',
-			tenant_name: Settings.tenant_name,
-			resource_name: 'directoryRoles',
-			access_token: session[:gwn_access_token],
-			query: {
-				"$expand" => 'members'
-			}
-		})['value'].select{|_| _['displayName'] == Constant.get(:aad_company_admin_role_name) }
+		# if @me['assignedLicenses'].find{|_| _['skuId'] == Constant.get(:student_sku_id) || _['skuId'] == Constant.get(:student_pro_sku_id) }
+		# 	roles << 'Student'
+		# end
 
-		myroles.each do |_role|
-			if _role['members'].find{|_| _['objectId'] == @me['objectId'] }
-				roles << 'Admin'
-			end
-		end
+		# myroles = graph_request({
+		# 	host: 'graph.windows.net',
+		# 	tenant_name: Settings.tenant_name,
+		# 	resource_name: 'directoryRoles',
+		# 	access_token: session[:gwn_access_token],
+		# 	query: {
+		# 		"$expand" => 'members'
+		# 	}
+		# })['value'].select{|_| _['displayName'] == Constant.get(:aad_company_admin_role_name) }
+
+		# myroles.each do |_role|
+		# 	if _role['members'].find{|_| _['objectId'] == @me['objectId'] }
+		# 		roles << 'Admin'
+		# 	end
+		# end
+
+		init_user_roles!
 
 		session[:roles] = roles
 
+		# session[:current_user] = {
+		# 	user_identify: @me[Constant.get(:edu_object_type)],
+		# 	display_name: @me[Constant.get(:display_name)],
+		# 	school_number: @me[Constant.get(:edu_school_id)],
+		# 	surname: @me[Constant.get(:surname)],
+		# 	photo: get_user_photo_url(@me[Constant.get(:object_id)])
+		# }
+
 		session[:current_user] = {
-			user_identify: @me[Constant.get(:edu_object_type)],
-			display_name: @me[Constant.get(:display_name)],
-			school_number: @me[Constant.get(:edu_school_id)],
-			surname: @me[Constant.get(:surname)],
-			photo: get_user_photo_url(@me[Constant.get(:object_id)])
+			user_identify: get_user_info[Constant.get(:edu_object_type)],
+			display_name: get_user_info[Constant.get(:given_name)],
+			school_number: get_user_info[Constant.get(:edu_school_id)],
+			surname: get_user_info[Constant.get(:surname)],
+			photo: get_user_photo_url(get_user_info[Constant.get(:object_id)])
 		}
 
 		# p Settings.tenant_name
-		begin
-			classes = graph_request({
-				host: 'graph.microsoft.com',
-				tenant_name: Settings.tenant_name,
-				access_token: session[:gmc_access_token]
-			}).me.member_of.map do |_class|
-				_class.display_name
-			end
-		rescue => e
-			classes = []
-		end
+		# begin
+		# 	classes = graph_request({
+		# 		host: 'graph.microsoft.com',
+		# 		tenant_name: Settings.tenant_name,
+		# 		access_token: session[:gmc_access_token]
+		# 	}).me.member_of.map do |_class|
+		# 		_class.display_name
+		# 	end
+		# rescue => e
+		# 	classes = []
+		# end
 
-		session[:current_user][:myclasses] = classes
+		session[:current_user][:myclasses] = get_my_classes
 
-		all_schools = graph_request({
-			host: 'graph.windows.net',
-			tenant_name: Settings.tenant_name,
-			resource_name: 'administrativeUnits',
-			access_token: session[:gwn_access_token]
-		})['value']
+		# all_schools = graph_request({
+		# 	host: 'graph.windows.net',
+		# 	tenant_name: Settings.tenant_name,
+		# 	resource_name: 'administrativeUnits',
+		# 	access_token: session[:gwn_access_token]
+		# })['value']
 
-		# p all_schools
-		all_schools = (all_schools || []).map do |_school| 
-			_school.merge(location: get_longitude_and_latitude_by_address("#{_school[Constant.get(:edu_state)]}/#{_school[Constant.get(:edu_city)]}/#{_school[Constant.get(:edu_address)]}"))
-		end
+		# # p all_schools
+		# all_schools = (all_schools || []).map do |_school| 
+		# 	_school.merge(location: get_longitude_and_latitude_by_address("#{_school[Constant.get(:edu_state)]}/#{_school[Constant.get(:edu_city)]}/#{_school[Constant.get(:edu_address)]}"))
+		# end
 
-		schools = []
-		other_schools = []
-		all_schools.reduce(schools) do |res, ele| 
-			if ele[Constant.get(:edu_school_number)] == @me[Constant.get(:edu_school_id)]
-				res << ele
-			else
-				other_schools << ele
-			end
-			res
-		end
+		# schools = []
+		# other_schools = []
+		# all_schools.reduce(schools) do |res, ele| 
+		# 	if ele[Constant.get(:edu_school_number)] == @me[Constant.get(:edu_school_id)]
+		# 		res << ele
+		# 	else
+		# 		other_schools << ele
+		# 	end
+		# 	res
+		# end
 
-		@schools = schools.concat other_schools.sort_by{|_| _['displayName'][0] }
-		
+		# @schools = schools.concat other_schools.sort_by{|_| _['displayName'][0] }
+		@me = me
+		@schools = get_all_schools
 	end
 
 	def classes

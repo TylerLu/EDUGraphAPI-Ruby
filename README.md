@@ -270,11 +270,9 @@ The bottom layers contain the three data sources.
 * Education data exposed by REST APIs.
 * Azure AD data exposed by Graph APIs.
 
-### **EDUGraphAPI.Web - Server**
-
-The server side app is based on Node.js and implemented with Typescript.
-
 **Authentication Mechanisms**
+
+TODO: [https://github.com/omniauth/omniauth](https://github.com/omniauth/omniauth)
 
 Passport and its 2 plugins are used to enable local and O365 authentications:
 
@@ -283,46 +281,38 @@ Passport and its 2 plugins are used to enable local and O365 authentications:
 
 The 2 kinds of authentication are implemented in the **/auth/appAuth.ts** file.
 
-**Web APIs**
-
-The server app exposes several Web APIs:
-
-| Path                                     | Method   | Description                              |
-| ---------------------------------------- | -------- | ---------------------------------------- |
-| /api/me                                  | GET      | Return the current user and the user's organization and roles |
-| /api/me/favoriteColor                    | POST     | Update current user's favorite color     |
-| /api/me/accesstoken                      | GET      | Get current user's access token          |
-| /api/tenant                              | POST     | Update information (isAdminConsented) of current user's tenant |
-| /api/tenant/unlinkAllUsers               | POST     | Unlink all users in current user's tenant |
-| /api/users/linked                        | GET      | Get all linked users                     |
-| /api/users/:userId/unlink                | POST     | Unlink the specified user                |
-| /api/admin/consent                       | GET      | Redirect the user to login page to perform admin consent |
-| /api/admin/consented                     | POST     | Will be invoked after admin consented    |
-| /api/schools/seatingArrangements/:classId | GET/POST | Get or set the seating arrangement of the specified class |
-
-These APIs are defined in the **/routes** folder.
-
 **Data Access**
 
-[Sequelize](http://docs.sequelizejs.com/en/v3/) is used in this sample to access data from a SQL Database. 
+[Active Record](http://guides.rubyonrails.org/active_record_basics.html) is used to access data from the database. 
 
-The **DbContext** exposes the models and methods that are used to access data.
+The models are in the **app/models** folders, and the database schema is in the **db** folder.
 
-The tables used in this demo:
+Below are the main tables used in this sample:
 
-| Table                        | Description                              |
-| ---------------------------- | ---------------------------------------- |
-| Users                        | Contains the user's information: name, email, hashed password...<br>*O365UserId* and *O365Email* are used to connect the local user with an O365 user. |
-| UserRoles                    | Contains users' role. Three roles are used in this sample: admin, teacher, and student. |
-| Organizations                | A row in this table represents a tenant in AAD.<br>*IsAdminConsented* column records than if the tenant consented by an administrator. |
-| TokenCache                   | Contains the users' access/refresh tokens. |
-| ClassroomSeatingArrangements | Contains the classroom seating arrangements. |
+| Table                          | Description                              |
+| ------------------------------ | ---------------------------------------- |
+| accounts                       | Contains the user's information: name, email, hashed password...<br>*o365_user_id* and *o365_email* are used to connect the local user with an O365 user. |
+| user_roles                     | Contains users' role. Three roles are used in this sample: admin, teacher, and student. |
+| organizations                  | A row in this table represents a tenant in AAD.<br>*IsAdminConsented* column records than if the tenant consented by an administrator. |
+| token                          | Contains the users' access/refresh tokens. |
+| classroom_seating_arrangements | Contains the classroom seating arrangements. |
 
-You will find the **DbContext** class and related model interfaces in the **/data/dbContext.ts** file.
+You may change the database settings in the **/config/database.yml** file. SQLite is used for the development environment.
+
+**Controllers**
+
+In the **app/controllers** folder, there are 6 controllers:
+
+- **ApplicationController**: the base controller of the other controllers.
+- **AccountController**: contains actions for user to register, login and logout.
+- **AdminController**: implements the **Admin Login Authentication Flow**. Please check [Authentication Flows](https://github.com/TylerLu/EDUGraphAPI#authentication-flows) section for more details.
+- **LinkController**: implements the **Local/O365 Login Authentication Flow**. Please check [Authentication Flows](https://github.com/TylerLu/EDUGraphAPI#authentication-flows) section for more details.
+- **SchoolsController**: contains actions to show schools and classes. `SchoolsService` class is mainly used by this controller. Please check [Office 365 Education API](https://github.com/TylerLu/EDUGraphAPI#office-365-education-api) section for more details.
+
 
 **Services**
 
-The services used by the server side app:
+All the serveries are in the **app:/services** folder: 
 
 | Service           | Description                              |
 | ----------------- | ---------------------------------------- |
@@ -331,8 +321,6 @@ The services used by the server side app:
 | TenantService     | Contains methods that operate tenants in the database |
 | TokenCacheService | Contains method used to get and update cache from the database |
 | UserService       | Contains method used to manipulate users in the database |
-
-The services are in the **/services** folder.
 
 **Multi-tenant app**
 
@@ -345,54 +333,6 @@ Users from any Azure Active Directory tenant can access this app. Some permissio
 ![](Images/app-requires-admin-to-consent.png)
 
 For more information, see [Build a multi-tenant SaaS web application using Azure AD & OpenID Connect](https://azure.microsoft.com/en-us/resources/samples/active-directory-dotnet-webapp-multitenant-openidconnect/).
-
-### **EDUGraphAPI.Web - Client**
-
-The client side app which resides in the /app folder is based on Angular 2 and is also implemented with Typescript 2.
-
-> Note:  Getting and using declaration files in TypeScript 2.0 is much easier than in TypeScript 1. To get declarations for a library like lodash for example, all you need is npm:
->
-> ```
-> npm install --save @types/lodash
-> ```
-
-**Components**
-
-These components are used in the client app.
-
-| Folder      | Component             |
-| ----------- | --------------------- |
-| /           | App                   |
-| /aboutme    | AboutMe               |
-| /admin      | Admin                 |
-|             | LinkedAccounts        |
-|             | Consent               |
-| /demoHeoper | DemoHelper            |
-| /header     | Header                |
-| /link       | Link                  |
-|             | LinkCreateLocal       |
-|             | LinkLoginLocal        |
-|             | LinkLoginO365Requried |
-| /login      | Login                 |
-| /O365login  | O365login             |
-| /register   | Register              |
-| /schools    | Schools               |
-|             | Classes               |
-|             | MyClasses             |
-|             | ClassDetails          |
-
-**Services**
-
-| Folder      | Name              |
-| ----------- | ----------------- |
-| /aboutme    | AboutMeService    |
-| /admin      | AdminService      |
-| /demoHelper | DemoHelperService |
-| /link       | LinkService       |
-| /services   | MeService         |
-|             | UserService       |
-|             | UserPhotoService  |
-|             | DataService       |
 
 ### Office 365 Education API
 

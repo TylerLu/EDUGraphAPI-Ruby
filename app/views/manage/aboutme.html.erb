@@ -13,7 +13,7 @@ See LICENSE in the project root for license information.   -->
 <div class="container ">
     <h2>About Me</h2>
     <div class="margin-top-12 margin-btm-12 aboutme">
-        <b>Username:</b><br /> <%= session[:current_user][:display_name] %> <img src='<%= session[:current_user][:photo] %>'/>
+        <b>Username:</b><br /> <%= session[:current_user][:display_name] %> <%= session[:current_user][:surname]  %> <img src='<%= session[:current_user][:photo] %>'/>
     </div>
     <div class="margin-top-12 margin-btm-12">
         <b>Logged in as:</b><br /> <%= is_admin? ? 'Admin' : session[:current_user][:user_identify] %>
