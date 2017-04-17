@@ -29,6 +29,10 @@ module ApplicationHelper
 		end
 	end
 
+	def get_request_schema
+		"#{is_https = request.headers['HTTP_X_ARR_SSL'].blank? ? request.protocol : 'https://' }#{request.host}:#{is_https ? request.port : 443}"
+	end
+
 	def is_admin?
     # !session[:current_user][:email] && \
     # !session[:current_user][:user_identify] && \

@@ -3,6 +3,7 @@ Rails.application.routes.draw do
 
   resources :admin, only: :index do 
     collection do 
+      get :consent
       post :consent
       post :unconsent
       get :linked_accounts

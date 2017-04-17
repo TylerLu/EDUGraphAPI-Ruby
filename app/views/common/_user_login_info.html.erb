@@ -1,6 +1,7 @@
 <!-- Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT license.  
 See LICENSE in the project root for license information.   -->
 
+<% if userinfo %>
 <form action="/account/logoff" class="navbar-right" id="logoutForm" method="post">
     <div class="userinfo">
     <a href="javascript:void(0);" id="userinfolink">Logged in as: <%= is_admin? ? 'Admin' : userinfo[:user_identify] %>. Hello <%= userinfo[:display_name] %> <%= userinfo[:surname] %>
@@ -24,3 +25,9 @@ See LICENSE in the project root for license information.   -->
     </div>
     </div>
 </form>
+<% else %>
+  <ul class="nav navbar-nav navbar-right">
+      <li><a href="/account/register" id="registerLink">Register</a></li>
+      <li><a href="/account/login" id="loginLink">Log in</a></li>
+  </ul>
+<% end %>

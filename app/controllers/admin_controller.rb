@@ -3,6 +3,7 @@
 
 class AdminController < ApplicationController
 	skip_before_action :verify_authenticity_token
+  skip_before_action :verify_access_token, only: :consent
 
   def index
   	# 判断是否consent
@@ -10,9 +11,10 @@ class AdminController < ApplicationController
   end
 
   def consent
-  	consent_url = "https://login.microsoftonline.com/common/oauth2/authorize?response_type=code&client_id=#{Settings.edu_graph_api.app_id}&resource=https://graph.windows.net&redirect_uri=#{is_https = request.headers['HTTP_X_ARR_SSL'].blank? ? request.protocol : 'https://' }#{request.host}:#{is_https ? 443 : request.port}#{Settings.redirect_uri}&state=12345&prompt=admin_consent"
-
-  	redirect_to consent_url
+    if request.post?
+    	consent_url = "https://login.microsoftonline.com/common/oauth2/authorize?response_type=code&client_id=#{Settings.edu_graph_api.app_id}&resource=https://graph.windows.net&redirect_uri=#{get_request_schema}#{Settings.redirect_uri}&state=12345&prompt=admin_consent"
+    	redirect_to consent_url
+    end
   end
 
   def unconsent

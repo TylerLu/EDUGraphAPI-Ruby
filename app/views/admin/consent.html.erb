@@ -1,0 +1,19 @@
+<%= content_for :title, 'Admin Consent - EDUGraphAPI' %>
+
+<% content_for :user_login_info do %>
+    <%= render 'common/user_login_info', userinfo: session[:current_user] %>
+<% end %>
+
+<% content_for :header_list do %>
+  <%= render 'common/header_list' %>
+<% end %>
+
+<h2>Admin Consent</h2>
+<hr />
+<form action="/admin/consent" method="post">        
+<p>To use this application in this tenancy you must first provide Admin Consent. </p>
+<p>Please click the button below to proceed.</p>
+<input name="__RequestVerificationToken" type="hidden" value="XB8v8HpvCe88IyXcESDBTfCB_oZpaYrhfXfZdXkc59r2EzvnJMBqkPKcCErxegdrYtffMC8cN2C-qmRRSn34Eg2bm3E29v4nXIp3TuxfMbhIO44VciiXKB8RyDCgPSpXhusKjSQ607wRHCUGSeeHow2" />       <p class="form-group">
+<input type="submit" value="Consent" class="btn btn-primary" />
+</p>
+</form>
