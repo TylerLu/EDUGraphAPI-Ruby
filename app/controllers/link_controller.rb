@@ -20,7 +20,7 @@ class LinkController < ApplicationController
   end
 
   def loginO365
-    authorize_url = "https://login.microsoftonline.com/common/oauth2/authorize?response_type=id_token+code&client_id=#{Settings.edu_graph_api.app_id}&response_mode=form_post&scope=openid+profile&nonce=luyao&redirect_uri=#{request.headers['HTTP_X_ARR_SSL'].blank? ? request.protocol : 'https://' }#{request.host}:#{request.port}#{Settings.redirect_uri}&state=12345&prompt=login"
+    authorize_url = "https://login.microsoftonline.com/common/oauth2/authorize?response_type=id_token+code&client_id=#{Settings.edu_graph_api.app_id}&response_mode=form_post&scope=openid+profile&nonce=luyao&redirect_uri=#{is_https = request.headers['HTTP_X_ARR_SSL'].blank? ? request.protocol : 'https://' }#{request.host}:#{is_https ? 443 : request.port}#{Settings.redirect_uri}&state=12345&prompt=login"
 
     redirect_to authorize_url
   end
@@ -41,7 +41,7 @@ class LinkController < ApplicationController
   end
 
   def relogin_o365
-    redirect_to URI.encode("https://login.microsoftonline.com/common/oauth2/authorize?client_id=#{Settings.edu_graph_api.app_id}&response_type=id_token+code&response_mode=form_post&scope=openid+profile&nonce=luyao&redirect_uri=#{request.headers['HTTP_X_ARR_SSL'].blank? ? request.protocol : 'https://'}#{request.host}:#{request.port}#{Settings.redirect_uri}&state=12345&login_hint=#{cookies[:o365_login_email]}")
+    redirect_to URI.encode("https://login.microsoftonline.com/common/oauth2/authorize?client_id=#{Settings.edu_graph_api.app_id}&response_type=id_token+code&response_mode=form_post&scope=openid+profile&nonce=luyao&redirect_uri=#{is_https = request.headers['HTTP_X_ARR_SSL'].blank? ? request.protocol : 'https://'}#{request.host}:#{is_https ? 443 : request.port}#{Settings.redirect_uri}&state=12345&login_hint=#{cookies[:o365_login_email]}")
   end
 
   def link_to_local_account
