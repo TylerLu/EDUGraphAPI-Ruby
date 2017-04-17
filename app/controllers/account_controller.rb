@@ -9,6 +9,14 @@ class AccountController < ApplicationController
 		cookies[:o365_login_email] = nil
 	end
 
+	def jump
+		if cookies[:user_local_remember]
+			redirect_to("#{request.headers['HTTP_X_ARR_SSL'].blank? ? request.protocol : 'https://'}#{request.host}:#{request.port}/schools")
+			return
+		end
+		redirect_to("#{request.headers['HTTP_X_ARR_SSL'].blank? ? request.protocol : 'https://'}#{request.host}:#{request.port}/account/login")
+	end
+
 	def login_account
 		session.clear
 		account = Account.find_by_email(params["Email"])
@@ -74,8 +82,11 @@ class AccountController < ApplicationController
 	end
 
 	def logoff
+		has_link = session[:current_user][:surname].present?
 		session.clear
 		session[:logout] = true
+		session[:has_link] = has_link
+		cookies[:user_local_remember] = nil
 		logoff_url = URI.encode "https://login.microsoftonline.com/common/oauth2/logout?post_logout_redirect_uri=#{request.headers['HTTP_X_ARR_SSL'].blank? ? request.protocol : 'https://'}#{request.host}:#{request.port}/account/login"
 
 		redirect_to logoff_url
@@ -107,7 +118,7 @@ class AccountController < ApplicationController
 		account = Account.find_by_email(params["Email"])
 
 		if account
-			redirect_to register_account_index_path, alert: "email #{params['Email']} is already token"
+			redirect_to register_account_index_path, alert: "email #{params['Email']} is already taken"
 		else
 			account = Account.new
 			account.assign_attributes({
@@ -151,6 +162,8 @@ class AccountController < ApplicationController
 
 		session[:token_type] = res["token_type"]
 		session[:expires_on] = res["expires_on"]
+
+		p session[:expires_on]
 		session[:gwn_refresh_token] = res["refresh_token"]
 		session[:gwn_access_token] = res["access_token"]
 

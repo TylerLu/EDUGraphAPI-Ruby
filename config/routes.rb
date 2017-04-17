@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  root to: redirect('/account/login')
+  root to: 'account#jump'
 
   resources :admin, only: :index do 
     collection do 

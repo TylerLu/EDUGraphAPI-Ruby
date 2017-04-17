@@ -32,7 +32,7 @@ See LICENSE in the project root for license information.   -->
     <p>There is a local account: <%= session[:current_user][:o365_email] %> matching your O365 account.</p>
     <% end %>
     <p>
-<a class="btn btn-primary" <%= 'disabled' if @has_local_account %> href="/link/create_local_account">Continue with new Local Account</a>                    &nbsp; &nbsp;
+<a class="btn btn-primary" <%= 'disabled' if @has_local_account %> href="<%= @has_local_account ? 'javascript:void(0)' : '/link/create_local_account'  %>">Continue with new Local Account</a>                    &nbsp; &nbsp;
 <a class="btn btn-primary" href="/link/login_local">Link with existing Local Account</a> &nbsp; &nbsp;
     </p>
 </div>

@@ -6,66 +6,16 @@ class SchoolsController < ApplicationController
 	include SchoolsHelper
 	
 	include Education::School
+	include Education::SchoolClass
+	include Education::User
 
 	def index
-		# 根据 access_token 获取登录用户信息
-		# account = Account.find_by_email(session[:current_user][:email]) || Account.find_by_o365_email(cookies[:o365_login_email])
-		# if !account || account.o365_email.blank? || account.email.blank?
-		# 	redirect_to link_index_path 
-		# 	return
-		# end
-		# 
 		redirect_to(link_index_path) && return if user_unlinked?
 
-		# ENV['tenant_name'] = account.o365_email[/(?<=@).*/]
-		# Settings.tenant_name = ENV['tenant_name']
 		set_tenant_name!(cookies[:o365_login_email][/(?<=@).*/])
 
-		# @me = graph_request({
-		# 	host: 'graph.windows.net',
-		# 	tenant_name: Settings.tenant_name,
-		# 	resource_name: 'me',
-		# 	access_token: session[:gwn_access_token]
-		# })
-
-		# @me = get_user_info
-
-		# roles = []
-		# if @me['assignedLicenses'].find{|_| _['skuId'] == Constant.get(:teacher_sku_id) || _['skuId'] == Constant.get(:teacher_pro_sku_id) }
-		# 	roles << 'Teacher'
-		# end
-
-		# if @me['assignedLicenses'].find{|_| _['skuId'] == Constant.get(:student_sku_id) || _['skuId'] == Constant.get(:student_pro_sku_id) }
-		# 	roles << 'Student'
-		# end
-
-		# myroles = graph_request({
-		# 	host: 'graph.windows.net',
-		# 	tenant_name: Settings.tenant_name,
-		# 	resource_name: 'directoryRoles',
-		# 	access_token: session[:gwn_access_token],
-		# 	query: {
-		# 		"$expand" => 'members'
-		# 	}
-		# })['value'].select{|_| _['displayName'] == Constant.get(:aad_company_admin_role_name) }
-
-		# myroles.each do |_role|
-		# 	if _role['members'].find{|_| _['objectId'] == @me['objectId'] }
-		# 		roles << 'Admin'
-		# 	end
-		# end
-
 		init_user_roles!
-
 		session[:roles] = roles
-
-		# session[:current_user] = {
-		# 	user_identify: @me[Constant.get(:edu_object_type)],
-		# 	display_name: @me[Constant.get(:display_name)],
-		# 	school_number: @me[Constant.get(:edu_school_id)],
-		# 	surname: @me[Constant.get(:surname)],
-		# 	photo: get_user_photo_url(@me[Constant.get(:object_id)])
-		# }
 
 		session[:current_user] = {
 			user_identify: get_user_info[Constant.get(:edu_object_type)],
@@ -75,45 +25,6 @@ class SchoolsController < ApplicationController
 			photo: get_user_photo_url(get_user_info[Constant.get(:object_id)])
 		}
 
-		# p Settings.tenant_name
-		# begin
-		# 	classes = graph_request({
-		# 		host: 'graph.microsoft.com',
-		# 		tenant_name: Settings.tenant_name,
-		# 		access_token: session[:gmc_access_token]
-		# 	}).me.member_of.map do |_class|
-		# 		_class.display_name
-		# 	end
-		# rescue => e
-		# 	classes = []
-		# end
-
-		session[:current_user][:myclasses] = get_my_classes
-
-		# all_schools = graph_request({
-		# 	host: 'graph.windows.net',
-		# 	tenant_name: Settings.tenant_name,
-		# 	resource_name: 'administrativeUnits',
-		# 	access_token: session[:gwn_access_token]
-		# })['value']
-
-		# # p all_schools
-		# all_schools = (all_schools || []).map do |_school| 
-		# 	_school.merge(location: get_longitude_and_latitude_by_address("#{_school[Constant.get(:edu_state)]}/#{_school[Constant.get(:edu_city)]}/#{_school[Constant.get(:edu_address)]}"))
-		# end
-
-		# schools = []
-		# other_schools = []
-		# all_schools.reduce(schools) do |res, ele| 
-		# 	if ele[Constant.get(:edu_school_number)] == @me[Constant.get(:edu_school_id)]
-		# 		res << ele
-		# 	else
-		# 		other_schools << ele
-		# 	end
-		# 	res
-		# end
-
-		# @schools = schools.concat other_schools.sort_by{|_| _['displayName'][0] }
 		@me = me
 		@schools = get_all_schools
 	end
@@ -136,76 +47,16 @@ class SchoolsController < ApplicationController
 		}
 
 		# https://graph.windows.net/canvizEDU.onmicrosoft.com/users/gmartin@canvizEDU.onmicrosoft.com/memberOf
-
-		@myclasses = if session[:current_user][:school_number] == school_number 
-			graph_request({
-				host: 'graph.windows.net',
-				tenant_name: Settings.tenant_name,
-				access_token: session[:gwn_access_token],
-				resource_name: "users/#{cookies[:o365_login_email]}/memberOf"
-			})['value'].select{|_class| _class['objectType'] == 'Group' }
-		else
-			[]
-		end
-
-		@class_teacher_mapping = {}
-		@myclasses.each do |_class|
-			res = graph_request({
-				host: 'graph.windows.net',
-				tenant_name: Settings.tenant_name,
-				access_token: session[:gwn_access_token],
-				resource_name: "groups/#{_class["objectId"]}",
-				query: {
-					"$expand" => "members"
-				}
-			})
-			_teacher = res['members'].select do |_member|
-				_member[Constant.get(:edu_object_type)] == "Teacher"
-			end.first
-
-			@class_teacher_mapping[res['objectId'].to_s] = _teacher['displayName']
-		end
-
+		@myclasses = get_my_classes_by_school_number(school_number)
+		@class_teacher_mapping = get_my_cleasses_teacher_mapping
 		@mycourseids = @myclasses.map do |myclass| 
 			myclass[Constant.get(:edu_course_id)]
 		end
 
 		self.class.current_user_course_ids = @mycourseids
-
-		res = graph_request({
-			host: 'graph.windows.net',
-			tenant_name: Settings.tenant_name,
-			resource_name: 'groups',
-			access_token: session[:gwn_access_token],
-			query: {
-				"$top" => 12,
-				"$filter" => "#{Constant.get(:edu_object_type)} eq 'Section' and #{Constant.get(:edu_school_id)} eq '#{school_number}'"
-			}
-		})
-
-		# p res
-
-		# teachers = graph_request({
-		# 	host: 'graph.windows.net',
-		# 	tenant_name: Settings.tenant_name,
-		# 	resource_name: 'users',
-		# 	access_token: session[:gwn_access_token],
-		# 	api_version: 1.5,
-		# 	query: {
-		# 		"$filter" => "#{Constant.get(:edu_object_type)} eq 'Teacher' and #{Constant.get(:edu_school_id)} eq '#{school_number}'"
-		# 	}
-		# })
-
-		# p teachers
-		# 
-		# 获取我所有课程的老师信息
-		# 
-		
-
+		res = get_classes_by_school_number(school_number)
 		next_link = (res['odata.nextLink'] || "").match(/skiptoken=(.*)$/)
-
-		@skip_token = nil
-		@skip_token = next_link[1] if next_link
+		@skip_token = next_link ? next_link[1] : nil
 
 		# @url_params = URI.encode "school_name=#{@class_info[:school_name]}&low_grade=#{@class_info[:low_grade]}&high_grade=#{@class_info[:high_grade]}&principal=#{@class_info[:principal]}&school_number=#{@class_info[:school_number]}"
 		@url_params = URI.encode_www_form({
@@ -225,21 +76,11 @@ class SchoolsController < ApplicationController
 		skip_token = params[:skip_token]
 		url_params = params[:url_params]
 
-		res = graph_request({
-			host: 'graph.windows.net',
-			tenant_name: Settings.tenant_name,
-			access_token: session[:gwn_access_token],
-			resource_name: 'groups',
-			query: {
-				"$top" => 12,
-				"$skiptoken" => "#{skip_token}",
-				"$filter" => "#{Constant.get(:edu_object_type)} eq 'Section' and #{Constant.get(:edu_school_id)} eq '#{school_number}'"
-			}
-		})
+		res = get_classes_by_school_number(school_number, skip_token)
 		next_link = (res['odata.nextLink'] || "").match(/skiptoken=(.*)$/)
-
-		skip_token = ""
-		skip_token = next_link[1] if next_link
+		skip_token = next_link ? next_link[1] : ""
+		# skip_token = ""
+		# skip_token = next_link[1] if next_link
 
 		render json: {
 			skip_token: skip_token,
@@ -282,36 +123,18 @@ class SchoolsController < ApplicationController
 		@student_settings = student_setting_info.group_by{ |_| _.position }
 		student_ids = student_setting_info.map{|_| _.user_id }
 
-		graph = graph_request({
-			host: 'graph.microsoft.com',
-			access_token: session[:gmc_access_token]
-		})
-
-		@conversations = graph.groups.find(class_id).conversations rescue []
-
-		@items = graph.groups.find(class_id).drive.root.children rescue []
-
-		@myclass = graph_request({
-			host: 'graph.windows.net',
-			tenant_name: Settings.tenant_name,
-			resource_name: "groups/#{class_id}",
-			access_token: session[:gwn_access_token]
-		})
-
-		members = graph_request({
-			host: 'graph.windows.net',
-			tenant_name: Settings.tenant_name,
-			resource_name: "groups/#{class_id}/$links/members",
-			access_token: session[:gwn_access_token]
-		})
-
+		@conversations = get_conversations_by_class_id(class_id)
+		@items = get_documents_by_class_id(class_id)
+		@myclass = get_class_info(class_id)
+		
+		members = get_class_members(class_id)
 		@student_info = []
 		@id_name = {}
 		@id_color = {}
 
 		members["value"].each do |member|
 			_tmp = graph_request({
-				host: 'graph.windows.net',
+				host: Settings.host.gwn,
 				tenant_name: Settings.tenant_name,
 				access_token: session[:gwn_access_token],
 				resource_name: member['url'].split("#{Settings.tenant_name}/").last
@@ -352,40 +175,10 @@ class SchoolsController < ApplicationController
 			principal: @principal
 		}
 
-		res_all = graph_request({
-			host: 'graph.windows.net',
-			tenant_name: Settings.tenant_name,
-			resource_name: 'users',
-			access_token: session[:gwn_access_token],
-			query: {
-				"$top" => 12,
-				"$filter" => "#{Constant.get('edu_school_id')} eq '#{school_number}'"
-			}
-		})
-
+		res_all = get_users(school_number)
 		@all_next_link = res_all["odata.nextLink"]
-
-		res_teacher = graph_request({
-			host: 'graph.windows.net',
-			tenant_name: Settings.tenant_name,
-			resource_name: 'users',
-			access_token: session[:gwn_access_token],
-			query: {
-				"$top" => 12,
-				"$filter" => "#{Constant.get('edu_object_type')} eq 'Teacher' and #{Constant.get('edu_school_id')} eq '#{school_number}'"
-			}
-		})
-
-		res_student = graph_request({
-			host: 'graph.windows.net',
-			tenant_name: Settings.tenant_name,
-			resource_name: 'users',
-			access_token: session[:gwn_access_token],
-			query: {
-				"$top" => 12,
-				"$filter" => "#{Constant.get('edu_object_type')} eq 'Student' and #{Constant.get('edu_school_id')} eq '#{school_number}'"
-			}
-		})
+		res_teacher = get_teachers(school_number)
+		res_student = get_students(school_number)
 
 		@teacher_next_link = res_teacher['odata.nextLink']
 		@student_next_link = res_student['odata.nextLink']
@@ -401,41 +194,11 @@ class SchoolsController < ApplicationController
 		type = params[:type]
 
 		if type == 'users'
-			res = graph_request({
-				host: 'graph.windows.net',
-				tenant_name: Settings.tenant_name,
-				resource_name: 'users',
-				access_token: session[:gwn_access_token],
-				query: {
-					"$skiptoken" => next_link,
-					"$top" => 12,
-					"$filter" => "#{Constant.get(:edu_school_id)} eq '#{school_number}'"
-				}
-			})
+			res = get_users(school_number, next_link)
 		elsif type == 'teachers'
-			res = graph_request({
-				host: 'graph.windows.net',
-				tenant_name: Settings.tenant_name,
-				resource_name: 'users',
-				access_token: session[:gwn_access_token],
-				query: {
-					"$skiptoken" => next_link,
-					"$top" => 12,
-					"$filter" => "#{Constant.get(:edu_object_type)} eq 'Teacher' and #{Constant.get(:edu_school_id)} eq '#{school_number}'"
-				}
-			})
+			res = get_teachers(school_number, next_link)
 		else
-			res = graph_request({
-				host: 'graph.windows.net',
-				tenant_name: Settings.tenant_name,
-				resource_name: 'users',
-				access_token: session[:gwn_access_token],
-				query: {
-					"$skiptoken" => next_link,
-					"$top" => 12,
-					"$filter" => "#{Constant.get(:edu_object_type)} eq 'Student' and #{Constant.get(:edu_school_id)} eq '#{school_number}'"
-				}
-			})
+			res = get_students(school_number, next_link)
 		end
 
 		if res['odata.error'] && 
