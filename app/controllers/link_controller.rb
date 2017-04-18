@@ -3,11 +3,12 @@
 
 class LinkController < ApplicationController
   skip_before_action :verify_authenticity_token
+  skip_before_action :verify_access_token
 
   def index
     # 判断当前用户是否已经link, 如果link了，则展示账号信息
     # p Account.find_by_email(session[:current_user][:email])
-    @link_info = Account.find_by_email(session[:current_user][:email]) || Account.find_by_o365_email(cookies[:o365_login_email])
+    @link_info = Account.find_by_email((session[:current_user] || {})[:email]) || Account.find_by_o365_email(cookies[:o365_login_email])
 
     @has_local_account = true if Account.find_by_email(cookies[:o365_login_email]).try(:email) == cookies[:o365_login_email]
 

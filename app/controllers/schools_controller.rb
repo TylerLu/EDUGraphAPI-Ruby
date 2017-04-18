@@ -17,13 +17,13 @@ class SchoolsController < ApplicationController
 		init_user_roles!
 		session[:roles] = roles
 
-		session[:current_user] = {
+		session[:current_user] = session[:current_user].merge({
 			user_identify: get_user_info[Constant.get(:edu_object_type)],
 			display_name: get_user_info[Constant.get(:given_name)],
 			school_number: get_user_info[Constant.get(:edu_school_id)],
 			surname: get_user_info[Constant.get(:surname)],
 			photo: get_user_photo_url(get_user_info[Constant.get(:object_id)])
-		}
+		})
 
 		@me = me
 		@schools = get_all_schools

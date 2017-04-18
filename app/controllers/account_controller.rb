@@ -6,11 +6,11 @@ class AccountController < ApplicationController
 	skip_before_action :verify_access_token
 
 	def login
-		cookies[:o365_login_email] = nil
+		# cookies[:o365_login_email] = nil
 	end
 
 	def jump
-		if cookies[:user_local_remember]
+		if cookies[:user_local_remember].present?
 			redirect_to("#{get_request_schema}/schools")
 			return
 		end
@@ -83,8 +83,10 @@ class AccountController < ApplicationController
 
 	def logoff
 		has_link = session[:current_user][:surname].present?
+		local_account_login = session[:current_user][:email].present?
 		session.clear
 		session[:logout] = true
+		session[:local_login] = local_account_login
 		session[:has_link] = has_link
 		cookies[:user_local_remember] = nil
 		logoff_url = URI.encode "https://login.microsoftonline.com/common/oauth2/logout?post_logout_redirect_uri=#{get_request_schema}/account/login"
