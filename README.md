@@ -274,12 +274,7 @@ The bottom layers contain the three data sources.
 
 TODO: [https://github.com/omniauth/omniauth](https://github.com/omniauth/omniauth)
 
-Passport and its 2 plugins are used to enable local and O365 authentications:
 
-* **[passport-azure-ad](https://github.com/AzureAD/passport-azure-ad)**: a collection of [Passport](http://passportjs.org/) Strategies to help you integrate with Azure Active Directory. It includes OpenID Connect, WS-Federation, and SAML-P authentication and authorization. These providers let you integrate your Node app with Microsoft Azure AD so you can use its many features, including web single sign-on (WebSSO), Endpoint Protection with OAuth, and JWT token issuance and validation.
-* **[passport-local](https://github.com/jaredhanson/passport-local)**: this module lets you authenticate using a username and password in your Node.js applications. By plugging into Passport, local authentication can be easily and unobtrusively integrated into any application or framework that supports [Connect](http://www.senchalabs.org/connect/)-style middleware, including [Express](http://expressjs.com/).
-
-The 2 kinds of authentication are implemented in the **/auth/appAuth.ts** file.
 
 **Data Access**
 
@@ -303,12 +298,14 @@ You may change the database settings in the **/config/database.yml** file. SQLit
 
 In the **app/controllers** folder, there are 6 controllers:
 
-- **ApplicationController**: the base controller of the other controllers.
-- **AccountController**: contains actions for user to register, login and logout.
-- **AdminController**: implements the **Admin Login Authentication Flow**. Please check [Authentication Flows](https://github.com/TylerLu/EDUGraphAPI#authentication-flows) section for more details.
-- **LinkController**: implements the **Local/O365 Login Authentication Flow**. Please check [Authentication Flows](https://github.com/TylerLu/EDUGraphAPI#authentication-flows) section for more details.
-- **SchoolsController**: contains actions to show schools and classes. `SchoolsService` class is mainly used by this controller. Please check [Office 365 Education API](https://github.com/TylerLu/EDUGraphAPI#office-365-education-api) section for more details.
-
+| Controller            | Description                              |
+| --------------------- | ---------------------------------------- |
+| ApplicationController | The base controller of the other controllers |
+| AccountController     | Contains actions for user to register, login and logout |
+| AdminController       | Contains administrative actions like consent tenant, manage linked accounts. |
+| LinkController        | Contains actions used for users to link accounts. |
+| SchoolsController     | Contains actions used to show education data, link schools, classes and class details. |
+|                       |                                          |
 
 **Services**
 
