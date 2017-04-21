@@ -126,8 +126,8 @@
           ],
           "properties": {
             "DOCKER_CUSTOM_IMAGE_NAME": "[parameters('DockerCustomImageName')]",
-            "ida:ClientId": "[parameters('clientId')]",
-            "ida:ClientSecret": "[parameters('clientSecret')]",
+            "ClientId": "[parameters('clientId')]",
+            "ClientSecret": "[parameters('clientSecret')]",
             "DB_HOST": "[listConnectionString(resourceId('SuccessBricks.ClearDB/databases/', variables('databaseName')), '2014-04-01').properties.hostname]",
             "DB_USERNAME": "[listConnectionString(resourceId('SuccessBricks.ClearDB/databases/', variables('databaseName')), '2014-04-01').properties.username]",
             "DB_PASSWORD": "[listConnectionString(resourceId('SuccessBricks.ClearDB/databases/', variables('databaseName')), '2014-04-01').properties.password]",
