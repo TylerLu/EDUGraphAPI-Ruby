@@ -31,13 +31,20 @@ rm -f tmp/pids/* ;
 if [ -n "$APP_COMMAND_LINE" ]
   then
     echo 'using command: $APP_COMMAND_LINE'
-    echo "Executing $APP_COMMAND_LINE"
+    echo 'Executing $APP_COMMAND_LINE'
     $APP_COMMAND_LINE
   else
     echo 'defaulting to command: "bundle install \n rails db:migrate \n rake assets:precompile \n rails server"'
     bundle install
+
+    if [ -e /usr/local/bundle/gems/adal-1.0.0/lib/adal/client_assertion_certificate.rb ]
+      then
+        # Workaround for issue https://github.com/AzureAD/azure-activedirectory-library-for-ruby/issues/44
+        echo 'applying workaround for adal 1.0.0'
+        sed -i "23 a require_relative \'request_parameters.rb\'" /usr/local/bundle/gems/adal-1.0.0/lib/adal/client_assertion_certificate.rb
+    fi
+
     rails db:migrate 
     rake assets:precompile
     rails server
-    #puma -p 443  -b tcp://localhost:80 
 fi
