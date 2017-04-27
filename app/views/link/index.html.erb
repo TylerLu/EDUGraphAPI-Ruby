@@ -21,11 +21,11 @@ See LICENSE in the project root for license information.   -->
 <% if @link_info && !@link_info.o365_email %>
 <p>This page will enable you to link your Office 365 & Local Account together to successfully use the demo application.</p>
 <div class="form-horizontal" id="linkAccountPrompt"><hr />
-	<form action="/link/loginO365" method="post"><input name="__RequestVerificationToken" type="hidden" value="" />                
+	<form action="/link/loginO365" method="post">
 	<p><input type="submit" value="Link to existing O365 account" class="btn btn-primary" /> &nbsp; &nbsp;</p>
 	</form>        
 </div>
-<% elsif session[:current_user][:o365_email] %>
+<% elsif @link_info && !@link_info.email %>
 <p>This page will enable you to link your Office 365 & Local Account together to successfully use the demo application.</p><hr />
 <div class="form-horizontal">
     <% if @has_local_account %>

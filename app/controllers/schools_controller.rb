@@ -2,31 +2,18 @@
 # See LICENSE in the project root for license information.  
 
 class SchoolsController < ApplicationController
-	include BingMapHelper
-	include SchoolsHelper
-	
-	include Education::School
-	include Education::SchoolClass
-	include Education::User
+
+	before_action :set_current_user, only: :index
 
 	def index
-		redirect_to(link_index_path) && return if user_unlinked?
+		redirect_to(link_index_path) && return unless current_user[:is_linked]
 
-		set_tenant_name!(cookies[:o365_login_email][/(?<=@).*/])
+		session[:roles] = aad_graph.get_roles
 
-		init_user_roles!
-		session[:roles] = roles
+		school = Service::Education::School.new(aad_graph)
 
-		session[:current_user] = session[:current_user].merge({
-			user_identify: get_user_info[Constant.get(:edu_object_type)],
-			display_name: get_user_info[Constant.get(:given_name)],
-			school_number: get_user_info[Constant.get(:edu_school_id)],
-			surname: get_user_info[Constant.get(:surname)],
-			photo: get_user_photo_url(get_user_info[Constant.get(:object_id)])
-		})
-
-		@me = me
-		@schools = get_all_schools
+		@me = current_user
+		@schools = school.get_all_schools
 	end
 
 	def classes
@@ -46,19 +33,19 @@ class SchoolsController < ApplicationController
 			principal: @principal
 		}
 
-		# https://graph.windows.net/canvizEDU.onmicrosoft.com/users/gmartin@canvizEDU.onmicrosoft.com/memberOf
-		@myclasses = get_my_classes_by_school_number(school_number)
-		@class_teacher_mapping = get_my_cleasses_teacher_mapping
+		class_obj = Service::Education::SchoolClass.new(aad_graph, school_number)
+		@myclasses = class_obj.get_my_classes_by_school_number(session[:current_user])
+
+		@class_teacher_mapping = class_obj.get_my_cleasses_teacher_mapping
 		@mycourseids = @myclasses.map do |myclass| 
 			myclass[Constant.get(:edu_course_id)]
 		end
 
 		self.class.current_user_course_ids = @mycourseids
-		res = get_classes_by_school_number(school_number)
+		res = class_obj.get_classes_by_school_number
 		next_link = (res['odata.nextLink'] || "").match(/skiptoken=(.*)$/)
 		@skip_token = next_link ? next_link[1] : nil
 
-		# @url_params = URI.encode "school_name=#{@class_info[:school_name]}&low_grade=#{@class_info[:low_grade]}&high_grade=#{@class_info[:high_grade]}&principal=#{@class_info[:principal]}&school_number=#{@class_info[:school_number]}"
 		@url_params = URI.encode_www_form({
 			school_name: 	 @class_info[:school_name],
 			low_grade:  	 @class_info[:low_grade],
@@ -76,11 +63,10 @@ class SchoolsController < ApplicationController
 		skip_token = params[:skip_token]
 		url_params = params[:url_params]
 
-		res = get_classes_by_school_number(school_number, skip_token)
+		class_obj = Service::Education::SchoolClass.new(aad_graph, school_number)
+		res = class_obj.get_classes_by_school_number(skip_token)
 		next_link = (res['odata.nextLink'] || "").match(/skiptoken=(.*)$/)
 		skip_token = next_link ? next_link[1] : ""
-		# skip_token = ""
-		# skip_token = next_link[1] if next_link
 
 		render json: {
 			skip_token: skip_token,
@@ -117,28 +103,28 @@ class SchoolsController < ApplicationController
 			principal: params[:principal]
 		}
 
+		class_obj = Service::Education::SchoolClass.new(ms_graph, params[:school_number])
 		@user_info = Account.find_by_o365_email(cookies[:o365_login_email])
 		student_setting_info = StudentSetting.where("class_id = ? and position != 0", class_id).order("position asc")
 
 		@student_settings = student_setting_info.group_by{ |_| _.position }
 		student_ids = student_setting_info.map{|_| _.user_id }
 
-		@conversations = get_conversations_by_class_id(class_id)
-		@items = get_documents_by_class_id(class_id)
-		@myclass = get_class_info(class_id)
+		@conversations = class_obj.get_conversations_by_class_id(class_id)
+		@items = class_obj.get_documents_by_class_id(class_id)
+
+		aad_class_obj = Service::Education::SchoolClass.new(aad_graph, params[:school_number])
+		@myclass = aad_class_obj.get_class_info(class_id)
 		
-		members = get_class_members(class_id)
+		members = aad_class_obj.get_class_members(class_id)
 		@student_info = []
 		@id_name = {}
 		@id_color = {}
 
+		user_obj = Service::User.new(aad_graph, ms_graph)
 		members["value"].each do |member|
-			_tmp = graph_request({
-				host: Settings.host.gwn,
-				tenant_name: Settings.tenant_name,
-				access_token: session[:gwn_access_token],
-				resource_name: member['url'].split("#{Settings.tenant_name}/").last
-			})
+			resource_name = member['url'].split("#{tenant_name}/").last
+			_tmp = aad_graph.get_resource(resource_name)
 
 			@id_name[_tmp[Constant.get(:object_id)]] = _tmp[Constant.get(:display_name)]
 
@@ -151,7 +137,7 @@ class SchoolsController < ApplicationController
 				object_type: _tmp[Constant.get(:edu_object_type)],
 				email: _tmp[Constant.get(:principal_name)],
 				grade: _tmp[Constant.get(:edu_grade)],
-				photo: get_user_photo_url(_tmp[Constant.get(:object_id)]),
+				photo: user_obj.get_user_photo_url(_tmp[Constant.get(:object_id)]),
 				has_seat: student_ids.include?(_tmp[Constant.get(:object_id)]) ? true : false
 			}
 		end
@@ -175,10 +161,11 @@ class SchoolsController < ApplicationController
 			principal: @principal
 		}
 
-		res_all = get_users(school_number)
+		user_obj = Service::Education::SchoolUser.new(aad_graph, school_number)
+		res_all = user_obj.get_users
 		@all_next_link = res_all["odata.nextLink"]
-		res_teacher = get_teachers(school_number)
-		res_student = get_students(school_number)
+		res_teacher = user_obj.get_teachers
+		res_student = user_obj.get_students
 
 		@teacher_next_link = res_teacher['odata.nextLink']
 		@student_next_link = res_student['odata.nextLink']
@@ -193,12 +180,13 @@ class SchoolsController < ApplicationController
 		next_link = params[:next_link].match(/skiptoken=(.*)$/)[1]
 		type = params[:type]
 
+		user_obj = Service::Education::SchoolUser.new(aad_graph, school_number)
 		if type == 'users'
-			res = get_users(school_number, next_link)
+			res = user_obj.get_users(next_link)
 		elsif type == 'teachers'
-			res = get_teachers(school_number, next_link)
+			res = user_obj.get_teachers(next_link)
 		else
-			res = get_students(school_number, next_link)
+			res = user_obj.get_students(next_link)
 		end
 
 		if res['odata.error'] && 

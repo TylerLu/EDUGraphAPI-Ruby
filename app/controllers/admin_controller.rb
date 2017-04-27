@@ -19,26 +19,13 @@ class AdminController < ApplicationController
 
   def unconsent
     
-    res = graph_request({
-      host: Settings.host.gwn,
-      tenant_name: Settings.tenant_name,
-      resource_name: 'servicePrincipals',
-      access_token: session[:gwn_access_token],
-      query: {
-        "$filter" => "appId eq '#{Settings.edu_graph_api.app_id}'"
-      }
-    })['value']
-
-    obj = res.find{ |_| _['appId'] == Settings.edu_graph_api.app_id }
+    admin_obj = Service::Admin.new(aad_graph)
+    res = admin_obj.get_service_principals(Settings.edu_graph_api.app_id)
+    # obj = res.find{ |_| _['appId'] == Settings.edu_graph_api.app_id }
+    obj = res.first
 
     if obj
-      res = graph_request({
-        http_method: 'delete',
-        host: Settings.host.gwn,
-        tenant_name: Settings.tenant_name,
-        resource_name: "servicePrincipals/#{obj['objectId']}",
-        access_token: session[:gwn_access_token],
-      })
+      res = admin_obj.delete_service_principals(obj['objectId'])
 
       Account.where("o365_email is not null and email is not null and o365_email != ?", cookies[:o365_login_email]).each do |_account|
         _account.update({o365_email: nil})
@@ -53,43 +40,19 @@ class AdminController < ApplicationController
   end
 
   def add_app_role_assignments
-    res = graph_request({
-      host: Settings.host.gwn,
-      tenant_name: Settings.tenant_name,
-      resource_name: 'servicePrincipals',
-      access_token: session[:gwn_access_token]
-    })['value']
-    
-    obj = res.find{ |_| _['appId'] == Settings.edu_graph_api.app_id }
+    admin_obj = Service::Admin.new(aad_graph)
+    res = admin_obj.get_service_principals(Settings.edu_graph_api.app_id)
+    obj = res.first
 
     if obj
       resourceId = obj['objectId']
       resoucreName = obj['displayName']
-      
-      users = graph_request({
-        host: Settings.host.gwn,
-        tenant_name: Settings.tenant_name,
-        resource_name: 'users',
-        api_version: '1.5',
-        access_token: session[:gwn_access_token],
-        query: {
-          "$expand" => "appRoleAssignments"
-        }
-      })
+
+      users = admin_obj.get_app_role_assignments
 
       users.each do |user|
         next if user['appRoleAssignments'].find{|_user| _user['resourceId'] == resourceId }
-
-        res = graph_request({
-          host: Settings.host.gwn,
-          tenant_name: Settings.tenant_name,
-          resource_name: "users/#{user['objectId']}/appRoleAssignments",
-          api_version: '1.5',
-          body: {
-            "resourceId" => resourceId,
-            "principalId" => user['objectId']
-          }.to_json
-        })
+        admin_obj.set_app_role_assignments(user['objectId'], resourceId, user['objectId'])
       end
     end
     
@@ -109,6 +72,6 @@ class AdminController < ApplicationController
   end
 
   def linked_accounts
-  	@accounts = Account.where("o365_email is not null and email is not null").select{|obj| obj.o365_email.end_with? Settings.tenant_name }
+  	@accounts = Account.where("o365_email is not null and email is not null").select{|obj| obj.o365_email.end_with? tenant_name }
   end
 end

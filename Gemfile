@@ -1,4 +1,4 @@
-source 'https://rubygems.org'
+source 'https://gems.ruby-china.org'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 5.0.0', '>= 5.0.0.1'
@@ -32,6 +32,9 @@ gem 'config'
 
 gem 'httparty'
 gem 'openid_connect'
+
+# gem 'omniauth-azure-activedirectory'
+gem 'omniauth-azure-oauth2'
 
 gem 'activerecord-session_store'
 # Use Capistrano for deployment

@@ -33,8 +33,8 @@ Rails.application.routes.draw do
     end
   end
 
-  # get '/auth/azureactivedirectory', as: :sign_in
-  # match '/auth/:provider/callback', to: 'account#callback', via: [:get, :post]
+  get '/auth/azure_oauth2', as: :sign_in
+  match '/auth/azure_oauth2/callback', to: 'account#callback', via: [:get, :post]
 
   match '/Account/Callback' => 'account#callback', via: [:get, :post]
 

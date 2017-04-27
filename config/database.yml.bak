@@ -22,7 +22,7 @@ test:
 
 production:
   <<: *default
-  database: edugraphapiruby
-  host: 'us-cdbr-azure-west-b.cleardb.com'
-  username: 'b30652b7d280de'
-  password: 'da9bbf8b'
+  database: <%= Settings.db.database %>
+  host: <%= Settings.db.host %>
+  username: <%= Settings.db.username %>
+  password: <%= Settings.db.password %>

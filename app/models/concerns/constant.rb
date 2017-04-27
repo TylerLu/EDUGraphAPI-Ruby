@@ -2,11 +2,18 @@
 # See LICENSE in the project root for license information.  
 
 class Constant
+	module Resource
+    MSGraph = 'https://graph.microsoft.com' 
+    AADGraph = 'https://graph.windows.net'
+  end
+  
 	@mapping = {
 		object_id: 'objectId',
 		edu_object_type: 'extension_fe2174665583431c953114ff7268b7b3_Education_ObjectType',
 		display_name: 'displayName',
 		given_name: 'givenName',
+		edu_student_id: 'extension_fe2174665583431c953114ff7268b7b3_Education_SyncSource_StudentId',
+		edu_teacher_id: 'extension_fe2174665583431c953114ff7268b7b3_Education_SyncSource_TeacherId',
 		edu_school_id: 'extension_fe2174665583431c953114ff7268b7b3_Education_SyncSource_SchoolId',
 		edu_address: 'extension_fe2174665583431c953114ff7268b7b3_Education_Address',
 		edu_school_number: 'extension_fe2174665583431c953114ff7268b7b3_Education_SchoolNumber',

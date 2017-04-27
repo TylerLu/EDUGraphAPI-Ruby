@@ -26,12 +26,12 @@ See LICENSE in the project root for license information.   -->
           <div class="a-heading schoolname">ALL SCHOOLS</div>
       </div>
       <div class="col-md-6 schooltiles">
-        <% if usertype = @me["extension_fe2174665583431c953114ff7268b7b3_Education_ObjectType"] %>
+        <% if usertype = @me[:user_identify] %>
       	<div class="infocontainer">
             <div class="infoheader">
 							<%= usertype %> Id
             </div>
-            <div class="infobody"><%= @me["extension_fe2174665583431c953114ff7268b7b3_Education_SyncSource_#{usertype}Id"] %></div>
+            <div class="infobody"><%= @me[:user_identify_id] %></div>
         </div>
         <% end %>
       </div>
@@ -53,7 +53,7 @@ See LICENSE in the project root for license information.   -->
               <th></th>
           </tr>
 					<% @schools.each do |school| %>
-          <tr class="tr-content <%= 'td-green' if (school_number = school['extension_fe2174665583431c953114ff7268b7b3_Education_SchoolNumber']) == @me['extension_fe2174665583431c953114ff7268b7b3_Education_SyncSource_SchoolId'] %>">
+          <tr class="tr-content <%= 'td-green' if (school_number = school['extension_fe2174665583431c953114ff7268b7b3_Education_SchoolNumber']) == @me[:school_number] %>">
               <td><%= school["displayName"] %></td>
               <td><%= principal = school["extension_fe2174665583431c953114ff7268b7b3_Education_SchoolPrincipalName"] || '-' %></td>
               <td><%= low_grade = school["extension_fe2174665583431c953114ff7268b7b3_Education_LowestGrade"] %> - <%= high_grade = school["extension_fe2174665583431c953114ff7268b7b3_Education_HighestGrade"] %></td>
@@ -68,7 +68,7 @@ See LICENSE in the project root for license information.   -->
                   </div>
                   <div class="schoolmap">
                     <% if school["extension_fe2174665583431c953114ff7268b7b3_Education_Address"].present? %>
-                      <a class="bingMapLink" lat="<%= school[:location][:lat] %>" lon="<%= school[:location][:lon] %>" href="javascript:void(0)"><img src="<%= school['extension_fe2174665583431c953114ff7268b7b3_Education_SchoolNumber'] == @me['extension_fe2174665583431c953114ff7268b7b3_Education_SyncSource_SchoolId'] ? '/Images/icon-map_30x28px-WHT.png' : '/Images/icon-map_30x28px-BLU.png' %>" /></a>
+                      <a class="bingMapLink" lat="<%= school[:location][:lat] %>" lon="<%= school[:location][:lon] %>" href="javascript:void(0)"><img src="<%= school['extension_fe2174665583431c953114ff7268b7b3_Education_SchoolNumber'] == @me[:school_number] ? '/Images/icon-map_30x28px-WHT.png' : '/Images/icon-map_30x28px-BLU.png' %>" /></a>
                     <% end %>
                   </div>
               </td>
@@ -82,7 +82,7 @@ See LICENSE in the project root for license information.   -->
       <% end %> 
 </div>
 <div id='myMap'></div>
-<input type="hidden" name="BingMapKey" id="BingMapKey" value="<%= Settings.bing_map_key %>" />
+<input type="hidden" name="BingMapKey" id="BingMapKey" value="<%= Settings.BingMapKey %>" />
 <script type='text/javascript' src='https://www.bing.com/api/maps/mapcontrol' async defer></script>
 <%= javascript_include_tag "schools" %>
 

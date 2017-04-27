@@ -1,19 +1,16 @@
 
 default_password: '111111'
 
-redirect_uri: '/Account/Callback'
+redirect_uri: '/auth/azure_oauth2/callback'
 
-bing_map_key: "Anu3xoioQvqyG6b3eZ30IyR8TwyeQYpeag6OBdQvrsfUn0FwsVwFH9OnkJZvX-8a"
-
-jwks_uri: 'https://login.microsoftonline.com/common/discovery/keys'
-
-open_config: "https://login.microsoftonline.com/common/.well-known/openid-configuration"
+BingMapKey: <%= ENV['BingMapKey'] || "Anu3xoioQvqyG6b3eZ30IyR8TwyeQYpeag6OBdQvrsfUn0FwsVwFH9OnkJZvX-8a" %>
 
 edu_graph_api:
-  app_id: "70288edd-ba06-4139-befc-1315f6b0a721"
-  default_key: 'S01BulKmE3s4nPR9pJU7GzRlefCOGwqTu1Zbp3KsUvk='
+  app_id: <%= ENV['ClientId'] || "70288edd-ba06-4139-befc-1315f6b0a721" %>
+  default_key: <%= ENV['ClientSecret'] || 'S01BulKmE3s4nPR9pJU7GzRlefCOGwqTu1Zbp3KsUvk=' %>
 
-host:
-  gmc: 'graph.microsoft.com'
-  gwn: 'graph.windows.net'
-
+db:
+  host: <%= ENV['DB_HOST'] || 'ap-cdbr-azure-east-a.cloudapp.net' %>
+  username: <%= ENV['DB_USERNAME'] || 'b23685d7324082' %>
+  password: <%= ENV['DB_PASSWORD'] || 'a01e0545' %>
+  database: <%= ENV['DB_DATABASE'] || 'acsm_59b65ecb82b6e12' %>
