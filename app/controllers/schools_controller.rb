@@ -8,7 +8,7 @@ class SchoolsController < ApplicationController
 	def index
 		redirect_to(link_index_path) && return unless current_user[:is_linked]
 
-		session[:roles] = aad_graph.get_roles
+		session[:roles] = aad_graph.get_roles # 获取roles 通过数据库
 
 		school = Service::Education::School.new(aad_graph)
 
@@ -34,7 +34,7 @@ class SchoolsController < ApplicationController
 		}
 
 		class_obj = Service::Education::SchoolClass.new(aad_graph, school_number)
-		@myclasses = class_obj.get_my_classes_by_school_number(session[:current_user])
+		@myclasses = class_obj.get_my_classes_by_school_number(current_user)
 
 		@class_teacher_mapping = class_obj.get_my_cleasses_teacher_mapping
 		@mycourseids = @myclasses.map do |myclass| 
@@ -105,7 +105,7 @@ class SchoolsController < ApplicationController
 
 		class_obj = Service::Education::SchoolClass.new(ms_graph, params[:school_number])
 		@user_info = Account.find_by_o365_email(cookies[:o365_login_email])
-		student_setting_info = StudentSetting.where("class_id = ? and position != 0", class_id).order("position asc")
+		student_setting_info = ClassroomSeatingArrangement.where("class_id = ? and position != 0", class_id).order("position asc")
 
 		@student_settings = student_setting_info.group_by{ |_| _.position }
 		student_ids = student_setting_info.map{|_| _.user_id }
@@ -212,12 +212,12 @@ class SchoolsController < ApplicationController
 
 	def save_settings
 		params[:postions].values.each do |info|
-			user_set = StudentSetting.find_by({class_id: info['ClassId'],user_id: info['O365UserId']})
+			user_set = ClassroomSeatingArrangement.find_by({class_id: info['ClassId'],user_id: info['O365UserId']})
 			if user_set
 				user_set.position = info['Position']
 				user_set.save
 			else
-				StudentSetting.create({
+				ClassroomSeatingArrangement.create({
 					class_id: info['ClassId'],
 					user_id: info['O365UserId'],
 					position: info['Position']

@@ -7,7 +7,8 @@ class AccountController < ApplicationController
 
 	def login
 		# cookies[:o365_login_email] = nil
-		session[:current_user] = nil
+		self.current_user = nil
+		session[:logout] = false
 	end
 
 	def jump
@@ -31,7 +32,7 @@ class AccountController < ApplicationController
 		end
 
 		if account && account.password == params["Password"]
-			session[:current_user] = {
+			self.current_user = {
 				user_identify: '',
 				display_name: params["Email"],
 				school_number: '',
@@ -71,8 +72,8 @@ class AccountController < ApplicationController
 	end
 
 	def logoff
-		has_link = session[:current_user][:surname].present?
-		local_account_login = session[:current_user][:email].present?
+		has_link = current_user[:surname].present?
+		local_account_login = current_user[:email].present?
 		session.clear
 		session[:logout] = true
 		session[:local_login] = local_account_login
@@ -91,7 +92,8 @@ class AccountController < ApplicationController
 	end
 
 	def o365login
-		session[:current_user] = nil
+		self.current_user = nil
+		session[:logout] = false
 	end
 
 	def register_account
@@ -108,7 +110,7 @@ class AccountController < ApplicationController
 			})
 			if account.save
 				session.clear
-				session[:current_user] = { display_name: params["Email"], email: params["Email"] }
+				self.current_user = { display_name: params["Email"], email: params["Email"] }
 				redirect_to "/link?email=#{params["Email"]}"
 			end
 		end
@@ -120,8 +122,22 @@ class AccountController < ApplicationController
 
 		if params["admin_consent"] == "True"
 			account = Account.find_by_o365_email(cookies[:o365_login_email])
-			account.is_consent = true
-			account.save
+			if _organization = account.organization
+				account.organization.update_attributes({
+					is_admin_consented: true
+				})
+				account.save
+			else
+				_organization = Organization.new
+				_organization.update_attributes({
+					name: cookies[:o365_login_email][/(?<=@).*/],
+					is_admin_consented: true
+				})
+				_organization.save
+				account.organization = _organization
+				account.save
+			end
+			
 			redirect_to admin_index_path, notice: 'admin consent success'
 			return 
 		end
@@ -145,8 +161,8 @@ class AccountController < ApplicationController
 		cookies[:o365_login_email] = res.user_info.unique_name
 
 		# use local account login and link with o365 account
-		if session[:current_user] && session[:current_user][:email]
-			account = Account.find_by_email(session[:current_user][:email])
+		if current_user && current_user[:email]
+			account = Account.find_by_email(current_user[:email])
 
 			if Account.find_by_o365_email(cookies[:o365_login_email])
 				# o365 account has linked
@@ -173,9 +189,9 @@ class AccountController < ApplicationController
 		else
 			# o365 account login, check if linked
 			account = Account.find_by_o365_email(cookies[:o365_login_email])
-			session[:current_user] = {}
+			self.current_user = {}
 			unless account && account.email
-				session[:current_user] = {
+				self.current_user = {
 					display_name: cookies[:o365_login_name],
 					o365_email: cookies[:o365_login_email]
 				}

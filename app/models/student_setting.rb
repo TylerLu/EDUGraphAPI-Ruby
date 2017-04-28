@@ -1,2 +1,0 @@
-class StudentSetting < ApplicationRecord
-end

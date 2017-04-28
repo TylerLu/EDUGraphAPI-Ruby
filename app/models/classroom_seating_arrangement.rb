@@ -1,0 +1,2 @@
+class ClassroomSeatingArrangement < ApplicationRecord
+end

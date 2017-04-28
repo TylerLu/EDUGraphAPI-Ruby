@@ -6,8 +6,8 @@ class LinkController < ApplicationController
   skip_before_action :verify_access_token
 
   def index
-    if session[:current_user][:is_local_account_login]
-      @link_info = Account.find_by_email(session[:current_user][:email])
+    if current_user[:is_local_account_login]
+      @link_info = Account.find_by_email(current_user[:email])
     else
       @link_info = Account.find_by_o365_email(cookies[:o365_login_email])
     end
@@ -105,7 +105,17 @@ class LinkController < ApplicationController
 			end
 			account.token = _token
 
+      _organization = Organization.find_by_name(cookies[:o365_login_email][/(?<=@).*/])
+      unless _organization
+        _organization = Organization.new
+        _organization.assign_attributes({
+          name: cookie[:o365_login_email][/(?<=@).*/],
+        })
+        _organization.save
+      end
+      account.organization = _organization
   		account.save
+
   		redirect_to schools_path
   	end
   end

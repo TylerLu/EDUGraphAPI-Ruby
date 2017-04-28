@@ -9,19 +9,18 @@ class ApplicationController < ActionController::Base
 
   include ApplicationHelper
 
-  attr_accessor :current_user
   attr_accessor :aad_graph
   attr_accessor :ms_graph
   attr_accessor :tenant_name
 
   def set_current_user
     user_obj = Service::User.new(get_aad_graph, get_ms_graph)
-    self.current_user = user_obj.get_current_user
-    if session[:current_user][:email].present?
-      account = Account.find_by_email(session[:current_user][:email])
+    self.current_user.merge!(user_obj.get_current_user)
+    if current_user[:email].present?
+      account = Account.find_by_email(current_user[:email])
       self.current_user.merge!({ 
         is_local_account_login: true,
-        email: session[:current_user][:email],
+        email: current_user[:email],
         o365_email: account.o365_email,
         is_linked: (!account || account.o365_email.blank? || account.email.blank?) ? false : true
       })
@@ -35,8 +34,15 @@ class ApplicationController < ActionController::Base
       })
     end
     class_obj = Service::Education::SchoolClass.new(get_aad_graph, current_user[:school_number])
-    current_user[:myclasses] = class_obj.get_my_classes_by_school_number(current_user).map{|_| _['displayName']}
-    session[:current_user] = self.current_user
+    self.current_user[:myclasses] = class_obj.get_my_classes_by_school_number(current_user).map{|_| _['displayName']}
+  end
+
+  def current_user
+    session[:current_user]
+  end
+
+  def current_user=(user_info)
+    session[:current_user] = user_info
   end
 
   private
@@ -62,7 +68,7 @@ class ApplicationController < ActionController::Base
       end
   	end
 
-    if !session[:expires_on] && session[:logout].blank?
+    if !session[:expires_on] && session[:logout].nil?
       redirect_to '/account/login'
       return
     end

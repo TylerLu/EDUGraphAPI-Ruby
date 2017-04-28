@@ -33,7 +33,9 @@ class AdminController < ApplicationController
     end
 
     account = Account.find_by_o365_email(cookies[:o365_login_email])
-    account.is_consent = false
+    account.organization.update_attributes({
+      is_admin_consented: false
+    })
     account.save
 
     redirect_to admin_index_path

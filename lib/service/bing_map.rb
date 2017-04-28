@@ -5,7 +5,7 @@ module Service
       if address.blank?
         return {}
       else
-        res = JSON.parse HTTParty.get(build_bing_map_url(address, Settings.bing_map_key)).body
+        res = JSON.parse HTTParty.get(build_bing_map_url(address, Settings.BingMapKey)).body
         lat, lon = res['resourceSets'].first['resources'].first['point']['coordinates']
       end
       {lat: lat, lon: lon}
