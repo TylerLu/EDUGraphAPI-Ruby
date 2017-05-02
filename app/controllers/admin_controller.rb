@@ -7,32 +7,33 @@ class AdminController < ApplicationController
 
   def index
   	# 判断是否consent
-  	@account = Account.find_by_o365_email(cookies[:o365_login_email])
+  	@account = User.find_by_o365_email(cookies[:o365_login_email])
   end
 
   def consent
     if request.post?
-    	consent_url = "https://login.microsoftonline.com/common/oauth2/authorize?response_type=code&client_id=#{Settings.edu_graph_api.app_id}&resource=https://graph.windows.net&redirect_uri=#{get_request_schema}#{Settings.redirect_uri}&state=12345&prompt=admin_consent"
-    	redirect_to consent_url
+    	# consent_url = "https://login.microsoftonline.com/common/oauth2/authorize?response_type=code&client_id=#{Settings.edu_graph_api.app_id}&resource=https://graph.windows.net&redirect_uri=#{get_request_schema}#{Settings.redirect_uri}&state=12345&prompt=admin_consent"
+      adal = ADAL::AuthenticationContext.new
+      consent_url = adal.authorization_request_url(Constant::Resource::AADGraph, Settings.edu_graph_api.app_id, "#{get_request_schema}#{Settings.redirect_uri}", {prompt: 'admin_consent'})
+    	redirect_to consent_url.to_s
     end
   end
 
   def unconsent
     
-    admin_obj = Service::Admin.new(aad_graph)
+    admin_obj = AdminService.new(aad_graph)
     res = admin_obj.get_service_principals(Settings.edu_graph_api.app_id)
-    # obj = res.find{ |_| _['appId'] == Settings.edu_graph_api.app_id }
     obj = res.first
 
     if obj
       res = admin_obj.delete_service_principals(obj['objectId'])
 
-      Account.where("o365_email is not null and email is not null and o365_email != ?", cookies[:o365_login_email]).each do |_account|
+      User.where("o365_email is not null and email is not null and o365_email != ?", cookies[:o365_login_email]).each do |_account|
         _account.update({o365_email: nil})
       end
     end
 
-    account = Account.find_by_o365_email(cookies[:o365_login_email])
+    account = User.find_by_o365_email(cookies[:o365_login_email])
     account.organization.update_attributes({
       is_admin_consented: false
     })
@@ -42,7 +43,7 @@ class AdminController < ApplicationController
   end
 
   def add_app_role_assignments
-    admin_obj = Service::Admin.new(aad_graph)
+    admin_obj = AdminService.new(aad_graph)
     res = admin_obj.get_service_principals(Settings.edu_graph_api.app_id)
     obj = res.first
 
@@ -63,17 +64,19 @@ class AdminController < ApplicationController
 
   def unlink_account
   	account_id = params[:account_id]
-  	@account = Account.find(account_id)
+  	@account = User.find(account_id)
 
   	if request.post?
-      @account.unlink_email = @account.o365_email
-  		@account.o365_email = nil
+      # @account.unlink_email = @account.o365_email
+  		# @account.o365_email = nil
+      @account.organization_id = nil
   		@account.save
   		redirect_to linked_accounts_admin_index_path
   	end
   end
 
   def linked_accounts
-  	@accounts = Account.where("o365_email is not null and email is not null").select{|obj| obj.o365_email.end_with? tenant_name }
+    # @accounts = User.where("o365_email is not null and email is not null").select{|obj| obj.o365_email.end_with? tenant_name }
+    @accounts = Organization.find_by_name(self.tenant_name).users
   end
 end

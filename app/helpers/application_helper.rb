@@ -17,7 +17,7 @@ module ApplicationHelper
 			photo_url = "/photos/#{objectId}.jpg"
 		else
 			photo = HTTParty.get("https://graph.microsoft.com/v1.0/users/#{objectId}/photo/$value", headers: {
-				"Authorization" => "#{session[:token_type]} #{session[:gmc_access_token]}",
+				"Authorization" => "Bearer #{session[:gmc_access_token]}",
 				"Content-Type" => "application/x-www-form-urlencoded"
 			}).body
 

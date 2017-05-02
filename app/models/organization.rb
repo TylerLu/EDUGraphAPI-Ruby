@@ -2,5 +2,5 @@
 # See LICENSE in the project root for license information.  
 
 class Organization < ApplicationRecord
-  has_many :accounts
+  has_many :users
 end

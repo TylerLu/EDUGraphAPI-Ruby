@@ -4,9 +4,10 @@
 class AccountController < ApplicationController
 	skip_before_action :verify_authenticity_token
 	skip_before_action :verify_access_token
+	skip_before_action :get_aad_graph
+	skip_before_action :get_ms_graph
 
 	def login
-		# cookies[:o365_login_email] = nil
 		self.current_user = nil
 		session[:logout] = false
 	end
@@ -21,7 +22,7 @@ class AccountController < ApplicationController
 
 	def login_account
 		session.clear
-		account = Account.find_by_email(params["Email"])
+		account = User.find_by_email(params["Email"])
 
 		unless params["RememberMe"].blank?
 			cookies[:user_local_account] = params["Email"]
@@ -31,7 +32,7 @@ class AccountController < ApplicationController
 			cookies[:user_local_remember] = nil
 		end
 
-		if account && account.password == params["Password"]
+		if account && account.authenticate(params["Password"])
 			self.current_user = {
 				user_identify: '',
 				display_name: params["Email"],
@@ -42,19 +43,24 @@ class AccountController < ApplicationController
 			unless account.o365_email
 				redirect_to link_index_path
 			else 
-				refresh_token = account.token.gwn_refresh_token
+				_token_obj = account.token
+				refresh_token = _token_obj.refresh_token
 
 				adal = ADAL::AuthenticationContext.new
 				client_cred = ADAL::ClientCredential.new(Settings.edu_graph_api.app_id, Settings.edu_graph_api.default_key)
 
 				res = adal.acquire_token_with_refresh_token(refresh_token, client_cred, Constant::Resource::AADGraph)
 				res2 = adal.acquire_token_with_refresh_token(refresh_token, client_cred, Constant::Resource::MSGraph)
+
+				_access_token = JSON.parse(_token_obj.access_tokens).merge({
+					Constant::Resource::AADGraph => {expiresOn: res.expires_on, value: res.access_token},
+					Constant::Resource::MSGraph => {expiresOn: res2.expires_on, value: res2.access_token}
+				})
 		
 				if res.access_token
-					session[:gwn_access_token] = res.access_token
-					session[:gmc_access_token] = res2.access_token
-					session[:token_type] = res.token_type
-					session[:expires_on] = res.expires_on
+					_token_obj.update_attributes({
+						access_tokens: _access_token.to_json
+					})
 
 					cookies[:o365_login_name] = account.username
 					cookies[:o365_login_email] = account.o365_email
@@ -97,12 +103,12 @@ class AccountController < ApplicationController
 	end
 
 	def register_account
-		account = Account.find_by_email(params["Email"])
+		account = User.find_by_email(params["Email"])
 
 		if account
 			redirect_to register_account_index_path, alert: "email #{params['Email']} is already taken"
 		else
-			account = Account.new
+			account = User.new
 			account.assign_attributes({
 				email: params["Email"],
 				password: params["Password"],
@@ -110,18 +116,18 @@ class AccountController < ApplicationController
 			})
 			if account.save
 				session.clear
-				self.current_user = { display_name: params["Email"], email: params["Email"] }
+				self.current_user = { display_name: params["Email"], email: params["Email"], is_local_account_login: true }
 				redirect_to "/link?email=#{params["Email"]}"
 			end
 		end
 	end
 
-	def callback
+	def azure_oauth2_callback
 		authorization_code = params["code"]
 		id_token = params["id_token"] 
 
 		if params["admin_consent"] == "True"
-			account = Account.find_by_o365_email(cookies[:o365_login_email])
+			account = User.find_by_o365_email(cookies[:o365_login_email])
 			if _organization = account.organization
 				account.organization.update_attributes({
 					is_admin_consented: true
@@ -147,24 +153,19 @@ class AccountController < ApplicationController
 
 		res = adal.acquire_token_with_authorization_code(authorization_code, "#{get_request_schema}#{Settings.redirect_uri}", client_cred, Constant::Resource::AADGraph)
 
-		session[:token_type] = res.token_type
-		session[:expires_on] = res.expires_on
-
-		session[:gwn_refresh_token] = res.refresh_token
-		session[:gwn_access_token] = res.access_token
-
-		tmp_res = adal.acquire_token_with_refresh_token(res.refresh_token, client_cred, Constant::Resource::MSGraph)
-		session[:gmc_refresh_token] = tmp_res.refresh_token
-		session[:gmc_access_token] = tmp_res.access_token
-
-	 	cookies[:o365_login_name] = res.user_info.name
+		cookies[:o365_login_name] = res.user_info.name
 		cookies[:o365_login_email] = res.user_info.unique_name
 
-		# use local account login and link with o365 account
+		_ts = TokenService.new(cookies[:o365_login_email])
+		_ts.set_aad_token(res.access_token, res.expires_on)
+		_ts.set_refresh_token(res.refresh_token)
+		tmp_res = adal.acquire_token_with_refresh_token(res.refresh_token, client_cred, Constant::Resource::MSGraph)
+		_ts.set_ms_token(tmp_res.access_token, tmp_res.expires_on)
+		
 		if current_user && current_user[:email]
-			account = Account.find_by_email(current_user[:email])
+			account = User.find_by_email(current_user[:email])
 
-			if Account.find_by_o365_email(cookies[:o365_login_email])
+			if User.find_by_o365_email(cookies[:o365_login_email])
 				# o365 account has linked
 				redirect_to link_index_path, notice: "Failed to link accounts. The Office 365 account '#{cookies[:o365_login_email]}' is already linked to another local account."
 				return
@@ -172,23 +173,24 @@ class AccountController < ApplicationController
 
 			account.o365_email = cookies[:o365_login_email]
 			_token = Token.find_by_o365email(account.o365_email)
-			unless _token
-				_token = Token.new
-				_token.assign_attributes({
-					gwn_refresh_token: session[:gwn_refresh_token],
-					o365email: cookies[:o365_login_email],
-					gmc_refresh_token: session[:gmc_refresh_token]
-				})
-				_token.save
-			end
+			# unless _token
+				# _token = Token.new
+				# _token.assign_attributes({
+				# 	gwn_refresh_token: session[:gwn_refresh_token],
+				# 	o365email: cookies[:o365_login_email],
+				# 	gmc_refresh_token: session[:gmc_refresh_token]
+				# })
+				# _token.save
+			# end
 
 			account.username = cookies[:o365_login_name]
+			account.organization = Organization.find_by_name(cookies[:o365_login_name][/(?<=@).*/])			
 			account.token = _token
 
 			account.save
 		else
 			# o365 account login, check if linked
-			account = Account.find_by_o365_email(cookies[:o365_login_email])
+			account = User.find_by_o365_email(cookies[:o365_login_email])
 			self.current_user = {}
 			unless account && account.email
 				self.current_user = {

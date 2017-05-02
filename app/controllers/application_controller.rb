@@ -14,10 +14,10 @@ class ApplicationController < ActionController::Base
   attr_accessor :tenant_name
 
   def set_current_user
-    user_obj = Service::User.new(get_aad_graph, get_ms_graph)
+    user_obj = UserService.new(get_aad_graph, get_ms_graph)
     self.current_user.merge!(user_obj.get_current_user)
     if current_user[:email].present?
-      account = Account.find_by_email(current_user[:email])
+      account = User.find_by_email(current_user[:email])
       self.current_user.merge!({ 
         is_local_account_login: true,
         email: current_user[:email],
@@ -25,7 +25,7 @@ class ApplicationController < ActionController::Base
         is_linked: (!account || account.o365_email.blank? || account.email.blank?) ? false : true
       })
     else
-      account = Account.find_by_o365_email(cookies[:o365_login_email])
+      account = User.find_by_o365_email(cookies[:o365_login_email])
       self.current_user.merge!({
         is_local_account_login: false,
         email: account.email,
@@ -33,7 +33,9 @@ class ApplicationController < ActionController::Base
         is_linked: (!account || account.o365_email.blank? || account.email.blank?) ? false : true
       })
     end
-    class_obj = Service::Education::SchoolClass.new(get_aad_graph, current_user[:school_number])
+    # class_obj = Service::Education::SchoolClass.new(get_aad_graph, current_user[:school_number])
+    _ts = TokenService.new(cookies[:o365_login_email])
+    class_obj = SchoolsService.new(self.tenant_name, _ts, current_user[:school_number])
     self.current_user[:myclasses] = class_obj.get_my_classes_by_school_number(current_user).map{|_| _['displayName']}
   end
 
@@ -46,17 +48,28 @@ class ApplicationController < ActionController::Base
   end
 
   private
+  # def get_token_service
+  #   _ts = TokenService.new(cookies[:o365_login_email])
+  # end
+
   def get_ms_graph
-    self.ms_graph ||= Service::Graph::MSGraph.new(session[:gmc_access_token])
+    _ts = TokenService.new(cookies[:o365_login_email])
+    self.ms_graph ||= Graph::MSGraph.new(_ts.get_ms_token, self.tenant_name)
+    # self.ms_graph ||= Service::Graph::MSGraph.new(session[:gmc_access_token])
   end
 
   def get_aad_graph
-    self.tenant_name = cookies[:o365_login_email][/(?<=@).*/]
-    self.aad_graph ||= Service::Graph::AADGraph.new(session[:gwn_access_token], self.tenant_name)
+    self.tenant_name = cookies[:o365_login_email][/(?<=@).*/] if cookies[:o365_login_email]
+
+    _ts = TokenService.new(cookies[:o365_login_email])
+    self.aad_graph ||= Graph::AADGraph.new(_ts.get_aad_token, self.tenant_name)
+    # self.aad_graph ||= Service::Graph::AADGraph.new(session[:gwn_access_token], self.tenant_name)
   end
 
   def verify_access_token
-  	if session[:logout] || (session[:expires_on] && Time.now.to_i > session[:expires_on].to_i)
+    _ts = TokenService.new(cookies[:o365_login_email])
+    _expires_on = _ts.get_expires_on
+  	if session[:logout] || (_expires_on && Time.now.to_i > _expires_on.to_i)
       session[:logout] = false
 
       if session[:local_login]
@@ -68,7 +81,7 @@ class ApplicationController < ActionController::Base
       end
   	end
 
-    if !session[:expires_on] && session[:logout].nil?
+    if !_expires_on && session[:logout].blank?
       redirect_to '/account/login'
       return
     end

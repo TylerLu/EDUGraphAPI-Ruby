@@ -2,5 +2,5 @@
 # See LICENSE in the project root for license information.  
 
 class Role < ApplicationRecord
-	has_many :accounts, through: :accounts_and_roles
+	has_many :users, through: :user_roles
 end

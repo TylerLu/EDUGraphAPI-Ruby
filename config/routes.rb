@@ -34,9 +34,9 @@ Rails.application.routes.draw do
   end
 
   get '/auth/azure_oauth2', as: :sign_in
-  match '/auth/azure_oauth2/callback', to: 'account#callback', via: [:get, :post]
+  match '/auth/azure_oauth2/callback', to: 'account#azure_oauth2_callback', via: [:get, :post]
 
-  match '/Account/Callback' => 'account#callback', via: [:get, :post]
+  # match '/Account/Callback' => 'account#callback', via: [:get, :post]
 
   resources :account, only: [:index] do 
   	collection do 
@@ -56,6 +56,7 @@ Rails.application.routes.draw do
     collection do
       post :loginO365
       # post :processcode
+      post :create_local_account_post
       post :link_to_local_account
       get :login_local
       get :login_o365_required

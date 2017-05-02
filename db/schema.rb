@@ -10,38 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170427090731) do
-
-  create_table "accounts", force: :cascade do |t|
-    t.string   "first_name",      limit: 40, default: ""
-    t.string   "last_name",       limit: 40, default: ""
-    t.integer  "organization_id"
-    t.string   "o365_user_id"
-    t.string   "o365_email"
-    t.string   "job_title"
-    t.string   "department"
-    t.string   "mobile",          limit: 30
-    t.string   "business_phones",            default: ""
-    t.string   "favorite_color",  limit: 20
-    t.string   "username",        limit: 50
-    t.string   "password"
-    t.string   "email",           limit: 70
-    t.boolean  "remember_me"
-    t.integer  "role_id"
-    t.datetime "created_at",                              null: false
-    t.datetime "updated_at",                              null: false
-    t.integer  "token_id"
-    t.string   "unlink_email",               default: ""
-  end
-
-  create_table "accounts_and_roles", force: :cascade do |t|
-    t.integer  "account_id"
-    t.integer  "role_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["account_id"], name: "index_accounts_and_roles_on_account_id"
-    t.index ["role_id"], name: "index_accounts_and_roles_on_role_id"
-  end
+ActiveRecord::Schema.define(version: 20170501145527) do
 
   create_table "classroom_seating_arrangements", force: :cascade do |t|
     t.string   "class_id",   limit: 40
@@ -81,6 +50,39 @@ ActiveRecord::Schema.define(version: 20170427090731) do
     t.string   "gmc_refresh_token", limit: 2000
     t.datetime "created_at",                     null: false
     t.datetime "updated_at",                     null: false
+    t.string   "o365_userId"
+    t.string   "refresh_token"
+    t.string   "access_tokens"
+  end
+
+  create_table "user_roles", force: :cascade do |t|
+    t.integer  "account_id"
+    t.integer  "role_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_user_roles_on_account_id"
+    t.index ["role_id"], name: "index_user_roles_on_role_id"
+  end
+
+  create_table "users", force: :cascade do |t|
+    t.string   "first_name",      limit: 40, default: ""
+    t.string   "last_name",       limit: 40, default: ""
+    t.integer  "organization_id"
+    t.string   "o365_user_id"
+    t.string   "o365_email"
+    t.string   "job_title"
+    t.string   "department"
+    t.string   "mobile",          limit: 30
+    t.string   "business_phones",            default: ""
+    t.string   "favorite_color",  limit: 20
+    t.string   "username",        limit: 50
+    t.string   "password"
+    t.string   "email",           limit: 70
+    t.boolean  "remember_me"
+    t.datetime "created_at",                              null: false
+    t.datetime "updated_at",                              null: false
+    t.integer  "token_id"
+    t.string   "password_digest"
   end
 
 end
