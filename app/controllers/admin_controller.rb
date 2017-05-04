@@ -28,16 +28,21 @@ class AdminController < ApplicationController
     if obj
       res = admin_obj.delete_service_principals(obj['objectId'])
 
-      User.where("o365_email is not null and email is not null and o365_email != ?", cookies[:o365_login_email]).each do |_account|
-        _account.update({o365_email: nil})
+      account = User.find_by_o365_email(cookies[:o365_login_email])
+      account.organization.update_attributes({
+        is_admin_consented: false
+      })
+      account.save
+
+      # User.where("o365_email is not null and email is not null and o365_email != ?", cookies[:o365_login_email]).each do |_account|
+      account.organization.users.each do |_account|
+        _account.update_attributes({
+          o365_email: nil,
+          o365_user_id: nil,
+          organization_id: nil,
+        })
       end
     end
-
-    account = User.find_by_o365_email(cookies[:o365_login_email])
-    account.organization.update_attributes({
-      is_admin_consented: false
-    })
-    account.save
 
     redirect_to admin_index_path
   end

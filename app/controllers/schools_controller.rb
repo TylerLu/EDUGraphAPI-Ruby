@@ -11,7 +11,7 @@ class SchoolsController < ApplicationController
 		session[:roles] = aad_graph.get_roles # 获取roles 通过数据库
 
 		# school = Service::Education::School.new(aad_graph)
-		_token_obj = TokenService.new(cookies[:o365_login_email])
+		_token_obj = TokenService.new(cookies[:o365_user_id])
 		school = SchoolsService.new(tenant_name, _token_obj, current_user[:school_number])
 
 		@me = current_user
@@ -36,7 +36,7 @@ class SchoolsController < ApplicationController
 		}
 
 		# class_obj = Service::Education::SchoolClass.new(aad_graph, school_number)
-		_ts = TokenService.new(cookies[:o365_login_email])
+		_ts = TokenService.new(cookies[:o365_user_id])
     class_obj = SchoolsService.new(self.tenant_name, _ts, school_number)
 		@myclasses = class_obj.get_my_classes_by_school_number(current_user)
 
@@ -68,7 +68,7 @@ class SchoolsController < ApplicationController
 		url_params = params[:url_params]
 
 		# class_obj = Service::Education::SchoolClass.new(aad_graph, school_number)
-		_ts = TokenService.new(cookies[:o365_login_email])
+		_ts = TokenService.new(cookies[:o365_user_id])
     class_obj = SchoolsService.new(self.tenant_name, _ts, school_number)
 		res = class_obj.get_classes_by_school_number(skip_token)
 		next_link = (res['odata.nextLink'] || "").match(/skiptoken=(.*)$/)
@@ -110,7 +110,7 @@ class SchoolsController < ApplicationController
 		}
 
 		# class_obj = Service::Education::SchoolClass.new(ms_graph, params[:school_number])
-		_ts = TokenService.new(cookies[:o365_login_email])
+		_ts = TokenService.new(cookies[:o365_user_id])
     class_obj = SchoolsService.new(self.tenant_name, _ts, params[:school_number])
 		@user_info = User.find_by_o365_email(cookies[:o365_login_email])
 		student_setting_info = ClassroomSeatingArrangement.where("class_id = ? and position != 0", class_id).order("position asc")
@@ -168,7 +168,7 @@ class SchoolsController < ApplicationController
 			principal: @principal
 		}
 
-		_ts = TokenService.new(cookies[:o365_login_email])
+		_ts = TokenService.new(cookies[:o365_user_id])
     class_obj = SchoolsService.new(self.tenant_name, _ts, school_number)
 		# user_obj = Service::Education::SchoolUser.new(aad_graph, school_number)
 		user_obj = class_obj.edu_section_user
@@ -191,7 +191,7 @@ class SchoolsController < ApplicationController
 		type = params[:type]
 
 		# user_obj = Service::Education::SchoolUser.new(aad_graph, school_number)
-		_ts = TokenService.new(cookies[:o365_login_email])
+		_ts = TokenService.new(cookies[:o365_user_id])
     class_obj = SchoolsService.new(self.tenant_name, _ts, school_number)
 		user_obj = class_obj.edu_section_user
 		if type == 'users'

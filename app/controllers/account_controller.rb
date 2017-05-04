@@ -64,6 +64,7 @@ class AccountController < ApplicationController
 
 					cookies[:o365_login_name] = account.username
 					cookies[:o365_login_email] = account.o365_email
+					cookies[:o365_user_id] = account.o365_user_id
 					redirect_to schools_path
 				else
 					redirect_to sign_in_path
@@ -122,85 +123,91 @@ class AccountController < ApplicationController
 		end
 	end
 
+	def login_for_admin_consent
+		account = User.find_by_o365_email(cookies[:o365_login_email])
+		if _organization = account.organization
+			account.organization.update_attributes({
+				is_admin_consented: true
+			})
+			account.save
+		else
+			_organization = Organization.new
+			_organization.update_attributes({
+				name: cookies[:o365_login_email][/(?<=@).*/],
+				is_admin_consented: true
+			})
+			_organization.save
+			account.organization = _organization
+			account.save
+		end
+		
+		redirect_to admin_index_path, notice: 'admin consent success'
+	end
+
+	def local_account_login
+		account = User.find_by_email(current_user[:email])
+
+		if User.find_by_o365_email(cookies[:o365_login_email])
+			redirect_to link_index_path, notice: "Failed to link accounts. The Office 365 account '#{cookies[:o365_login_email]}' is already linked to another local account."
+			return
+		end
+
+		account.o365_email = cookies[:o365_login_email]
+		account.o365_user_id = cookies[:o365_user_id]
+		_token = Token.find_by_o365_userId(cookies[:o365_user_id])
+
+		account.username = cookies[:o365_login_name]
+		account.organization = Organization.find_by_name(cookies[:o365_login_name][/(?<=@).*/])			
+		account.token = _token
+
+		account.save
+		redirect_to schools_path
+	end
+
+	def o365_account_login
+		account = User.find_by_o365_email(cookies[:o365_login_email])
+		self.current_user = {}
+		unless account && account.email
+			self.current_user = {
+				display_name: cookies[:o365_login_name],
+				o365_email: cookies[:o365_login_email]
+			}
+			redirect_to link_index_path and return 
+		end
+		redirect_to schools_path
+	end
+
 	def azure_oauth2_callback
 		authorization_code = params["code"]
 		id_token = params["id_token"] 
 
 		if params["admin_consent"] == "True"
-			account = User.find_by_o365_email(cookies[:o365_login_email])
-			if _organization = account.organization
-				account.organization.update_attributes({
-					is_admin_consented: true
-				})
-				account.save
-			else
-				_organization = Organization.new
-				_organization.update_attributes({
-					name: cookies[:o365_login_email][/(?<=@).*/],
-					is_admin_consented: true
-				})
-				_organization.save
-				account.organization = _organization
-				account.save
-			end
-			
-			redirect_to admin_index_path, notice: 'admin consent success'
-			return 
+			redirect_to login_for_admin_consent_account_index_path
+			return
 		end
 
 		adal = ADAL::AuthenticationContext.new
 		client_cred = ADAL::ClientCredential.new(Settings.edu_graph_api.app_id, Settings.edu_graph_api.default_key)
-
 		res = adal.acquire_token_with_authorization_code(authorization_code, "#{get_request_schema}#{Settings.redirect_uri}", client_cred, Constant::Resource::AADGraph)
 
 		cookies[:o365_login_name] = res.user_info.name
 		cookies[:o365_login_email] = res.user_info.unique_name
+		cookies[:o365_user_id] = res.user_info.oid
 
-		_ts = TokenService.new(cookies[:o365_login_email])
+		_ts = TokenService.new(cookies[:o365_user_id])
 		_ts.set_aad_token(res.access_token, res.expires_on)
 		_ts.set_refresh_token(res.refresh_token)
 		tmp_res = adal.acquire_token_with_refresh_token(res.refresh_token, client_cred, Constant::Resource::MSGraph)
 		_ts.set_ms_token(tmp_res.access_token, tmp_res.expires_on)
 		
 		if current_user && current_user[:email]
-			account = User.find_by_email(current_user[:email])
-
-			if User.find_by_o365_email(cookies[:o365_login_email])
-				# o365 account has linked
-				redirect_to link_index_path, notice: "Failed to link accounts. The Office 365 account '#{cookies[:o365_login_email]}' is already linked to another local account."
-				return
-			end
-
-			account.o365_email = cookies[:o365_login_email]
-			_token = Token.find_by_o365email(account.o365_email)
-			# unless _token
-				# _token = Token.new
-				# _token.assign_attributes({
-				# 	gwn_refresh_token: session[:gwn_refresh_token],
-				# 	o365email: cookies[:o365_login_email],
-				# 	gmc_refresh_token: session[:gmc_refresh_token]
-				# })
-				# _token.save
-			# end
-
-			account.username = cookies[:o365_login_name]
-			account.organization = Organization.find_by_name(cookies[:o365_login_name][/(?<=@).*/])			
-			account.token = _token
-
-			account.save
+			# local_account_login
+			redirect_to local_account_login_account_index_path
 		else
 			# o365 account login, check if linked
-			account = User.find_by_o365_email(cookies[:o365_login_email])
-			self.current_user = {}
-			unless account && account.email
-				self.current_user = {
-					display_name: cookies[:o365_login_name],
-					o365_email: cookies[:o365_login_email]
-				}
-				redirect_to link_index_path and return 
-			end
+			redirect_to o365_account_login_account_index_path
 		end
 
-		redirect_to schools_path
+		# redirect_to schools_path
 	end
 end

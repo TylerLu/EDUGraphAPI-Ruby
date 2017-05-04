@@ -2,12 +2,12 @@
 class TokenService
   attr_accessor :token_obj
 
-  def initialize(o365_email)
-    if o365_email.present? && token_obj.blank?
-      _token = Token.find_by_o365email(o365_email)
+  def initialize(o365_user_id)
+    if o365_user_id.present? && token_obj.blank?
+      _token = Token.find_by_o365_userId(o365_user_id)
       if !_token
         _token = Token.new
-        _token.o365email = o365_email
+        _token.o365_userId = o365_user_id
         _token.access_tokens = {}.to_json
         _token.save
       end

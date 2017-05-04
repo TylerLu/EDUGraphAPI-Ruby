@@ -49,6 +49,10 @@ Rails.application.routes.draw do
 			post :callback
 			post :logoff
 			get :o365login
+
+      get :login_for_admin_consent
+      get :local_account_login
+      get :o365_account_login
   	end
   end
 

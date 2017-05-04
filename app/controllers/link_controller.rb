@@ -59,7 +59,7 @@ class LinkController < ApplicationController
     account = User.find_by_email(params["Email"])
     if account && account.authenticate(params["Password"])
       if !account.organization
-        _token = Token.find_by_o365email(account.o365_email)
+        _token = Token.find_by_o365_userId(account.o365_user_id)
         unless _token
           _token = Token.new
           _token.assign_attributes({
@@ -98,20 +98,12 @@ class LinkController < ApplicationController
   		account.assign_attributes({
   			o365_email: cookies[:o365_login_email],
   			email: cookies[:o365_login_email],
+        o365_user_id: cookies[:o365_user_id],
   			favorite_color: params["FavoriteColor"],
   			password: Settings.default_password
   		})
 
-  		_token = Token.find_by_o365email(cookies[:o365_login_email])
-			unless _token
-				_token = Token.new
-				_token.assign_attributes({
-					gwn_refresh_token: session[:gwn_refresh_token],
-					o365email: cookies[:o365_login_email],
-					gmc_refresh_token: session[:gmc_refresh_token]
-				})
-				_token.save
-			end
+  		_token = Token.find_by_o365_userId(cookies[:o365_user_id])
 			account.token = _token
 
       _organization = Organization.find_by_name(cookies[:o365_login_email][/(?<=@).*/])

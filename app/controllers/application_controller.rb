@@ -34,7 +34,7 @@ class ApplicationController < ActionController::Base
       })
     end
     # class_obj = Service::Education::SchoolClass.new(get_aad_graph, current_user[:school_number])
-    _ts = TokenService.new(cookies[:o365_login_email])
+    _ts = TokenService.new(cookies[:o365_user_id])
     class_obj = SchoolsService.new(self.tenant_name, _ts, current_user[:school_number])
     self.current_user[:myclasses] = class_obj.get_my_classes_by_school_number(current_user).map{|_| _['displayName']}
   end
@@ -53,7 +53,7 @@ class ApplicationController < ActionController::Base
   # end
 
   def get_ms_graph
-    _ts = TokenService.new(cookies[:o365_login_email])
+    _ts = TokenService.new(cookies[:o365_user_id])
     self.ms_graph ||= Graph::MSGraph.new(_ts.get_ms_token, self.tenant_name)
     # self.ms_graph ||= Service::Graph::MSGraph.new(session[:gmc_access_token])
   end
@@ -61,28 +61,32 @@ class ApplicationController < ActionController::Base
   def get_aad_graph
     self.tenant_name = cookies[:o365_login_email][/(?<=@).*/] if cookies[:o365_login_email]
 
-    _ts = TokenService.new(cookies[:o365_login_email])
+    _ts = TokenService.new(cookies[:o365_user_id])
     self.aad_graph ||= Graph::AADGraph.new(_ts.get_aad_token, self.tenant_name)
     # self.aad_graph ||= Service::Graph::AADGraph.new(session[:gwn_access_token], self.tenant_name)
   end
 
   def verify_access_token
-    _ts = TokenService.new(cookies[:o365_login_email])
+    unless cookies[:o365_user_id]
+      redirect_to login_account_index_path 
+      return
+    end
+    _ts = TokenService.new(cookies[:o365_user_id])
     _expires_on = _ts.get_expires_on
   	if session[:logout] || (_expires_on && Time.now.to_i > _expires_on.to_i)
       session[:logout] = false
 
       if session[:local_login]
-        redirect_to '/account/login'
+        redirect_to login_account_index_path
         return
       else
-        redirect_to '/account/o365login'
+        redirect_to o365login_account_index_path
         return
       end
   	end
 
     if !_expires_on && session[:logout].blank?
-      redirect_to '/account/login'
+      redirect_to login_account_index_path
       return
     end
   end
