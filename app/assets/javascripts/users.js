@@ -41,28 +41,27 @@ $(document).ready(function() {
     $(".teacher-student .tiles-root-container .pagination .prev, .teacher-student .tiles-root-container .pagination .next").on('click', function() {
         var i, a, r, w, v;
         if (n(!0), _this = $(this), !_this.hasClass("current") && !_this.hasClass("disabled")) {
-        	// 判断点击的是向前还是向后
+        
         	var current_page = parseInt(_this.siblings('#curpage').val());
         	var type = _this.closest(".tiles-secondary-container").attr('id');
         	if(_this.hasClass('prev')){
-        		//向前
+        		
         		$("#" + type + "_" + current_page).hide();
-
         		$("#" + type + "_" + (current_page - 1)).show();
 
-        		_this.siblings('#curpage').val(current_page - 1); //更改current page 的值
+        		_this.siblings('#curpage').val(current_page - 1); 
 
         		if(current_page - 1 <= 1){
         			_this.addClass('current');
         		}
         	}else{
-        		//向后， 先判断是否存在， 如果存在则show， 不存在 则请求
+     
         		var next_page = $('#' + type + '_' + (current_page + 1));
                 var prev_obj = $(".teacher-student .tiles-root-container .pagination .prev");
                 prev_obj.addClass("disabled");
 
         		if(next_page.length){
-					$('#' + type + '_' + current_page).hide(); //隐藏之前的
+					$('#' + type + '_' + current_page).hide(); 
         			next_page.show();
 
                     if(current_page + 1 > 1){
@@ -71,18 +70,19 @@ $(document).ready(function() {
                         _this.siblings('.prev').addClass('current');
                     }
 
-                    _this.siblings('#curpage').val(current_page + 1); //更改current page 的值
+                    _this.siblings('#curpage').val(current_page + 1); 
                     prev_obj.removeClass("disabled");
         		}else{
-        			var next_link = _this.siblings('#nextlink').val();
-	        		var school_number = $('#school-objectid').val();
+        			var skip_token = _this.siblings('#skip_token').val();
+	        		var school_object_id = $('#school-object-id').val();
+	        		var school_id = $('#school-id').val();
 
 	        		_this.addClass('disabled');
 	        		$.post({
-	        			url: '/schools/' + school_number + '/next_users',
+	        			url: '/schools/' + school_object_id + '/next_users',
 	        			data: {
-	        				school_number: school_number,
-	        				next_link: next_link,
+	        				school_id: school_id,
+	        				skip_token: skip_token,
 	        				type: type,
 	        			},
 	        			success: function(res){
@@ -94,16 +94,16 @@ $(document).ready(function() {
 	        				var html = '<div class="content" id="' +type+ '_'+ (current_page + 1)+'">';
 	        				$.each(res['values'], function(index, user){
 	        					if(user['object_type'] == 'Teacher'){
-	        						html += '<div class="element teacher-bg"><div class="userimg"><img src="'+ user['photo'] +'" realheader="'+ user['photo'] +'" /></div><div class="username">'+ user['displayName'] +'</div></div>';
+	        						html += '<div class="element teacher-bg"><div class="userimg"><img src="/Images/header-default.jpg" realheader="/users/'+ user['object_id'] +'/photo" /></div><div class="username">'+ user['display_name'] +'</div></div>';
 	        					}else{
-	        						html += '<div class="element student-bg"><div class="userimg"><img src="'+ user['photo'] +'" realheader="'+ user['photo'] +'" /></div><div class="username">'+ user['displayName'] +'</div></div>';
+	        						html += '<div class="element student-bg"><div class="userimg"><img src="/Images/header-default.jpg" realheader="/users/'+ user['object_id'] +'/photo" /></div><div class="username">'+ user['display_name'] +'</div></div>';
 	        					}
 	        				});
 	        				html += '</div>';
 	        				_this.closest(".tiles-secondary-container").prepend(html);
-	        				_this.siblings('#nextlink').val(res['skip_token']);
+	        				_this.siblings('#skip_token').val(res['skip_token']);
 	        				_this.removeClass('disabled');
-                            $('#'+ type +'_' + current_page).hide(); //隐藏之前的页面
+                            $('#'+ type +'_' + current_page).hide();
 
                             if(current_page + 1 > 1){
                                 _this.siblings('.prev').removeClass('current');
@@ -111,7 +111,7 @@ $(document).ready(function() {
                                 _this.siblings('.prev').addClass('current');
                             }
 
-                            _this.siblings('#curpage').val(current_page + 1); //更改current page 的值
+                            _this.siblings('#curpage').val(current_page + 1); 
                             prev_obj.removeClass("disabled");
 	        			}
 	        		})
@@ -132,7 +132,7 @@ $(document).ready(function() {
             //     c = b + (u ? -1 : 1),
             //     e = u ? i.siblings(".next") : i,
             //     o = u ? i : i.siblings(".prev"),
-            //     y = i.siblings("#nextlink"),
+            //     y = i.siblings("#skip_token"),
             //     l = y.val(),
             //     s = typeof l == "string" && l.length > 0;
             // u && (e = i.siblings(".next"), o = i);

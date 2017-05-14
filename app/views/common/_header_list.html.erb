@@ -1,12 +1,15 @@
 <!-- Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT license.  
 See LICENSE in the project root for license information.   -->
 
-<li><a href="/schools">Home</a></li>
-<% if ["classes", "users", "class_info"].include? action_name %>
-	<li><a href="/schools/<%= class_info[:school_id] %>/classes?<%= URI.encode "school_name=#{class_info[:school_name]}&low_grade=#{class_info[:low_grade]}&high_grade=#{class_info[:high_grade]}&principal=#{class_info[:principal]}&school_number=#{class_info[:school_number]}" %>">Classes</a></li>
-	<li><a href="/schools/<%= class_info[:school_id] %>/users?<%= URI.encode "school_name=#{class_info[:school_name]}&low_grade=#{class_info[:low_grade]}&high_grade=#{class_info[:high_grade]}&principal=#{class_info[:principal]}&school_number=#{class_info[:school_number]}" %>">Teachers & Students</a></li>
+<li>
+	<a href="/schools">Home</a>
+</li>
+
+<% if (defined? school) && school  %>
+ 	<li><a href="/schools/<%= school.object_id %>/classes">Classes</a></li>
+	<li><a href="/schools/<%= school.object_id %>/users">Teachers & Students</a></li>
 <% end %>
 
-<% if is_admin? %>
+<% if current_user.is_admin %>
 	<li><a href="/admin">Admin</a></li>
 <% end %>

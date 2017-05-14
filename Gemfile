@@ -32,9 +32,7 @@ gem 'config'
 
 gem 'httparty'
 gem 'openid_connect'
-
-# gem 'omniauth-azure-activedirectory'
-gem 'omniauth-azure-oauth2'
+gem 'omniauth-oauth2'
 
 gem 'activerecord-session_store'
 # Use Capistrano for deployment

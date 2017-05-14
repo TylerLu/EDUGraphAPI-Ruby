@@ -33,7 +33,6 @@ $(document).ready(function () {
     bindShowDetail($(".section-tiles .tile-container"));
 
     $(".sections .filterlink-container .filterlink").click(function () {
-        search(true);
         var element = $(this);
         element.addClass("selected").siblings("a").removeClass("selected");
         var filterType = element.data("type");
@@ -139,11 +138,11 @@ $(document).ready(function () {
     // });
     // 
     $("#see-more").click(function () {
-        search(true);
         var element = $(this);
-        var skip_token = element.data('token');
+        var skip_token = element.data('skip-token');
         var school_number = element.data('school-number');
         var school_id = element.data('school-id');
+        var school_object_id = element.data('school-object-id');
         var url_params = element.data('url-params');
 
         element.find('span').addClass('disabled');
@@ -151,22 +150,22 @@ $(document).ready(function () {
         if(skip_token != ''){
             $.ajax({
                 type: 'POST',
-                url: '/schools/' + school_id + '/next_class',
+                url: '/schools/' + school_object_id + '/next_classes',
                 dataType: 'json',
-                data: { school_number: school_number, skip_token: skip_token, school_id: school_id, url_params: url_params },
+                data: { skip_token: skip_token, school_id: school_id },
                 success: function(res){
                     var html = '';
                     $.each(res['values'], function(index, value){
                         html += '<div class="tile-container">';
                         if(value['is_my_course'] == true){
-                            html += '<a class="mysectionlink" href="/schools/'+ res['school_id'] +'/classes/'+ value['class_id'] +'?' +res['url_params']+ '">' + 
-                            '<div class="tile"><h5>' +value['displayName']+ '</h5><h2>' + value['course_subject'] + value['course_number'] + '</h2></div></a>';
+                            html += '<a class="mysectionlink" href="/schools/'+ school_object_id +'/classes/'+ value['object_id'] +'">' + 
+                            '<div class="tile"><h5>' +value['display_name']+ '</h5><h2>' + value['combined_course_number'] + '</h2></div></a>';
                         }else{
-                            html += '<div class="tile"><h5>' +value['displayName']+ '</h5><h2>' + value['displayName'].substring(0,3) + value['course_number'] + '</h2></div>';
+                            html += '<div class="tile"><h5>' +value['display_name']+ '</h5><h2>' + value['combined_course_number'] + '</h2></div>';
                         }
-                        html += '<div class="detail"><h5>Course Id:</h5><h6>' +value['course_id']+ '</h6><h5>Description:</h5><h6>'+ value['course_desc'] +'</h6>' + 
-                            '<h5>Teachers:</h5><h5>Term Name:</h5><h6>' + value['teacher_name'] + '</h6><h5>Start/Finish Date:</h5><h6><span id="termdate">'+ value['start_time'] +'</span><span> - </span>' + 
-                            '<span id="termdate">'+value['end_time']+'</span></h6><h5>Period:</h5><h6>' + value['period'] + '</h6></div>';
+                        html += '<div class="detail"><h5>Course Id:</h5><h6>' +value['course_id']+ '</h6><h5>Description:</h5><h6>'+ value['course_description'] +'</h6>' + 
+                            '<h5>Teachers:</h5><h5>Term Name:</h5><h6>' + value['teacher_name'] + '</h6><h5>Start/Finish Date:</h5><h6><span id="termdate">'+ value['term_start_time'] +'</span><span> - </span>' + 
+                            '<span id="termdate">'+value['term_end_time']+'</span></h6><h5>Period:</h5><h6>' + value['period'] + '</h6></div>';
                         html += '</div>';
                     })
                     _ = $(html);
@@ -174,7 +173,7 @@ $(document).ready(function () {
                     bindShowDetail(_);
                     // $("#class_content").append(html);
                     // bindShowDetail($("#class_content"));
-                    element.data('token', res['skip_token']);
+                    element.data('skip-token', res['skip_token']);
                     element.find('span').removeClass('disabled');
                 }
             })
@@ -182,7 +181,6 @@ $(document).ready(function () {
     });
 
     $("#my-see-more").click(function(){
-       search(true);
         var start_index = parseInt($(this).data('index'));
         var all_count = parseInt($(this).data('count'));
 
@@ -196,35 +194,4 @@ $(document).ready(function () {
         }
         $(this).data('index', start_index + 12); 
     })
-
-    $("#btnsearch").click(function () {
-        search();
-    });
-
-    $('.txtsearch').on('keypress', function (e) {
-        if (e.which === 13) {
-            search();
-        }
-    });
-    function search(isReset) {
-        var queryString;
-        if (isReset) {
-            queryString = "";
-            $(".txtsearch").val("");
-        } else {
-            queryString = $(".txtsearch").val();
-        }
-        if (queryString) {
-            $(".tile-container h2").each(function () {
-                if ($(this).text().search(new RegExp(queryString, "i")) < 0) {
-                    $(this).closest(".tile-container").hide();
-                } else {
-                    $(this).closest(".tile-container").show();
-                }
-            });
-        }
-        else {
-            $(".tile-container").show();
-        }
-    }
 });

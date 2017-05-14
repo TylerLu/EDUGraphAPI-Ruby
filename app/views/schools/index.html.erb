@@ -8,10 +8,10 @@ See LICENSE in the project root for license information.   -->
 <% end %>
 
 <% content_for :user_login_info do %>
-	<%= render 'common/user_login_info', userinfo: session[:current_user] %>
+	<%= render 'common/user_login_info' %>
 <% end %>
 
-<% unless is_linked? %>
+<% unless current_user.are_linked %>
   <br />
   <p>You will need to link your O365 and local accounts in order to use the functionality of this demo application. Please click on the browser 'Back' button to go back and link your existing local account or create a local account.</p>
 <% else %>
@@ -26,12 +26,12 @@ See LICENSE in the project root for license information.   -->
           <div class="a-heading schoolname">ALL SCHOOLS</div>
       </div>
       <div class="col-md-6 schooltiles">
-        <% if usertype = @me[:user_identify] %>
+        <% if @me.education_object_type %>
       	<div class="infocontainer">
             <div class="infoheader">
-							<%= usertype %> Id
+							<%= @me.education_object_type %> @me.education_user_id
             </div>
-            <div class="infobody"><%= @me[:user_identify_id] %></div>
+            <div class="infobody"><%= @me.education_user_id %></div>
         </div>
         <% end %>
       </div>
@@ -53,28 +53,30 @@ See LICENSE in the project root for license information.   -->
               <th></th>
           </tr>
 					<% @schools.each do |school| %>
-          <tr class="tr-content <%= 'td-green' if (school_number = school['extension_fe2174665583431c953114ff7268b7b3_Education_SchoolNumber']) == @me[:school_number] %>">
-              <td><%= school["displayName"] %></td>
-              <td><%= principal = school["extension_fe2174665583431c953114ff7268b7b3_Education_SchoolPrincipalName"] || '-' %></td>
-              <td><%= low_grade = school["extension_fe2174665583431c953114ff7268b7b3_Education_LowestGrade"] %> - <%= high_grade = school["extension_fe2174665583431c953114ff7268b7b3_Education_HighestGrade"] %></td>
+          <tr class="tr-content <%= 'td-green' if school.school_id == @me.school_id %>">
+              <td><%= school.display_name %></td>
+              <td><%= school.principal_name || '-' %></td>
+              <td><%= school.lowest_grade %> - <%= school.highest_grade %></td>
               <td>
                   <div class="schooladdress">
-                    <% if school["extension_fe2174665583431c953114ff7268b7b3_Education_Address"].present? %>
-                      <%= school["extension_fe2174665583431c953114ff7268b7b3_Education_Address"] %><br />
-											<%= school["extension_fe2174665583431c953114ff7268b7b3_Education_City"] %>, <%= school["extension_fe2174665583431c953114ff7268b7b3_Education_StateId"] %> <%= school["extension_fe2174665583431c953114ff7268b7b3_Education_Zip"] %>
+                    <% if school.address.present? %>
+                      <%= school.address %><br />
+											<%= school.city %>, <%= school.state %> <%= school.zip %>
                     <% else %>
                       -
                     <% end %>
                   </div>
                   <div class="schoolmap">
-                    <% if school["extension_fe2174665583431c953114ff7268b7b3_Education_Address"].present? %>
-                      <a class="bingMapLink" lat="<%= school[:location][:lat] %>" lon="<%= school[:location][:lon] %>" href="javascript:void(0)"><img src="<%= school['extension_fe2174665583431c953114ff7268b7b3_Education_SchoolNumber'] == @me[:school_number] ? '/Images/icon-map_30x28px-WHT.png' : '/Images/icon-map_30x28px-BLU.png' %>" /></a>
+                    <% if school.address.present? %>
+                      <% location = school.custom_data[:location] %>
+                      <a class="bingMapLink" lat="<%= location[:latitude] %>" lon="location[:longitude] %>" href="javascript:void(0)">
+                      <img src="<%= school.number == @me.school_id ? '/Images/icon-map_30x28px-WHT.png' : '/Images/icon-map_30x28px-BLU.png' %>" /></a>
                     <% end %>
                   </div>
               </td>
               <td>
-                  <a class="btnlink" href="/schools/<%= school["objectId"] %>/classes?<%= URI.encode "school_name=#{school['displayName']}&low_grade=#{low_grade}&high_grade=#{high_grade}&principal=#{principal}&school_number=#{school_number}" %>">Classes</a>
-                  <a class="btnlink" href="/schools/<%= school["objectId"] %>/users?<%= URI.encode "school_name=#{school['displayName']}&low_grade=#{low_grade}&high_grade=#{high_grade}&principal=#{principal}&school_number=#{school_number}" %>">Teachers/students</a>
+                  <a class="btnlink" href="/schools/<%= school.object_id %>/classes">Classes</a>
+                  <a class="btnlink" href="/schools/<%= school.object_id %>/users">Teachers/students</a>
               </td>
           </tr>
           <% end %> 

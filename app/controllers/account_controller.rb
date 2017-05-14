@@ -3,104 +3,99 @@
 
 class AccountController < ApplicationController
 	skip_before_action :verify_authenticity_token
-	skip_before_action :verify_access_token
-	skip_before_action :get_aad_graph
-	skip_before_action :get_ms_graph
+
+	def index
+		url = ''
+		if !current_user.is_authenticated
+			url = '/account/login'
+		elsif !current_user.are_linked
+			url = '/link'
+		elsif current_user.is_admin #&& not consented
+			url = '/admin'
+		else
+			url = '/schools'
+		end
+		redirect_to url #('#{get_request_schema}/#{url}')
+	end
 
 	def login
-		self.current_user = nil
-		session[:logout] = false
+		o365_login = cookies[:o365_login_name].present? && cookies[:o365_login_email].present?
+		view = o365_login ? 'o365login' : 'login'
+		render view
 	end
 
-	def jump
-		if cookies[:user_local_remember].present?
-			redirect_to("#{get_request_schema}/schools")
-			return
-		end
-		redirect_to("#{get_request_schema}/account/login")
+	def reset
+		cookies.delete :o365_login_name
+		cookies.delete :o365_login_email
+		redirect_to '/account/login'
 	end
 
-	def login_account
+	def login_o365
+	 	redirect_to sign_in_path
+	end
+
+	def login_local
 		session.clear
 		account = User.find_by_email(params["Email"])
-
-		unless params["RememberMe"].blank?
-			cookies[:user_local_account] = params["Email"]
-			cookies[:user_local_remember] = true
-		else
-			cookies[:user_local_account] = nil
-			cookies[:user_local_remember] = nil
-		end
-
 		if account && account.authenticate(params["Password"])
-			self.current_user = {
-				user_identify: '',
-				display_name: params["Email"],
-				school_number: '',
-				email: params["Email"]
-			}
-
-			unless account.o365_email
-				redirect_to link_index_path
-			else 
-				_token_obj = account.token
-				refresh_token = _token_obj.refresh_token
-
-				adal = ADAL::AuthenticationContext.new
-				client_cred = ADAL::ClientCredential.new(Settings.edu_graph_api.app_id, Settings.edu_graph_api.default_key)
-
-				res = adal.acquire_token_with_refresh_token(refresh_token, client_cred, Constant::Resource::AADGraph)
-				res2 = adal.acquire_token_with_refresh_token(refresh_token, client_cred, Constant::Resource::MSGraph)
-
-				_access_token = JSON.parse(_token_obj.access_tokens).merge({
-					Constant::Resource::AADGraph => {expiresOn: res.expires_on, value: res.access_token},
-					Constant::Resource::MSGraph => {expiresOn: res2.expires_on, value: res2.access_token}
-				})
-		
-				if res.access_token
-					_token_obj.update_attributes({
-						access_tokens: _access_token.to_json
-					})
-
-					cookies[:o365_login_name] = account.username
-					cookies[:o365_login_email] = account.o365_email
-					cookies[:o365_user_id] = account.o365_user_id
-					redirect_to schools_path
-				else
-					redirect_to sign_in_path
-				end
-			end
-
-			cookies[:local_account] = params["Email"]
-
+			session['_local_user_id'] = account.id
+			if account.o365_email
+				o365_user = O365User.new
+				o365_user.id = account.o365_user_id
+				o365_user.email = account.o365_email
+				# TODO
+				session['_o365_user'] = o365_user
+			end	
+			redirect_to account_index_path
 		else
 			redirect_to login_account_index_path, alert: 'Invalid login attempt.'
 		end
 	end
 
-	def logoff
-		has_link = current_user[:surname].present?
-		local_account_login = current_user[:email].present?
-		session.clear
-		session[:logout] = true
-		session[:local_login] = local_account_login
-		session[:has_link] = has_link
-		cookies[:user_local_remember] = nil
-		logoff_url = URI.encode "https://login.microsoftonline.com/common/oauth2/logout?post_logout_redirect_uri=#{get_request_schema}/account/login"
+	def azure_oauth2_callback
+		auth = request.env['omniauth.auth']
+		# cahce tokens
+		tokenService = TokenService.new
+		tokenService.cache_tokens(auth.info.oid, Constant::Resource::AADGraph, auth.credentials.refresh_token, auth.credentials.token, auth.credentials.expires_at)
 
-		redirect_to logoff_url
+
+		# if params["admin_consent"] == "True"
+		# 	redirect_to login_for_admin_consent_account_index_path
+		# 	return
+		# end
+
+		token_service = TokenService.new
+		token = token_service.get_access_token(auth.info.oid, Constant::Resource::MSGraph)
+
+		ms_graph_service = MSGraphService.new(token)
+		tenant = ms_graph_service.get_organization(auth.info.tid)
+
+		org = Organization.find_or_create_by(tenant_id: auth.info.tid)
+		org.name = tenant.display_name
+		org.save()
+
+		o365_user = O365User.new
+		o365_user.id = auth.info.oid
+		o365_user.email = auth.info.email
+		o365_user.first_name = auth.info.first_name
+		o365_user.last_name = auth.info.last_name
+		o365_user.tenant_id = auth.info.tid
+		o365_user.tenant_name = tenant.display_name
+		o365_user.roles = ms_graph_service.get_my_roles()
+		# TODO
+		session['_o365_user'] = o365_user
+
+		cookies[:o365_login_name] = auth.info.email
+		cookies[:o365_login_email] =  auth.info.first_name + ' ' + auth.info.last_name
+		#cookies[:o365_user_id] = auth.info.oid
+
+		# TODO session local user id
+
+		redirect_to account_index_path
 	end
 
-	def externalLogin
-		redirect_to sign_in_path
-	end
 
 	def register
-	end
-
-	def o365login
-		self.current_user = nil
-		session[:logout] = false
 	end
 
 	def register_account
@@ -164,50 +159,37 @@ class AccountController < ApplicationController
 		redirect_to schools_path
 	end
 
-	def o365_account_login
-		account = User.find_by_o365_email(cookies[:o365_login_email])
-		self.current_user = {}
-		unless account && account.email
-			self.current_user = {
-				display_name: cookies[:o365_login_name],
-				o365_email: cookies[:o365_login_email]
-			}
-			redirect_to link_index_path and return 
-		end
-		redirect_to schools_path
-	end
-
-	def azure_oauth2_callback
-		authorization_code = params["code"]
-		id_token = params["id_token"] 
-
-		if params["admin_consent"] == "True"
-			redirect_to login_for_admin_consent_account_index_path
-			return
-		end
-
-		adal = ADAL::AuthenticationContext.new
-		client_cred = ADAL::ClientCredential.new(Settings.edu_graph_api.app_id, Settings.edu_graph_api.default_key)
-		res = adal.acquire_token_with_authorization_code(authorization_code, "#{get_request_schema}#{Settings.redirect_uri}", client_cred, Constant::Resource::AADGraph)
-
-		cookies[:o365_login_name] = res.user_info.name
-		cookies[:o365_login_email] = res.user_info.unique_name
-		cookies[:o365_user_id] = res.user_info.oid
-
-		_ts = TokenService.new(cookies[:o365_user_id])
-		_ts.set_aad_token(res.access_token, res.expires_on)
-		_ts.set_refresh_token(res.refresh_token)
-		tmp_res = adal.acquire_token_with_refresh_token(res.refresh_token, client_cred, Constant::Resource::MSGraph)
-		_ts.set_ms_token(tmp_res.access_token, tmp_res.expires_on)
+	def photo
+		token_service = TokenService.new
+		access_token = token_service.get_access_token(current_user.o365_user_id, Constant::Resource::MSGraph)
+		ms_graph_service = MSGraphService.new(access_token)
 		
-		if current_user && current_user[:email]
-			# local_account_login
-			redirect_to local_account_login_account_index_path
-		else
-			# o365 account login, check if linked
-			redirect_to o365_account_login_account_index_path
-		end
 
-		# redirect_to schools_path
+		response = ms_graph_service.get_user_photo(params[:id])
+		if response.code == 200
+			send_data response.body, type: response.content_type, disposition: 'inline'
+		else
+			send_file "#{Rails.root}/public/Images/header-default.jpg", disposition: 'inline'
+		end
 	end
+		 
+
+
+	def logoff
+		# has_link = current_user[:surname].present?
+		# local_account_login = current_user[:email].present?
+
+		
+		# session[:logout] = true
+		# session[:local_login] = local_account_login
+		# session[:has_link] = has_link
+		cookies[:user_local_remember] = nil
+		session.clear
+		
+		logoff_url = URI.encode "https://login.microsoftonline.com/common/oauth2/logout?post_logout_redirect_uri=#{get_request_schema}/account/login"
+
+		redirect_to logoff_url
+	end
+
+
 end

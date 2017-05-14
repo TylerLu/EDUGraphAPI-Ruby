@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  root to: 'account#jump'
+  root to: 'account#index'
 
   resources :admin, only: :index do 
     collection do 
@@ -22,7 +22,7 @@ Rails.application.routes.draw do
   resources :schools, only: :index do
   	member do
   	  get :classes
-      post :next_class
+      post :next_classes
       get 'classes/:class_id' => 'schools#class_info'
   	  get :users
       post :next_users
@@ -38,23 +38,26 @@ Rails.application.routes.draw do
 
   # match '/Account/Callback' => 'account#callback', via: [:get, :post]
 
+  get '/users/:id/photo', to: 'account#photo'
+
   resources :account, only: [:index] do 
   	collection do 
   		get :login
-  		post :login_account
+      get :reset
+			post 'login/o365' => 'account#login_o365'
+  		post 'login/local' => 'account#login_local'
 			get :register
-			post :externalLogin
-
 			post :register_account
+
 			post :callback
 			post :logoff
 			get :o365login
 
       get :login_for_admin_consent
       get :local_account_login
-      get :o365_account_login
   	end
   end
+
 
   resources :link, only: [:index, :create] do
     collection do

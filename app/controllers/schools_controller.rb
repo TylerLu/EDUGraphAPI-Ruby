@@ -2,222 +2,145 @@
 # See LICENSE in the project root for license information.  
 
 class SchoolsController < ApplicationController
-
-	before_action :set_current_user, only: :index
+	skip_before_action :verify_authenticity_token
 
 	def index
-		redirect_to(link_index_path) && return unless current_user[:is_linked]
+		token_service = TokenService.new
+		aad_access_token = token_service.get_access_token(current_user.o365_user_id, Constant::Resource::AADGraph)
+		education_service = Education::EducationService.new(current_user.tenant_id, aad_access_token)
+			
+		@me = education_service.get_me
+		@schools = education_service.get_all_schools
+			.sort_by { |s| ((s.school_id == @me.school_id) ? 'A' : 'Z') + s.display_name }
 
-		session[:roles] = aad_graph.get_roles # 获取roles 通过数据库
-
-		# school = Service::Education::School.new(aad_graph)
-		_token_obj = TokenService.new(cookies[:o365_user_id])
-		school = SchoolsService.new(tenant_name, _token_obj, current_user[:school_number])
-
-		@me = current_user
-		@schools = school.get_all_schools
+		# get locations
+		if Settings.BingMapKey
+			bing_map_service = BingMapService.new(Settings.BingMapKey)
+			@schools.each do |s| 
+				if s.address
+					s.custom_data[:location] = bing_map_service.get_longitude_and_latitude_by_address(s.address)
+				end
+			end
+		end
 	end
 
 	def classes
-		@school_id 		= params[:id]
-		school_number = params[:school_number]
-		@school_name 	= params[:school_name]
-		@low_grade 		= params[:low_grade]
-		@high_grade		= params[:high_grade]
-		@principal 		= params[:principal]
-
-		@class_info = {
-			school_id: @school_id,
-			school_number: school_number,
-			school_name: @school_name,
-			low_grade: @low_grade,
-			high_grade: @high_grade,
-			principal: @principal
-		}
-
-		# class_obj = Service::Education::SchoolClass.new(aad_graph, school_number)
-		_ts = TokenService.new(cookies[:o365_user_id])
-    class_obj = SchoolsService.new(self.tenant_name, _ts, school_number)
-		@myclasses = class_obj.get_my_classes_by_school_number(current_user)
-
-		@class_teacher_mapping = class_obj.get_my_cleasses_teacher_mapping
-		@mycourseids = @myclasses.map do |myclass| 
-			myclass[Constant.get(:edu_course_id)]
+		token_service = TokenService.new
+		aad_access_token = token_service.get_access_token(current_user.o365_user_id, Constant::Resource::AADGraph)
+		education_service = Education::EducationService.new(current_user.tenant_id, aad_access_token)
+		
+		@school = education_service.get_school(params[:id])
+		@my_classes = education_service.get_my_sections(@school.school_id)	
+		@classes = education_service.get_sections(@school.school_id)
+		@classes.value.each do |c| 
+			c.custom_data[:is_my] = @my_classes.any?{ |mc| mc.object_id == c.object_id}
 		end
-
-		self.class.current_user_course_ids = @mycourseids
-		res = class_obj.get_classes_by_school_number
-		next_link = (res['odata.nextLink'] || "").match(/skiptoken=(.*)$/)
-		@skip_token = next_link ? next_link[1] : nil
-
-		@url_params = URI.encode_www_form({
-			school_name: 	 @class_info[:school_name],
-			low_grade:  	 @class_info[:low_grade],
-			high_grade:    @class_info[:high_grade],
-			principal:     @class_info[:principal],
-			school_number: @class_info[:school_number]
-		})
-
-		@allclasses = res['value']
 	end
 
-	def next_class
+	def next_classes
 		school_id = params[:school_id]
-		school_number = params[:school_number]
 		skip_token = params[:skip_token]
-		url_params = params[:url_params]
 
-		# class_obj = Service::Education::SchoolClass.new(aad_graph, school_number)
-		_ts = TokenService.new(cookies[:o365_user_id])
-    class_obj = SchoolsService.new(self.tenant_name, _ts, school_number)
-		res = class_obj.get_classes_by_school_number(skip_token)
-		next_link = (res['odata.nextLink'] || "").match(/skiptoken=(.*)$/)
-		skip_token = next_link ? next_link[1] : ""
+		token_service = TokenService.new
+		aad_access_token = token_service.get_access_token(current_user.o365_user_id, Constant::Resource::AADGraph)
+		education_service = Education::EducationService.new(current_user.tenant_id, aad_access_token)
+
+		@my_classes = education_service.get_my_sections(school_id)	
+		@classes = education_service.get_sections(school_id, skip_token)
+		@classes.value.each do |c| 
+			c.custom_data[:is_my] = @my_classes.any?{ |mc| mc.object_id == c.object_id}
+		end
 
 		render json: {
-			skip_token: skip_token,
-			school_id: school_id,
-			url_params: url_params,
-			values: res['value'].map do |course|
+			skip_token: @classes.next_link.skip_token,
+			values: @classes.value.map do |c|
 				{
-					is_my_course: self.class.current_user_course_ids.include?(course[Constant.get(:edu_course_id)]) ? true : false,
-					class_id: course['id'],
-					displayName: course[Constant.get(:display_name)],
-					course_subject: course[Constant.get(:edu_course_suject)][0..2].upcase,
-					course_number: course[Constant.get(:edu_course_number)],
-					course_id: course[Constant.get(:edu_course_id)],
-					course_desc: course[Constant.get(:edu_course_desc)],
-					teacher_name: course[Constant.get(:edu_term_name)],
-					start_time: Date.strptime(course[Constant.get(:edu_term_start_date)], '%m/%d/%Y'),
-					end_time: Date.strptime(course[Constant.get(:edu_term_end_date)], '%m/%d/%Y'),
-					period: course[Constant.get(:edu_period)],
+					is_my: c.custom_data[:is_my],
+					object_id: c.object_id,
+					display_name: c.display_name,
+					course_name: c.course_name,
+					course_id: c.course_id,
+					course_description: c.course_description,
+					combined_course_number: c.combined_course_number,
+					teacher_name: c.term_name,
+					term_start_time: Date.strptime(c.term_start_date, '%m/%d/%Y'),
+					term_end_time: Date.strptime(c.term_end_date, '%m/%d/%Y'),
+					period: c.period,
 				}
 			end
 		}
 	end
 
 	def class_info
-		school_id = params[:id]
-		class_id = params[:class_id]
+		token_service = TokenService.new
+		aad_access_token = token_service.get_access_token(current_user.o365_user_id, Constant::Resource::AADGraph)
+		ms_access_token = token_service.get_access_token(current_user.o365_user_id, Constant::Resource::MSGraph)
+		education_service = Education::EducationService.new(current_user.tenant_id, aad_access_token)
+		ms_graph_servcie = MSGraphService.new(ms_access_token)
 
-		@class_info = {
-			school_id: params[:id],
-			school_number: params[:school_number],
-			school_name: params[:school_name],
-			low_grade: params[:low_grade],
-			high_grade: params[:high_grade],
-			principal: params[:principal]
-		}
+		class_object_id = params[:class_id];
+		@school = education_service.get_school(params[:id])
+		@class = education_service.get_section(class_object_id)
+		@class.members = education_service.get_section_members(class_object_id)
 
-		# class_obj = Service::Education::SchoolClass.new(ms_graph, params[:school_number])
-		_ts = TokenService.new(cookies[:o365_user_id])
-    class_obj = SchoolsService.new(self.tenant_name, _ts, params[:school_number])
-		@user_info = User.find_by_o365_email(cookies[:o365_login_email])
-		student_setting_info = ClassroomSeatingArrangement.where("class_id = ? and position != 0", class_id).order("position asc")
-
-		@student_settings = student_setting_info.group_by{ |_| _.position }
-		student_ids = student_setting_info.map{|_| _.user_id }
-
-		@conversations = class_obj.get_conversations_by_class_id(class_id)
-		@items = class_obj.get_documents_by_class_id(class_id)
-
-		@myclass = class_obj.get_class_info(class_id)
+		@conversations = ms_graph_servcie.get_conversations(class_object_id)
+		@documents = ms_graph_servcie.get_documents(class_object_id)
 		
-		members = class_obj.get_class_members(class_id)
-		@student_info = []
-		@id_name = {}
-		@id_color = {}
+		seating_position_hash = ClassroomSeatingArrangement
+			.where("class_id = ? and position != 0", class_object_id)
+			.pluck(:user_id, :position)
+			.to_h
 
-		user_obj = UserService.new(aad_graph, ms_graph)
-		members["value"].each do |member|
-			resource_name = member['url'].split("#{tenant_name}/").last
-			_tmp = aad_graph.get_resource(resource_name)
-
-			@id_name[_tmp[Constant.get(:object_id)]] = _tmp[Constant.get(:display_name)]
-
-			account = User.find_by_o365_email(_tmp['mail'])
-			@id_color[_tmp[Constant.get(:object_id)]] = account.try(:favorite_color)
-
-			@student_info << {
-				user_id: _tmp[Constant.get(:object_id)], 
-				displayName: _tmp[Constant.get(:display_name)], 
-				object_type: _tmp[Constant.get(:edu_object_type)],
-				email: _tmp[Constant.get(:principal_name)],
-				grade: _tmp[Constant.get(:edu_grade)],
-				photo: user_obj.get_user_photo_url(_tmp[Constant.get(:object_id)]),
-				has_seat: student_ids.include?(_tmp[Constant.get(:object_id)]) ? true : false
-			}
+		favorite_color_hash = User
+			.where('o365_user_id', @class.members.map{ |m| m.object_id } )
+			.pluck(:o365_user_id, :favorite_color)
+			.to_h
+		
+		@class.members.each do |m|
+			m.custom_data[:position] = seating_position_hash[m.object_id]
+			m.custom_data[:favorite_color] = favorite_color_hash[m.object_id]
+			if m.is_teacher
+				@teacher_favorite_color = favorite_color_hash[m.object_id]
+			end
 		end
-
 	end
 
 	def users
-		@school_id 		= params[:id]
-		school_number = params[:school_number]
-		@school_name 	= params[:school_name]
-		@low_grade 		= params[:low_grade]
-		@high_grade 	= params[:high_grade]
-		@principal 		= params[:principal]
-		
-		@class_info = {
-			school_id: @school_id,
-			school_number: school_number,
-			school_name: @school_name,
-			low_grade: @low_grade,
-			high_grade: @high_grade,
-			principal: @principal
-		}
+		token_service = TokenService.new
+		aad_access_token = token_service.get_access_token(current_user.o365_user_id, Constant::Resource::AADGraph)
+		education_service = Education::EducationService.new(current_user.tenant_id, aad_access_token)
 
-		_ts = TokenService.new(cookies[:o365_user_id])
-    class_obj = SchoolsService.new(self.tenant_name, _ts, school_number)
-		# user_obj = Service::Education::SchoolUser.new(aad_graph, school_number)
-		user_obj = class_obj.edu_section_user
-		res_all = user_obj.get_users
-		@all_next_link = res_all["odata.nextLink"]
-		res_teacher = user_obj.get_teachers
-		res_student = user_obj.get_students
-
-		@teacher_next_link = res_teacher['odata.nextLink']
-		@student_next_link = res_student['odata.nextLink']
-
-		@teachers = res_teacher['value']
-		@students = res_student['value']
-		@all = res_all['value']
+		@school = education_service.get_school(params[:id])
+		@users = education_service.get_members(@school.object_id)
+		@teachers = education_service.get_teachers(@school.school_id)
+		@students = education_service.get_students(@school.school_id)
 	end
 
 	def next_users
-		school_number = params[:school_number]
-		next_link = params[:next_link].match(/skiptoken=(.*)$/)[1]
+		school_object_id = params[:id]
+		school_id = params[:school_id]
+		skip_token = params[:skip_token]
 		type = params[:type]
 
-		# user_obj = Service::Education::SchoolUser.new(aad_graph, school_number)
-		_ts = TokenService.new(cookies[:o365_user_id])
-    class_obj = SchoolsService.new(self.tenant_name, _ts, school_number)
-		user_obj = class_obj.edu_section_user
-		if type == 'users'
-			res = user_obj.get_users(skiptoken: next_link)
-		elsif type == 'teachers'
-			res = user_obj.get_teachers(next_link)
-		else
-			res = user_obj.get_students(next_link)
-		end
+		token_service = TokenService.new
+		aad_access_token = token_service.get_access_token(current_user.o365_user_id, Constant::Resource::AADGraph)
+		education_service = Education::EducationService.new(current_user.tenant_id, aad_access_token)
 
-		if res['odata.error'] && 
-			 res['odata.error']['code'] == Constant.get(:errors)[:token_expired]
-			render json: {
-				expired: true
-			}
-			return 
+		if type == 'users'
+			users = education_service.get_members(school_object_id, skip_token)
+		elsif type == 'teachers'
+			users = education_service.get_teachers(school_id, skip_token)
+		else
+			users = education_service.get_students(school_id, skip_token)
 		end
 
 		render json: {
-			skip_token: res['odata.nextLink'],
-			values: res['value'].map do |_user|
+			skip_token: users.next_link ? users.next_link.skip_token : nil,
+			values: users.value.map do |user|
 				{
-					object_type: _user[Constant.get(:edu_object_type)],
-					objectId: _user[Constant.get(:object_id)],
-					displayName: _user[Constant.get(:display_name)],
-					photo: get_user_photo_url(_user[Constant.get(:object_id)])
+					object_type: user.education_object_type,
+					object_id: user.object_id,
+					display_name: user.display_name
 				}
 			end
 		}

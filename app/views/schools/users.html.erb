@@ -3,32 +3,32 @@ See LICENSE in the project root for license information.   -->
 <%= content_for :title, 'Teachers & Students - EDUGraphAPI' %>
 
 <% content_for :header_list do %>
-  <%= render 'common/header_list', class_info: @class_info %>
+  <%= render 'common/header_list', school: @school %>
 <% end %>
 
 <% content_for :user_login_info do %>
-    <%= render 'common/user_login_info', userinfo: session[:current_user] %>
+    <%= render 'common/user_login_info' %>
 <% end %>
 
 <div class="row schools teacher-student">
     <div class="tophero">
         <div class="col-md-8">
             <div class="secondnav">
-                <a href="/schools">All Schools</a> > <%= @school_name %></div>
+                <a href="/schools">All Schools</a> > <%= @school.display_name %></div>
             <div class="a-heading">Teachers & Students</div>
         </div>
         <div class="toptiles">
-            <div class="section-school-name"><%= @school_name %></div>
+            <div class="section-school-name"><%= @school.display_name %></div>
             <div class="infocontainer">
                 <div class="infoheader">PRINCIPAL</div>
-                <div class="infobody" title="<%= @principal %>">
-                    <%= @principal %>
+                <div class="infobody" title="<%= @school.principal_name %>">
+                    <%= @school.principal_name %>
                 </div>
             </div>
             <div class="infocontainer">
                 <div class="infoheader">Grade levels</div>
                 <div class="infobody" title="">
-                    <%= @low_grade %> - <%= @high_grade %>
+                    <%= @school.lowest_grade %> - <%= @school.highest_grade %>
                 </div>
             </div>
         </div>
@@ -50,20 +50,20 @@ See LICENSE in the project root for license information.   -->
     <div class="users-container tiles-root-container">
         <div id="users" class="tiles-secondary-container">        
             <div class="content" id='users_1'>
-              <% if @all.empty? %>
+              <% if @users.value.empty? %>
                 <div class="nodata"> There is no data available for this page at this time.</div>
               <% end %>
-              <% @all.each do |_one| %>
-                <div class="element <%= _one['extension_fe2174665583431c953114ff7268b7b3_Education_ObjectType'] == 'Teacher' ? 'teacher-bg' : 'student-bg' %>">
+              <% @users.value.each do | user | %>
+                <div class="element <%= user.is_teacher ? 'teacher-bg' : 'student-bg' %>">
                     <div class="userimg">
-                        <img src="/Images/header-default.jpg" realheader="<%= get_user_photo_url(_one['objectId']) %>" />
+                        <img src="/Images/header-default.jpg" realheader="/users/<%= user.object_id %>/photo" />
                     </div>
-                    <div class="username"><%= _one["displayName"] %></div>
+                    <div class="username"><%= user.display_name %></div>
                 </div>
               <% end %>
             </div>
-            <div class="pagination <%= 'hideitem' unless @all_next_link %>">
-                <input id="nextlink" type="hidden" value="<%= @all_next_link %>"/>
+            <div class="pagination <%= 'hideitem' unless @users.next_link %>">
+                <input id="skip_token" type="hidden" value="<%= @users.next_link.skip_token if @users.next_link %>"/>
                 <input id="curpage" type="hidden" value="1" />
                 <span class="current prev">Previous</span>
                 <span class="next">Next</span>
@@ -71,20 +71,20 @@ See LICENSE in the project root for license information.   -->
 		</div>
         <div id="students" class="tiles-secondary-container">        
         	<div class="content" id='students_1'>
-                <% if @students.empty? %>
+                <% if @students.value.empty? %>
                     <div class="nodata"> There is no data available for this page at this time.</div>
                 <% end %>
-        		<% @students.each do |student| %>
+        		<% @students.value.each do |student| %>
                 <div class="element student-bg">
                     <div class="userimg">
-                    <img src="/Images/header-default.jpg" realheader="<%= get_user_photo_url(student['objectId']) %>" />
+                    <img src="/Images/header-default.jpg" realheader="/users/<%= student.object_id %>/photo" />
                     </div>
-                    <div class="username"><%= student["displayName"] %></div>
+                    <div class="username"><%= student.display_name %></div>
                 </div>
                 <% end %>
             </div>
-            <div class="pagination <%= 'hideitem' unless @student_next_link %>">
-                <input id="nextlink" type="hidden" value="<%= @student_next_link %>" />
+            <div class="pagination <%= 'hideitem' unless @students.next_link %>">
+                <input id="skip_token" type="hidden" value="<%= @students.next_link.skip_token if @students.next_link %>" />
                 <input id="curpage" type="hidden" value="1" />
                 <span class="current prev">Previous</span>
                 <span class="next">Next</span>
@@ -92,27 +92,28 @@ See LICENSE in the project root for license information.   -->
 		</div>
         <div id="teachers" class="tiles-secondary-container">
         	<div class="content" id="teachers_1">
-                <% if @teachers.empty? %>
+                <% if @teachers.value.empty? %>
                     <div class="nodata"> There is no data available for this page at this time.</div>
                 <% end %>
-        		<% @teachers.each do |teacher| %>
+        		<% @teachers.value.each do |teacher| %>
                 <div class="element teacher-bg">
                     <div class="userimg">
-                        <img src="/Images/header-default.jpg" realheader="<%= get_user_photo_url(teacher['objectId']) %>" />
+                        <img src="/Images/header-default.jpg" realheader="/users/<%= teacher.object_id %>/photo" />
                     </div>
-                    <div class="username"><%= teacher["displayName"] %></div>
+                    <div class="username"><%= teacher.display_name %></div>
                 </div>
               <% end %>
             </div>
-            <div class="pagination <%= 'hideitem' unless @teacher_next_link %>">
-                <input id="nextlink" type="hidden" value="<%= @teacher_next_link %>"/>
+            <div class="pagination <%= 'hideitem' unless @teachers.next_link %>">
+                <input id="skip_token" type="hidden" value="<%= @teachers.next_link.skip_token if @teachers.next_link %>"/>
                 <input id="curpage" type="hidden" value="1" />
                 <span class="current prev">Previous</span>
                 <span class="next">Next</span>
             </div>
         </div>
     </div>
-    <input id="school-objectid" type="hidden" value="<%= @class_info[:school_number] %>" />
+    <input id="school-id" type="hidden" value="<%= @school.school_id %>" />
+    <input id="school-object-id" type="hidden" value="<%= @school.object_id %>" />
 </div>
 
 <%= javascript_include_tag "users" %>

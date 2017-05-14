@@ -1,93 +1,129 @@
+require_relative 'object_base.rb'
 
 module Education
-  class Section
-    include Education
+
+    class Section < ObjectBase
+
+        def initialize(prop_hash = {})
+            super(prop_hash)
+        end
+
+        def school_id
+           get_education_extension_value('SyncSource_SchoolId')
+        end
+
+        def course_id
+            get_education_extension_value('SyncSource_CourseId')
+        end
+
+        def mail
+            return self.get_value('mail')
+        end
+
+        def display_name
+            return self.get_value('displayName')
+        end
+
+        def course_description
+            get_education_extension_value('CourseDescription')
+        end
+
+        def course_name
+            get_education_extension_value('CourseName')
+        end
+
+        def course_number
+            get_education_extension_value('CourseNumber')
+        end
     
-    attr_accessor :myclasses
-    attr_accessor :school_number
-    attr_accessor :tenant_name
-    attr_accessor :aad_token
+        def term_name
+            get_education_extension_value('TermName')
+        end
 
-    def initialize(tenant_name, token, school_number)
-      self.tenant_name = tenant_name
-      self.aad_token = token
-      self.school_number = school_number
+        def term_start_date
+            get_education_extension_value('TermStartDate')
+        end
+
+        def term_end_date
+            get_education_extension_value('TermEndDate')
+        end
+
+        def period
+            get_education_extension_value('Period')
+        end
+
+        def combined_course_number
+            "#{course_name[0..2].upcase()}#{course_number}"
+            # <%= c['extension_fe2174665583431c953114ff7268b7b3_Education_CourseName'][0..2].upcase rescue '' %><%= c['extension_fe2174665583431c953114ff7268b7b3_Education_CourseNumber'] %>
+            # # TODO
+            # # combined_course_number = ''
+            # # if self.course_name and self.course_number:
+            # #     combined_course_number = self.course_name[0:3].upper() + re.match('\d+', self.course_number).group()
+            # return combined_course_number
+        end
+
+
+
+
+        # def term_start_date
+        #     out_start_date = ''
+        #     if self.start_date:
+        #         convert_date = datetime.datetime.strptime(self.start_date, '%m/%d/%Y')
+        #         out_start_date = convert_date.strftime('%Y-%m-%dT%H:%M:%S')
+        #     return out_start_date
+        # end
+
+
+        # def course_termstartdate
+        #     return self.term_start_date
+        # end
+
+
+        # def TermStartDate
+        #     return self.term_start_date
+        # end
+
+
+        # def term_end_date
+        #     out_end_date = ''
+        #     if self.end_date:
+        #         convert_date = datetime.datetime.strptime(self.end_date, '%m/%d/%Y')
+        #         out_end_date = convert_date.strftime('%Y-%m-%dT%H:%M:%S')
+        #     return out_end_date
+        # end
+    
+
+        # def course_termenddate
+        #     return self.term_end_date
+        # end
+
+
+
+
+
+        def members
+            return self.get_value('members')
+        end
+
+        def members=(value)
+            self.set_value('members', value)
+        end
+
+        def teachers
+            if members
+                members.select{ | m | m.education_object_type == 'Teacher' }
+            else
+                nil
+            end
+        end
+
+        def students
+            if members
+                members.select{ | m | m.education_object_type == 'Student' }
+            else
+                nil
+            end
+        end
+
     end
-
-    def get_my_classes_by_school_number(current_user)
-      self.myclasses ||= if current_user[:school_number] == school_number
-        graph_request({
-          host: Constant::Resource::AADGraph,
-          tenant_name: self.tenant_name,
-          access_token: aad_token,
-          resource_name: "users/#{current_user[:o365_email]}/memberOf"
-        })['value'].select{|_class| _class['objectType'] == 'Group' }
-      else
-        []
-      end
-    end
-
-    def get_class_info(class_id)
-      graph_request({
-        host: Constant::Resource::AADGraph,
-        tenant_name: self.tenant_name,
-        resource_name: "groups/#{class_id}",
-        access_token: aad_token
-      })
-    end
-
-    def get_class_members(class_id)
-      graph_request({
-        host: Constant::Resource::AADGraph,
-        tenant_name: self.tenant_name,
-        resource_name: "groups/#{class_id}/$links/members",
-        access_token: aad_token
-      })
-    end
-
-    # def get_conversations_by_class_id(class_id)
-    #   self.graph.get_conversations_by_class_id(class_id)
-    # end
-
-    # def get_documents_by_class_id(class_id)
-    #   self.graph.get_documents_by_class_id(class_id)
-    # end
-
-    def get_classes_by_school_number(skip_token = nil)
-      _query = {
-        "$top" => 12,
-        "$filter" => "#{Constant.get(:edu_object_type)} eq 'Section' and #{Constant.get(:edu_school_id)} eq '#{self.school_number}'"
-      }
-      _query.merge!({"$skiptoken" => skip_token}) if skip_token
-
-      graph_request({
-        host: Constant::Resource::AADGraph,
-        tenant_name: self.tenant_name,
-        resource_name: 'groups',
-        access_token: aad_token,
-        query: _query
-      })
-    end
-
-    def get_my_cleasses_teacher_mapping
-      class_teacher_mapping = {}
-      (self.myclasses || get_my_classes_by_school_number(self.school_number)).each do |_class|
-        res = graph_request({
-          host: Constant::Resource::AADGraph,
-          tenant_name: self.tenant_name,
-          access_token: aad_token,
-          resource_name: "groups/#{_class["objectId"]}",
-          query: {
-            "$expand" => "members"
-          }
-        })
-        _teacher = res['members'].select do |_member|
-          _member[Constant.get(:edu_object_type)] == "Teacher"
-        end.first
-
-        class_teacher_mapping[res['objectId'].to_s] = _teacher['displayName']
-      end
-      class_teacher_mapping
-    end
-  end
 end

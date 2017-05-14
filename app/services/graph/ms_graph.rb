@@ -32,13 +32,7 @@ module Graph
       }).body
     end
 
-    def get_conversations_by_class_id(class_id)
-      self.mc_graph.groups.find(class_id).conversations rescue []
-    end
 
-    def get_documents_by_class_id(class_id)
-      self.mc_graph.groups.find(class_id).drive.root.children rescue []
-    end
   end
 end
 

@@ -3,45 +3,44 @@ See LICENSE in the project root for license information.   -->
 <%= content_for :title, 'Class Details - EDUGraphAPI' %>
 
 <% content_for :header_list do %>
-  <%= render 'common/header_list', class_info: @class_info %>
+  <%= render 'common/header_list', school: @school %>
 <% end %>
 
 <% content_for :user_login_info do %>
-    <%= render 'common/user_login_info', userinfo: session[:current_user] %>
+    <%= render 'common/user_login_info' %>
 <% end %>
-
 
 <div class="row schools class-details">
     <div class="tophero">
         <div class="container">
             <div class="col-md-6 secondnav">
                 <a href="/schools"> All Schools</a>
-                > <a href='/schools/<%= @class_info[:school_id] %>/classes?<%= URI.encode("id=#{@class_info[:school_id]}&school_number=#{@class_info[:school_number]}&school_name=#{@class_info[:school_name]}&low_grade=#{@class_info[:low_grade]}&high_grade=#{@class_info[:high_grade]}&principal=#{@class_info[:principal]}") %>'><%= @class_info[:school_name] %></a>
-                > <%= @myclass['extension_fe2174665583431c953114ff7268b7b3_Education_CourseName'] %>
+                > <a href='/schools/<%= @school.object_id %>'><%= @school.display_name %></a>
+                > <%= @class.course_name %>
             </div>
         </div>
         <div class="container">
             <div class="a-heading ">Class Details</div>
-            <div class="b-title"><%= @myclass['extension_fe2174665583431c953114ff7268b7b3_Education_CourseNumber'] %> | <%= @myclass['displayName'] %></div>
+            <div class="b-title"><%= @class.course_number %> | <%= @class.display_name %></div>
         </div>
         <div class="container coursedetail">
             <div class="col-md-6">
-                <span>Course Name:</span> <%= @myclass['extension_fe2174665583431c953114ff7268b7b3_Education_CourseName'] %>
+                <span>Course Name:</span> <%= @class.course_name %>
                 <br />
-                <span>Description:</span> <%= @myclass['extension_fe2174665583431c953114ff7268b7b3_Education_CourseDescription'] %>
+                <span>Description:</span> <%= @class.course_description %>
                 <br />
-                <span>Period:</span> <%= @myclass['extension_fe2174665583431c953114ff7268b7b3_Education_Period'] %>
+                <span>Period:</span> <%= @class.period %>
                 <br />
-                <span>Term Name:</span> <%= @myclass['extension_fe2174665583431c953114ff7268b7b3_Education_TermName'] %>
+                <span>Term Name:</span> <%= @class.term_name %>
                 <br />
                 <span>Start/Finish Date:</span>
-                <span id="termdate"><%= @myclass['extension_fe2174665583431c953114ff7268b7b3_Education_TermStartDate'] %></span>
+                <span id="termdate"><%= @class.term_start_date %></span>
                 <span id="termdate-separator"> - </span>
-                <span id="termdate"><%= @myclass['extension_fe2174665583431c953114ff7268b7b3_Education_TermEndDate'] %></span>
+                <span id="termdate"><%= @class.term_end_date %></span>
             </div>
             <div class="col-md-6">
                 <span>Teacher:</span> 
-                <%= (@student_info.select{|_| _[:object_type] == 'Teacher'}.first || {}).fetch(:displayName, '') %>
+                <%= (@class.teachers.first || {}).display_name %>
             </div>
         </div>
         <div style="clear:both;"></div>
@@ -55,7 +54,7 @@ See LICENSE in the project root for license information.   -->
         </ul>
         <div class="tab-content">
             <div id="students" class="tab-pane fade in active">
-                    <table class="table  table-green table-student tablesorter" id="studentsTable">
+                    <table class="table table-green table-student tablesorter" id="studentsTable">
                         <thead>
                             <tr class="table-green-header">
                                 <th class="tdleft">student name</th>
@@ -63,10 +62,13 @@ See LICENSE in the project root for license information.   -->
                             </tr>
                         </thead>
                         <tbody>
-                            <% @student_info.select{|_| _[:object_type] == 'Student'}.each do |student| %>
+                            <% @class.students.each do |student| %>
                                 <tr class="tr-content">
-                                    <td><img src="<%= student[:photo] %>" realheader="<%= student[:photo] %>" /> <%= student[:displayName] %> </td>
-                                    <td><%= student[:grade] %></td>
+                                    <td>
+                                        <img src="/images/header-default.jpg" realheader="/users/<%= student.object_id %>/photo" /> 
+                                        <%= student.display_name %> 
+                                    </td>
+                                    <td><%= student.grade %></td>
                                 </tr>
                             <% end %>    
                         </tbody>
@@ -88,21 +90,21 @@ See LICENSE in the project root for license information.   -->
                             </tr>
                         </thead>
                         <tbody>
-                            <% @items.each do |item| %>
+                            <% @documents.each do |document| %>
                             <tr class="tr-content">
                                 <td class="border-holder"></td>
                                 <td class="space-holder left"></td>
                                 <td>
-                                    <a target="_blank" href="<%= item.web_url %>"><%= item.name %></a>
+                                    <a target="_blank" href="<%= document.web_url %>"><%= document.name %></a>
                                 </td>
-                                <td><%= item.last_modified_date_time %></td>
-                                <td><%= item.created_by.user.display_name %></td>
+                                <td><%= document.last_modified_date_time %></td>
+                                <td><%= document.created_by.user.display_name %></td>
                                 <td class="space-holder right"></td>
                             </tr>
                             <% end %>
                         </tbody>
                     </table>
-                <span class="see-more"><a href="https://canvizedu.sharepoint.com/sites/<%= @myclass['mail'] %>/Shared%20Documents" target="_blank">See All</a></span>
+                <span class="see-more"><a href="https://canvizedu.sharepoint.com/sites/<%= @class.mail %>/Shared%20Documents" target="_blank">See All</a></span>
                 <br style="clear:both" />
             </div>
             <div id="conversations" class="tab-pane fade">
@@ -113,56 +115,56 @@ See LICENSE in the project root for license information.   -->
                                     <td class="border-holder"></td>
                                     <td class="space-holder left"></td>
                                     <td>
-                                        <a target="_blank" href="https://outlook.office.com/owa/?path=/group/<%= @myclass['mail'] %>/mail&exsvurl=1&ispopout=0&ConvID=<%= conversation.id %>"><%= conversation.topic %></a>
+                                        <a target="_blank" href="https://outlook.office.com/owa/?path=/group/<%= @class.mail %>/mail&exsvurl=1&ispopout=0&ConvID=<%= conversation.id %>"><%= conversation.topic %></a>
                                     </td>
                                     <td class="space-holder right"></td>
                                 </tr>
                             <% end %>
                         </tbody>
                     </table>
-                <span class="see-more"><a target="_blank" href="https://outlook.office.com/owa/?path=/group/<%= @myclass['mail'] %>/mail&amp;exsvurl=1&amp;ispopout=0">See All</a></span>
+                <span class="see-more"><a target="_blank" href="https://outlook.office.com/owa/?path=/group/<%= @class.mail %>/mail&amp;exsvurl=1&amp;ispopout=0">See All</a></span>
                 <br style="clear:both" />
             </div>
 
-            <% if session[:current_user][:user_identify] == "Teacher" %>
+            <% if current_user.is_teacher %>
             <div id="seatingchart" class="tab-pane fade">
                 <div id="saveResult" style="display: none;"><div>Seating map changes saved.</div></div>
                 <div class="left" id="dvleft">
                         <div class="tip"> To assign seats for each student, drag and drop student profile icons below onto the seating map to the right.</div>
                     <ul id="lstproducts">
-                        <% @student_info.select{|_| _[:object_type] == 'Student'}.each do |student| %>
-                        <li id="<%= student[:user_id] %>">
-                            <img src="<%= student[:photo] %>" realheader="<%= student[:photo] %>" />
-                            <span class="disname"> <%= student[:displayName] %> </span>
-                            <span class="seated <%= 'hideitem' unless student[:has_seat] %>">seated ✓</span>
+                        <% @class.students.each do |student| %>
+                        <li id="<%= student.object_id %>">
+                            <img src="/images/header-default.jpg" realheader="/users/<%= student.object_id %>/photo" />
+                            <span class="disname"> <%= student.display_name %> </span>
+                            <span class="seated <%= 'hideitem' unless student.custom_data[:position] %>">seated ✓</span>
                         </li>
                         <% end %>
                     </ul>
                     <div id="hidtiles" class="hideitem">
-                        <% @student_info.select{|_| _[:object_type] == 'Student' && !_[:has_seat] }.each do |student| %>
-                        <div class="deskcontainer unsaved" style="<%= 'background-color: ' + student[:favorite_color] if student[:favorite_color] %>" position="0" userid="<%= student[:user_id] %>">
+                        <% @class.students.select{|s| !s.custom_data['position'] }.each do |student| %>
+                        <div class="deskcontainer unsaved" style="<%= 'background-color: ' + student.custom_data[:favorite_color] if student.custom_data[:favorite_color] %>" position="0" userid="<%= student.object_id %>">
                             <div class="deskclose"><img src="/Images/close.png"></div>
                             <div class="deskicon">
-                                <img src="<%= student[:photo] %>" realheader="<%= student[:photo] %>" />
+                                <img src="/images/header-default.jpg" realheader="/users/<%= student.object_id %>/photo" />
                             </div>
-                            <div class="stuname"><%= student[:displayName] %></div>
+                            <div class="stuname"><%= student.display_name %></div>
                         </div>
                         <% end %>
                     </div>
                 </div>
                 <div class="right" id="dvright">
-                    <div class="teacherdesk" style="background-color: <%= @user_info.favorite_color || '#2F19FF' %>">Teacher's desk</div>
+                    <div class="teacherdesk" style="background-color: <%= @teacher_favorite_color || '#2F19FF' %>">Teacher's desk</div>
                     <div>
                         <div id="graybg">
                             <% (1..36).each do |index| %>
-                                <% if _student = @student_settings[index] %>
+                                <% if student = @class.members[index] %>
                                 <div class="desktile" position="<%= index %>">
-                                    <div class="deskcontainer white" style="<%= 'background-color: ' + @id_color[_student.first.user_id] if @id_color[_student.first.user_id] %>" position="<%= index %>" userid="<%= _student.first.user_id %>">
+                                    <div class="deskcontainer white" style="<%= 'background-color: ' + student.custom_data[:favorite_color] if student.custom_data[:favorite_color] %>" position="<%= index %>" userid="<%= student.object_id %>">
                                         <div class="deskclose" style="display: none;"><img src="/Images/close.png"></div>
                                         <div class="deskicon">
-                                            <img src="/Images/header.png" realheader="<%= get_user_photo_url(_student.first.user_id) %>">
+                                            <img src="/Images/header-default.png" realheader="/users/<%= student.object_id%>/photo">
                                         </div>
-                                    <div class="stuname"><%= @id_name[_student.first.user_id] %></div>
+                                    <div class="stuname"><%= student.display_name %></div>
                                     </div>
                                 </div>
                                 <% else %>
@@ -186,7 +188,7 @@ See LICENSE in the project root for license information.   -->
                     <ul id="lstproducts">
                         <% @student_info.select{|_| _[:object_type] == 'Student'}.each do |student| %>
                         <li id="<%= student[:user_id] %>">
-                            <img src="<%= student[:photo] %>" realheader="<%= student[:photo] %>" />
+                            <img src="/images/header-default.jpg" realheader="/users/<%= student.object_id %>/photo" />
                             <span class="disname"> <%= student[:displayName] %> </span>
                             <span class="seated <%= 'hideitem' unless student[:has_seat] %>">seated ✓</span> 
                         </li>
@@ -197,9 +199,9 @@ See LICENSE in the project root for license information.   -->
                         <div class="deskcontainer unsaved green" style="background-color:#2F19FF" position="0" userid="<%= student[:user_id] %>">
                             <div class="deskclose"><img src="/Images/close.png"></div>
                             <div class="deskicon">
-                                <img src="<%= student[:photo] %>" realheader="<%= student[:photo] %>" />
+                                <img src="/images/header-default.jpg" realheader="/users/<%= student.student_id %>/photo" />
                             </div>
-                            <div class="stuname"><%= student[:displayName] %></div>
+                            <div class="stuname"><%= student.display_name %></div>
                         </div>
                         <% end %>
                     </div>
@@ -209,14 +211,14 @@ See LICENSE in the project root for license information.   -->
                     <div>
                         <div id="graybg">
                             <% (1..36).each do |index| %>
-                                <% if _student = @student_settings[index] %>
+                                <% if student = @class.students %>
                                 <div class="desktile" position="<%= index %>">
-                                    <div class="deskcontainer white" style="<%= 'background-color: ' + @id_color[_student.first.user_id] if @id_color[_student.first.user_id] %>" position="<%= index %>" userid="<%= _student.first.user_id %>">
+                                    <div class="deskcontainer white" style="<%= 'background-color: ' + student.custom_data[:favorite_color] if student.custom_data[:favorite_color] %>" position="<%= index %>" userid="<%= student.object_id %>">
                                         <div class="deskclose"><img src="/Images/close.png"></div>
                                         <div class="deskicon">
-                                            <img src="/Images/header.png" realheader="<%= get_user_photo_url(_student.first.user_id) %>">
+                                            <img src="/Images/header.png" realheader="/users/<%= student.object_id %>/photo">
                                         </div>
-                                    <div class="stuname"><%= @id_name[_student.first.user_id] %></div>
+                                    <div class="stuname"><%= student.display_name %></div>
                                     </div>
                                 </div>
                                 <% else %>
@@ -234,6 +236,6 @@ See LICENSE in the project root for license information.   -->
         </div>
     </div>
 </div>
-<input type="hidden" name="hidSectionid" id="hidSectionid" value="<%= @myclass['objectId'] %>" />
+<input type="hidden" name="hidSectionid" id="hidSectionid" value="<%= @class.object_id %>" />
 
 <%= javascript_include_tag "classdetail" %>

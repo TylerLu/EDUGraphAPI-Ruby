@@ -11,12 +11,16 @@ class AdminController < ApplicationController
   end
 
   def consent
-    if request.post?
-    	# consent_url = "https://login.microsoftonline.com/common/oauth2/authorize?response_type=code&client_id=#{Settings.edu_graph_api.app_id}&resource=https://graph.windows.net&redirect_uri=#{get_request_schema}#{Settings.redirect_uri}&state=12345&prompt=admin_consent"
-      adal = ADAL::AuthenticationContext.new
-      consent_url = adal.authorization_request_url(Constant::Resource::AADGraph, Settings.edu_graph_api.app_id, "#{get_request_schema}#{Settings.redirect_uri}", {prompt: 'admin_consent'})
-    	redirect_to consent_url.to_s
-    end
+    redirect_to sign_in_path(
+      :prompt => 'admin_consent',
+      :callback_path => '/admin/process_code'
+    )
+    # if request.post?
+    # 	# consent_url = "https://login.microsoftonline.com/common/oauth2/authorize?response_type=code&client_id=#{Settings.edu_graph_api.app_id}&resource=https://graph.windows.net&redirect_uri=#{get_request_schema}#{Settings.redirect_uri}&state=12345&prompt=admin_consent"
+    #   adal = ADAL::AuthenticationContext.new
+    #   consent_url = adal.authorization_request_url(Constant::Resource::AADGraph, Settings.edu_graph_api.app_id, "#{get_request_schema}#{Settings.redirect_uri}", {prompt: 'admin_consent'})
+    # 	redirect_to consent_url.to_s
+    # end
   end
 
   def unconsent
