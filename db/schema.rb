@@ -44,10 +44,7 @@ ActiveRecord::Schema.define(version: 20170501145527) do
     t.index ["updated_at"], name: "index_sessions_on_updated_at"
   end
 
-  create_table "tokens", force: :cascade do |t|
-    t.string   "gwn_refresh_token", limit: 2000
-    t.string   "o365email",         limit: 50
-    t.string   "gmc_refresh_token", limit: 2000
+  create_table "token_caches", force: :cascade do |t|
     t.datetime "created_at",                     null: false
     t.datetime "updated_at",                     null: false
     t.string   "o365_userId"
@@ -56,11 +53,11 @@ ActiveRecord::Schema.define(version: 20170501145527) do
   end
 
   create_table "user_roles", force: :cascade do |t|
-    t.integer  "account_id"
+    t.integer  "user_id"
     t.integer  "role_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["account_id"], name: "index_user_roles_on_account_id"
+    t.index ["user_id"], name: "index_user_roles_on_user_id"
     t.index ["role_id"], name: "index_user_roles_on_role_id"
   end
 

@@ -11,7 +11,7 @@ See LICENSE in the project root for license information.   -->
 	<%= render 'common/user_login_info' %>
 <% end %>
 
-<% unless current_user.are_linked %>
+<% unless current_user.are_linked? %>
   <br />
   <p>You will need to link your O365 and local accounts in order to use the functionality of this demo application. Please click on the browser 'Back' button to go back and link your existing local account or create a local account.</p>
 <% else %>
@@ -29,7 +29,7 @@ See LICENSE in the project root for license information.   -->
         <% if @me.education_object_type %>
       	<div class="infocontainer">
             <div class="infoheader">
-							<%= @me.education_object_type %> @me.education_user_id
+							<%= @me.education_object_type %> ID
             </div>
             <div class="infobody"><%= @me.education_user_id %></div>
         </div>

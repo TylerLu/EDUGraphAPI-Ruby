@@ -10,6 +10,6 @@ See LICENSE in the project root for license information.   -->
 	<li><a href="/schools/<%= school.object_id %>/users">Teachers & Students</a></li>
 <% end %>
 
-<% if current_user.is_admin %>
+<% if current_user.is_admin? %>
 	<li><a href="/admin">Admin</a></li>
 <% end %>

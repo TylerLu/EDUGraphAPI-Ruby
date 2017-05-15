@@ -54,7 +54,7 @@ See LICENSE in the project root for license information.   -->
                 <div class="nodata"> There is no data available for this page at this time.</div>
               <% end %>
               <% @users.value.each do | user | %>
-                <div class="element <%= user.is_teacher ? 'teacher-bg' : 'student-bg' %>">
+                <div class="element <%= user.is_teacher? ? 'teacher-bg' : 'student-bg' %>">
                     <div class="userimg">
                         <img src="/Images/header-default.jpg" realheader="/users/<%= user.object_id %>/photo" />
                     </div>

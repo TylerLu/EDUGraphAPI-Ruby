@@ -61,7 +61,7 @@ Rails.application.routes.draw do
 
   resources :link, only: [:index, :create] do
     collection do
-      post :loginO365
+      post :login_O365
       # post :processcode
       post :create_local_account_post
       post :link_to_local_account
@@ -69,6 +69,7 @@ Rails.application.routes.draw do
       get :login_o365_required
       get :relogin_o365
       match :create_local_account, via: [:get, :post]
+      match 'azure_oauth2/callback' => 'link#azure_oauth2_callback', via: [:get, :post]
     end
   end
   

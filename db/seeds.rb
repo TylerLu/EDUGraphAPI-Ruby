@@ -6,6 +6,6 @@
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
 
-Role.find_or_create_by!({role_name: 'faculty'})
-Role.find_or_create_by!({role_name: 'admin'})
-Role.find_or_create_by!({role_name: 'student'})
+Role.find_or_create_by!({role_name: Constant::Roles::Admin})
+Role.find_or_create_by!({role_name: Constant::Roles::Faculty})
+Role.find_or_create_by!({role_name: Constant::Roles::Student})

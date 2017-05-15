@@ -99,7 +99,7 @@ class SchoolsController < ApplicationController
 		@class.members.each do |m|
 			m.custom_data[:position] = seating_position_hash[m.object_id]
 			m.custom_data[:favorite_color] = favorite_color_hash[m.object_id]
-			if m.is_teacher
+			if m.is_teacher?
 				@teacher_favorite_color = favorite_color_hash[m.object_id]
 			end
 		end

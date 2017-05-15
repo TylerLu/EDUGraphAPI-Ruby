@@ -5,9 +5,9 @@ class LinkController < ApplicationController
   skip_before_action :verify_authenticity_token
 
   def index
-    if current_user.are_linked
+    if current_user.are_linked?
       @link_info = User.find_by_email(current_user.o365_email)
-    elsif current_user.is_o365      
+    elsif current_user.is_o365?      
       @has_local_account = User.exists?(email: current_user.o365_email)
     end
   end
@@ -16,8 +16,8 @@ class LinkController < ApplicationController
   end
 
   def create_local_account_post
-  	account = User.find_by_o365_email(cookies[:o365_login_email])
-  	if account
+  	local_user = User.find_by_o365_email(cookies[:o365_login_email])
+  	if local_user
   	  redirect_to link_index_path, alert: 'already linked' and return 
   	else
   		local_user = User.new
@@ -41,6 +41,10 @@ class LinkController < ApplicationController
       local_user.o365_email = current_user.o365_email
       local_user.o365_user_id = current_user.o365_user_id
       local_user.organization = Organization.find_by_tenant_id(current_user.tenant_id)
+
+      byebug
+
+
       # TODO Roles  
       local_user.save
       session['_local_user_id'] = local_user.id
@@ -62,28 +66,47 @@ class LinkController < ApplicationController
     local_user.o365_user_id = current_user.o365_user_id
     local_user.o365_email = current_user.o365_email
     local_user.organization = Organization.find_by_tenant_id(current_user.o365_user_id)
-    account.save
+    local_user.save
     redirect_to schools_path and return
   end
 
-
-
-
-  def loginO365
+  def login_O365
     redirect_to sign_in_path(
-      :prompt => 'admin_consent',
-      :callback_path => '/admin/process_code'
+      :prompt => 'login',
+      :callback_path => '/link/azure_oauth2/callback'
     )
-    # redirect_to sign_in_path(:prompt => login)
-    # # authorize_url = "https://login.microsoftonline.com/common/oauth2/authorize?response_type=id_token+code&client_id=#{Settings.edu_graph_api.app_id}&response_mode=form_post&scope=openid+profile&nonce=luyao&redirect_uri=#{get_request_schema}#{Settings.redirect_uri}&state=12345&prompt=login"
-    # adal = ADAL::AuthenticationContext.new
-    # redirect_url = adal.authorization_request_url(Constant::Resource::AADGraph, Settings.edu_graph_api.app_id, "#{get_request_schema}#{Settings.redirect_uri}", {prompt: 'login'})
-    # redirect_to redirect_url.to_s
-
-    # # redirect_to authorize_url
   end
 
-  def processcode
+  def azure_oauth2_callback
+    auth = request.env['omniauth.auth']
+    
+    byebug
+		# cahce tokens
+		tokenService = TokenService.new
+		tokenService.cache_tokens(auth.info.oid, Constant::Resource::AADGraph, auth.credentials.refresh_token, auth.credentials.token, auth.credentials.expires_at)
+
+		token_service = TokenService.new
+		token = token_service.get_access_token(auth.info.oid, Constant::Resource::MSGraph)
+
+		ms_graph_service = MSGraphService.new(token)
+		tenant = ms_graph_service.get_organization(auth.info.tid)
+
+		org = Organization.find_or_create_by(tenant_id: auth.info.tid)
+		org.name = tenant.display_name
+		org.save()
+
+		local_user = User.find_by_id(current_user.user_id)
+    local_user.assign_attributes({
+      o365_user_id: auth.info.oid,
+      o365_email: auth.info.email,
+      organization: org
+    })
+    local_user.save();
+
+		cookies[:o365_login_name] = auth.info.email
+		cookies[:o365_login_email] =  auth.info.first_name + ' ' + auth.info.last_name
+
+		redirect_to account_index_path
   end
 
 

@@ -54,52 +54,7 @@ module Education
 
         def combined_course_number
             "#{course_name[0..2].upcase()}#{course_number}"
-            # <%= c['extension_fe2174665583431c953114ff7268b7b3_Education_CourseName'][0..2].upcase rescue '' %><%= c['extension_fe2174665583431c953114ff7268b7b3_Education_CourseNumber'] %>
-            # # TODO
-            # # combined_course_number = ''
-            # # if self.course_name and self.course_number:
-            # #     combined_course_number = self.course_name[0:3].upper() + re.match('\d+', self.course_number).group()
-            # return combined_course_number
         end
-
-
-
-
-        # def term_start_date
-        #     out_start_date = ''
-        #     if self.start_date:
-        #         convert_date = datetime.datetime.strptime(self.start_date, '%m/%d/%Y')
-        #         out_start_date = convert_date.strftime('%Y-%m-%dT%H:%M:%S')
-        #     return out_start_date
-        # end
-
-
-        # def course_termstartdate
-        #     return self.term_start_date
-        # end
-
-
-        # def TermStartDate
-        #     return self.term_start_date
-        # end
-
-
-        # def term_end_date
-        #     out_end_date = ''
-        #     if self.end_date:
-        #         convert_date = datetime.datetime.strptime(self.end_date, '%m/%d/%Y')
-        #         out_end_date = convert_date.strftime('%Y-%m-%dT%H:%M:%S')
-        #     return out_end_date
-        # end
-    
-
-        # def course_termenddate
-        #     return self.term_end_date
-        # end
-
-
-
-
 
         def members
             return self.get_value('members')

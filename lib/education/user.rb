@@ -16,7 +16,7 @@ module Education
             get_education_extension_value('Grade')
         end
 
-        def is_teacher
+        def is_teacher?
             education_object_type == 'Teacher'
         end
 

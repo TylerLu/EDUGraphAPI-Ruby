@@ -12,19 +12,19 @@ class UnifiedUser
         self.o365_user || self.local_user
     end
 
-    def are_linked
+    def are_linked?
         self.o365_user && self.local_user
     end  
 
-    def is_admin
+    def is_admin?
         self.o365_user && (self.o365_user.roles.include? Constant::Roles::Admin)
     end
 
-    def is_teacher
+    def is_teacher?
         self.o365_user && (self.o365_user.roles.include? Constant::Roles::Faculty)
     end
 
-    def is_student
+    def is_student?
         self.o365_user && (self.o365_user.roles.include? Constant::Roles::Student)
     end
 
@@ -40,31 +40,31 @@ class UnifiedUser
     end
 
     def email
-        self.local_user.email
+        local_user ? local_user.email : nil
     end
 
     def o365_email
-        self.o365_user.email
+        o365_user ? o365_user.email : nil
     end
 
     def o365_user_id
-        self.o365_user.id
+        o365_user ? o365_user.id : nil
     end
 
     def user_id
-        self.local_user.id
+        local_user ? local_user.id : nil
     end
 
     def tenant_id
-        self.o365_user.tenant_id
+        o365_user ? o365_user.tenant_id : nil
     end
 
-    def is_local
-        self.o365_user.nil?
+    def is_local?
+        o365_user.nil?
     end
 
-    def is_o365
-        self.local_user.nil?
+    def is_o365?
+        local_user.nil?
     end
 
     def display_name

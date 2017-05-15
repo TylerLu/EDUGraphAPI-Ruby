@@ -5,13 +5,13 @@ class ManageController < ApplicationController
 	skip_before_action :verify_authenticity_token
 
   def aboutme
-  	@account = User.find_by_email(cookies[:local_account]) || User.find_by_o365_email(cookies[:o365_login_email])
+  	@local_user = User.find_by_email(cookies[:local_account]) || User.find_by_o365_email(cookies[:o365_login_email])
   end
 
   def update_favorite_color
-  	account = User.find(params["account_id"])
-  	account.favorite_color = params["favoritecolor"]
-  	account.save
+  	local_user = User.find(params["account_id"])
+  	local_user.favorite_color = params["favoritecolor"]
+  	local_user.save
 
   	redirect_to aboutme_manage_index_path, notice: 'Favorite color has been updated!'
   end

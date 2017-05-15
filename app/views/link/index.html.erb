@@ -18,33 +18,36 @@ See LICENSE in the project root for license information.   -->
 
 <h2>Link Office 365 &amp; Local Account</h2>
 
-<% if @link_info && !@link_info.o365_email %>
-<p>This page will enable you to link your Office 365 & Local Account together to successfully use the demo application.</p>
-<div class="form-horizontal" id="linkAccountPrompt"><hr />
-	<form action="/link/loginO365" method="post">
-	<p><input type="submit" value="Link to existing O365 account" class="btn btn-primary" /> &nbsp; &nbsp;</p>
-	</form>        
-</div>
-<% elsif !@link_info || (@link_info && !@link_info.email) %>
-<p>This page will enable you to link your Office 365 & Local Account together to successfully use the demo application.</p><hr />
-<div class="form-horizontal">
-    <% if @has_local_account %>
-    <p>There is a local account: <%= current_user.o365_email %> matching your O365 account.</p>
-    <% end %>
-    <p>
-<a class="btn btn-primary" <%= 'disabled' if @has_local_account %> href="<%= @has_local_account ? 'javascript:void(0)' : '/link/create_local_account'  %>">Continue with new Local Account</a>                    &nbsp; &nbsp;
-<a class="btn btn-primary" href="/link/login_local">Link with existing Local Account</a> &nbsp; &nbsp;
-    </p>
-</div>
+<% if !current_user.are_linked? %>
+
+ <% if current_user.is_local? %>
+  <p>This page will enable you to link your Office 365 & Local Account together to successfully use the demo application.</p>
+    <div class="form-horizontal" id="linkAccountPrompt"><hr />
+      <form action="/link/login_O365" method="post">
+      <p><input type="submit" value="Link to existing O365 account" class="btn btn-primary" /> &nbsp; &nbsp;</p>
+      </form>        
+    </div>
+  <% else %>
+    <p>This page will enable you to link your Office 365 & Local Account together to successfully use the demo application.</p><hr />
+    <div class="form-horizontal">
+        <% if @has_local_account %>
+        <p>There is a local account: <%= current_user.o365_email %> matching your O365 account.</p>
+        <% end %>
+        <p>
+          <a class="btn btn-primary" <%= 'disabled' if @has_local_account %> href="<%= @has_local_account ? 'javascript:void(0)' : '/link/create_local_account'  %>">Continue with new Local Account</a>                    &nbsp; &nbsp;
+          <a class="btn btn-primary" href="/link/login_local">Link with existing Local Account</a> &nbsp; &nbsp;
+        </p>
+    </div>
+  <% end %>
 <% else %>
-<div>
-  <p>Your local account and Office 365 account are now linked.</p>
-  <p>
-    <ul>
-      <li>Local account: <%= @link_info.email %></li>
-      <li>Office 365 account: <%= @link_info.o365_email %></li>
-    </ul>
-  </p>
-  <p><a class="btn btn-default" href="/schools">Return to home</a></p>
-</div>
+  <div>
+    <p>Your local account and Office 365 account are now linked.</p>
+    <p>
+      <ul>
+        <li>Local account: <%= @link_info.email %></li>
+        <li>Office 365 account: <%= @link_info.o365_email %></li>
+      </ul>
+    </p>
+    <p><a class="btn btn-default" href="/schools">Return to home</a></p>
+  </div>
 <% end %>

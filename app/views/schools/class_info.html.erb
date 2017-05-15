@@ -126,7 +126,7 @@ See LICENSE in the project root for license information.   -->
                 <br style="clear:both" />
             </div>
 
-            <% if current_user.is_teacher %>
+            <% if current_user.is_teacher? %>
             <div id="seatingchart" class="tab-pane fade">
                 <div id="saveResult" style="display: none;"><div>Seating map changes saved.</div></div>
                 <div class="left" id="dvleft">

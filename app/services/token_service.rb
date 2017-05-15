@@ -11,7 +11,7 @@ class TokenService
   end
 
   def cache_tokens(o365_user_id, resource, refresh_token, access_token, jwt_exp)
-    cache = Token.find_or_create_by(o365_userId: o365_user_id)
+    cache = TokenCache.find_or_create_by(o365_userId: o365_user_id)
     cache.refresh_token = refresh_token
     access_tokens = cache.access_tokens ? JSON.parse(cache.access_tokens) : {}
     access_tokens[resource] = { 
@@ -23,7 +23,7 @@ class TokenService
   end
 
   def get_access_token(o365_user_id, resource)
-    cache = Token.find_by_o365_userId(o365_user_id)
+    cache = TokenCache.find_by_o365_userId(o365_user_id)
     if !cache
       raise RefreshTokenError
     end

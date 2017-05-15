@@ -7,7 +7,7 @@ class AdminController < ApplicationController
 
   def index
   	# 判断是否consent
-  	@account = User.find_by_o365_email(cookies[:o365_login_email])
+  	@local_user = User.find_by_o365_email(cookies[:o365_login_email])
   end
 
   def consent
@@ -32,14 +32,14 @@ class AdminController < ApplicationController
     if obj
       res = admin_obj.delete_service_principals(obj['objectId'])
 
-      account = User.find_by_o365_email(cookies[:o365_login_email])
-      account.organization.update_attributes({
+      local_user = User.find_by_o365_email(cookies[:o365_login_email])
+      local_user.organization.update_attributes({
         is_admin_consented: false
       })
-      account.save
+      local_user.save
 
       # User.where("o365_email is not null and email is not null and o365_email != ?", cookies[:o365_login_email]).each do |_account|
-      account.organization.users.each do |_account|
+      local_user.organization.users.each do |_account|
         _account.update_attributes({
           o365_email: nil,
           o365_user_id: nil,
@@ -73,13 +73,13 @@ class AdminController < ApplicationController
 
   def unlink_account
   	account_id = params[:account_id]
-  	@account = User.find(account_id)
+  	@local_user = User.find(account_id)
 
   	if request.post?
       # @account.unlink_email = @account.o365_email
   		# @account.o365_email = nil
-      @account.organization_id = nil
-  		@account.save
+      @local_user.organization_id = nil
+  		@local_user.save
   		redirect_to linked_accounts_admin_index_path
   	end
   end

@@ -8,9 +8,9 @@ class AccountController < ApplicationController
 		url = ''
 		if !current_user.is_authenticated
 			url = '/account/login'
-		elsif !current_user.are_linked
+		elsif !current_user.are_linked?
 			url = '/link'
-		elsif current_user.is_admin #&& not consented
+		elsif current_user.is_admin? #&& not consented
 			url = '/admin'
 		else
 			url = '/schools'
@@ -35,15 +35,15 @@ class AccountController < ApplicationController
 	end
 
 	def login_local
-		session.clear
-		account = User.find_by_email(params["Email"])
-		if account && account.authenticate(params["Password"])
-			session['_local_user_id'] = account.id
-			if account.o365_email
+		local_user = User.find_by_email(params["Email"])
+		if local_user && local_user.authenticate(params["Password"])
+			session['_local_user_id'] = local_user.id
+			if local_user.o365_email
 				o365_user = O365User.new
-				o365_user.id = account.o365_user_id
-				o365_user.email = account.o365_email
-				# TODO
+				o365_user.id = local_user.o365_user_id
+				o365_user.email = local_user.o365_email
+				o365_user.first_name = local_user.first_name
+				o365_user.last_name = local_user.last_name
 				session['_o365_user'] = o365_user
 			end	
 			redirect_to account_index_path
@@ -54,6 +54,7 @@ class AccountController < ApplicationController
 
 	def azure_oauth2_callback
 		auth = request.env['omniauth.auth']
+
 		# cahce tokens
 		tokenService = TokenService.new
 		tokenService.cache_tokens(auth.info.oid, Constant::Resource::AADGraph, auth.credentials.refresh_token, auth.credentials.token, auth.credentials.expires_at)
@@ -82,14 +83,18 @@ class AccountController < ApplicationController
 		o365_user.tenant_id = auth.info.tid
 		o365_user.tenant_name = tenant.display_name
 		o365_user.roles = ms_graph_service.get_my_roles()
-		# TODO
+	
 		session['_o365_user'] = o365_user
+
+
+		local_user = User.find_by_o365_email(auth.info.email)
+		if local_user
+			session['_local_user_id'] = local_user.id
+		end
 
 		cookies[:o365_login_name] = auth.info.email
 		cookies[:o365_login_email] =  auth.info.first_name + ' ' + auth.info.last_name
 		#cookies[:o365_user_id] = auth.info.oid
-
-		# TODO session local user id
 
 		redirect_to account_index_path
 	end
@@ -99,32 +104,32 @@ class AccountController < ApplicationController
 	end
 
 	def register_account
-		account = User.find_by_email(params["Email"])
+		local_user = User.find_by_email(params["Email"])
 
-		if account
+		if local_user
 			redirect_to register_account_index_path, alert: "email #{params['Email']} is already taken"
 		else
-			account = User.new
-			account.assign_attributes({
+			local_user = User.new
+			local_user.assign_attributes({
 				email: params["Email"],
 				password: params["Password"],
 				favorite_color: params["FavoriteColor"],
 			})
-			if account.save
+			if local_user.save
 				session.clear
-				self.current_user = { display_name: params["Email"], email: params["Email"], is_local_account_login: true }
+				session['_local_user_id'] = local_user.id
 				redirect_to "/link?email=#{params["Email"]}"
 			end
 		end
 	end
 
 	def login_for_admin_consent
-		account = User.find_by_o365_email(cookies[:o365_login_email])
-		if _organization = account.organization
-			account.organization.update_attributes({
+		local_user = User.find_by_o365_email(cookies[:o365_login_email])
+		if _organization = local_user.organization
+			local_user.organization.update_attributes({
 				is_admin_consented: true
 			})
-			account.save
+			local_user.save
 		else
 			_organization = Organization.new
 			_organization.update_attributes({
@@ -132,30 +137,30 @@ class AccountController < ApplicationController
 				is_admin_consented: true
 			})
 			_organization.save
-			account.organization = _organization
-			account.save
+			local_user.organization = _organization
+			local_user.save
 		end
 		
 		redirect_to admin_index_path, notice: 'admin consent success'
 	end
 
 	def local_account_login
-		account = User.find_by_email(current_user[:email])
+		local_user = User.find_by_email(current_user[:email])
 
 		if User.find_by_o365_email(cookies[:o365_login_email])
 			redirect_to link_index_path, notice: "Failed to link accounts. The Office 365 account '#{cookies[:o365_login_email]}' is already linked to another local account."
 			return
 		end
 
-		account.o365_email = cookies[:o365_login_email]
-		account.o365_user_id = cookies[:o365_user_id]
-		_token = Token.find_by_o365_userId(cookies[:o365_user_id])
+		local_user.o365_email = cookies[:o365_login_email]
+		local_user.o365_user_id = cookies[:o365_user_id]
+		_token = TokenCache.find_by_o365_userId(cookies[:o365_user_id])
 
-		account.username = cookies[:o365_login_name]
-		account.organization = Organization.find_by_name(cookies[:o365_login_name][/(?<=@).*/])			
-		account.token = _token
+		local_user.username = cookies[:o365_login_name]
+		local_user.organization = Organization.find_by_name(cookies[:o365_login_name][/(?<=@).*/])			
+		local_user.token = _token
 
-		account.save
+		local_user.save
 		redirect_to schools_path
 	end
 
