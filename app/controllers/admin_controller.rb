@@ -11,7 +11,7 @@ class AdminController < ApplicationController
   end
 
   def consent
-    redirect_to sign_in_path(
+    redirect_to azure_auth_path(
       :prompt => 'admin_consent',
       :callback_path => '/admin/process_code'
     )
@@ -89,3 +89,26 @@ class AdminController < ApplicationController
     @accounts = Organization.find_by_name(self.tenant_name).users
   end
 end
+
+
+
+	# def login_for_admin_consent
+	# 	local_user = User.find_by_o365_email(cookies[:o365_login_email])
+	# 	if _organization = local_user.organization
+	# 		local_user.organization.update_attributes({
+	# 			is_admin_consented: true
+	# 		})
+	# 		local_user.save
+	# 	else
+	# 		_organization = Organization.new
+	# 		_organization.update_attributes({
+	# 			name: cookies[:o365_login_email][/(?<=@).*/],
+	# 			is_admin_consented: true
+	# 		})
+	# 		_organization.save
+	# 		local_user.organization = _organization
+	# 		local_user.save
+	# 	end
+		
+	# 	redirect_to admin_path, notice: 'admin consent success'
+	# end

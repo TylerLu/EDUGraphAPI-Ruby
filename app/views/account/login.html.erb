@@ -6,7 +6,7 @@ See LICENSE in the project root for license information.   -->
     <div class="row">
         <div class="col-md-5">
             <section id="loginForm">
-                <form action="/account/login/local" class="form-horizontal" method="post" role="form"><input name="__RequestVerificationToken" type="hidden" value="" />          
+                <form action="/account/login_local" class="form-horizontal" method="post" role="form"><input name="__RequestVerificationToken" type="hidden" value="" />          
                 <h4 class="margin-btm-20">Use your local account to log in</h4>
                     <div class="validation-summary-errors text-danger">
                         <ul>
@@ -41,7 +41,7 @@ See LICENSE in the project root for license information.   -->
                         </div>
                     </div>
                     <p>
-                        <a href="/account/register?class=registerlink">Register as a new user</a>
+                        <a href="/account/register">Register as a new user</a>
                     </p>
                 </form>            
             </section>
@@ -49,7 +49,7 @@ See LICENSE in the project root for license information.   -->
         <div class="col-md-5">
             <section id="socialLoginForm">
                 <h4 class="margin-btm-20">Use your school account</h4>
-                    <form action="/account/login/o365?callback_path=abc" method="post">
+                    <form action="/account/login_o365?callback_path=abc" method="post">
                     <div id="socialLoginList">
                         <p><button type="submit" class="btn btn-default btn-ms-login" id="OpenIdConnect" name="provider" value="OpenIdConnect" title="Log in using your Microsoft Work or school account"></button></p>
                     </div>

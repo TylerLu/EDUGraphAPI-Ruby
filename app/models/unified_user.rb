@@ -28,6 +28,10 @@ class UnifiedUser
         self.o365_user && (self.o365_user.roles.include? Constant::Roles::Student)
     end
 
+    def roles
+        o365_user ? o365_user.roles : []
+    end
+
     def main_role
         if o365_user && o365_user.roles
             for role in [Constant::Roles::Admin, Constant::Roles::Faculty, Constant::Roles::Student]
@@ -69,7 +73,13 @@ class UnifiedUser
 
     def display_name
         user = self.o365_user || self.local_user
-        user ? "#{user.first_name} #{user.last_name}" : ""
+        if user
+            if user.first_name.blank? || user.last_name.blank?
+                return user.email
+            else
+                return "#{user.first_name} #{user.last_name}"
+            end
+        end
     end
 
 end

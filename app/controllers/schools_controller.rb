@@ -5,7 +5,6 @@ class SchoolsController < ApplicationController
 	skip_before_action :verify_authenticity_token
 
 	def index
-		token_service = TokenService.new
 		aad_access_token = token_service.get_access_token(current_user.o365_user_id, Constant::Resource::AADGraph)
 		education_service = Education::EducationService.new(current_user.tenant_id, aad_access_token)
 			
@@ -25,7 +24,6 @@ class SchoolsController < ApplicationController
 	end
 
 	def classes
-		token_service = TokenService.new
 		aad_access_token = token_service.get_access_token(current_user.o365_user_id, Constant::Resource::AADGraph)
 		education_service = Education::EducationService.new(current_user.tenant_id, aad_access_token)
 		
@@ -41,7 +39,6 @@ class SchoolsController < ApplicationController
 		school_id = params[:school_id]
 		skip_token = params[:skip_token]
 
-		token_service = TokenService.new
 		aad_access_token = token_service.get_access_token(current_user.o365_user_id, Constant::Resource::AADGraph)
 		education_service = Education::EducationService.new(current_user.tenant_id, aad_access_token)
 
@@ -72,7 +69,6 @@ class SchoolsController < ApplicationController
 	end
 
 	def class_info
-		token_service = TokenService.new
 		aad_access_token = token_service.get_access_token(current_user.o365_user_id, Constant::Resource::AADGraph)
 		ms_access_token = token_service.get_access_token(current_user.o365_user_id, Constant::Resource::MSGraph)
 		education_service = Education::EducationService.new(current_user.tenant_id, aad_access_token)
@@ -106,7 +102,6 @@ class SchoolsController < ApplicationController
 	end
 
 	def users
-		token_service = TokenService.new
 		aad_access_token = token_service.get_access_token(current_user.o365_user_id, Constant::Resource::AADGraph)
 		education_service = Education::EducationService.new(current_user.tenant_id, aad_access_token)
 
@@ -122,7 +117,6 @@ class SchoolsController < ApplicationController
 		skip_token = params[:skip_token]
 		type = params[:type]
 
-		token_service = TokenService.new
 		aad_access_token = token_service.get_access_token(current_user.o365_user_id, Constant::Resource::AADGraph)
 		education_service = Education::EducationService.new(current_user.tenant_id, aad_access_token)
 

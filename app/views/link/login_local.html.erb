@@ -16,24 +16,32 @@ See LICENSE in the project root for license information.   -->
 
 <h4>Link to your local account - Log in with your local account:</h4>
 <section id="loginForm">
-<form action="/link/link_to_local_account" class="form-horizontal" method="post" role="form"><input name="__RequestVerificationToken" type="hidden" value="sUlRJ0uQW6T-JHB8jQ4dWjArEQ4J9Ybh0HIMI2FnyDn_h9qXRZHLaqKc6grQwRBtxH8qLdwooh4u5WAqADUD30Q1iYe2rgNpytmi59NgVSpL3t483DLfz4vN4rlD6COInCcbzJLK0PTZMYighHQr-g2" /><div class="validation-summary-errors text-danger"><ul><% if flash[:alert] %><li><%= flash[:alert] %></li><% end %>
-</ul></div>        <div class="form-group">
-            <label class="col-md-2 control-label" for="Email">Email</label>
-            <div class="col-md-10">
-                <input class="input-validation-error form-control" data-val="true" data-val-email="The Email field is not a valid e-mail address." data-val-required="The Email field is required." id="Email" name="Email" type="text" value="" />
-                <span class="field-validation-error text-danger" data-valmsg-for="Email" data-valmsg-replace="true">The Email field is required.</span>
-            </div>
+    <form action="/link/link_to_local_account" class="form-horizontal" method="post" role="form">
+    <div class="validation-summary-errors text-danger">
+        <ul>
+            <% if flash[:alert] %>
+                <li><%= flash[:alert] %></li>
+            <% end %>
+        </ul>
+    </div>
+    <div class="form-group">
+        <label class="col-md-2 control-label" for="Email">Email</label>
+        <div class="col-md-10">
+            <input class="input-validation-error form-control" data-val="true" data-val-email="The Email field is not a valid e-mail address." data-val-required="The Email field is required." id="Email" name="Email" type="text" value="" />
+            <span class="field-validation-error text-danger" data-valmsg-for="Email" data-valmsg-replace="true">The Email field is required.</span>
         </div>
-        <div class="form-group">
-            <label class="col-md-2 control-label" for="Password">Password</label>
-            <div class="col-md-10">
-                <input class="input-validation-error form-control" data-val="true" data-val-required="The Password field is required." id="Password" name="Password" type="password" />
-                <span class="field-validation-error text-danger" data-valmsg-for="Password" data-valmsg-replace="true">The Password field is required.</span>
-            </div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-2 control-label" for="Password">Password</label>
+        <div class="col-md-10">
+            <input class="input-validation-error form-control" data-val="true" data-val-required="The Password field is required." id="Password" name="Password" type="password" />
+            <span class="field-validation-error text-danger" data-valmsg-for="Password" data-valmsg-replace="true">The Password field is required.</span>
         </div>
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Log in and Link" class="btn btn-default" />
-            </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" value="Log in and Link" class="btn btn-default" />
         </div>
-</form></section>
+    </div>
+    </form>
+</section>

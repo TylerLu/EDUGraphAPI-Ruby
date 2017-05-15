@@ -399,7 +399,7 @@ For http GET request sent by the 3 methods above, an access token is included in
 
 There are 4 authentication flows in this project.
 
-The first 2 flows (Local Login/O365 Login) enable users to login in with either a local account or an Office 365 account, then link to the other type account. This procedure is implemented in the LinkController.
+The first 2 flows (Local login_o365 Login) enable users to login in with either a local account or an Office 365 account, then link to the other type account. This procedure is implemented in the LinkController.
 
 **Local Login Authentication Flow**
 

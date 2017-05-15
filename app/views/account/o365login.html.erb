@@ -8,7 +8,7 @@ See LICENSE in the project root for license information.   -->
     <div class="bodytext"><%= cookies[:o365_login_email] %></div>
     <div class="bodytext">Office 365 account</div>
     <div class="formstyle">
-    <form action="/account/login/o365" method="post"><input name="__RequestVerificationToken" type="hidden" value="" />
+    <form action="/account/login_o365" method="post"><input name="__RequestVerificationToken" type="hidden" value="" />
     <div id="socialLoginList">
         <p>
             <button type="submit" class="btn btn-default btn-ms-login" id="OpenIdConnect" name="provider" value="OpenIdConnect" title="Log in using your Microsoft Work or school account"></button>
