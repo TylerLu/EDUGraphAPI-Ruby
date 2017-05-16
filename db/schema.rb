@@ -64,22 +64,16 @@ ActiveRecord::Schema.define(version: 20170501145527) do
   create_table "users", force: :cascade do |t|
     t.string   "first_name",      limit: 40, default: ""
     t.string   "last_name",       limit: 40, default: ""
-    t.integer  "organization_id"
+    t.string   "email",           limit: 70
+    t.string   "password"
+    t.string   "password_digest"
+    t.string   "favorite_color",  limit: 20
     t.string   "o365_user_id"
     t.string   "o365_email"
-    t.string   "job_title"
-    t.string   "department"
-    t.string   "mobile",          limit: 30
-    t.string   "business_phones",            default: ""
-    t.string   "favorite_color",  limit: 20
-    t.string   "username",        limit: 50
-    t.string   "password"
-    t.string   "email",           limit: 70
+    t.integer  "organization_id"
     t.boolean  "remember_me"
     t.datetime "created_at",                              null: false
     t.datetime "updated_at",                              null: false
-    t.integer  "token_id"
-    t.string   "password_digest"
   end
 
 end

@@ -70,7 +70,8 @@ class AccountController < ApplicationController
 		end
 
 		set_local_user(user)
-		if user.o365_user_id && user.o365_email
+
+		if user.is_linked?
 			o365_user = O365User.new(user.o365_user_id, user.o365_email, user.first_name, user.last_name, 
 				user.organization.tenant_id, user.organization.name, user.roles.map { |r| r.name })
 			set_o365_user(o365_user)
@@ -89,7 +90,7 @@ class AccountController < ApplicationController
 		  	render 'register' and return
 		end
 
-		user = user_service.register(params["Email"], params["Email"], params["Password"], params["FavoriteColor"])
+		user = user_service.register(params["Email"], params["Password"], params["FavoriteColor"])
 		set_local_user(user)
 		redirect_to account_index_path
 	end

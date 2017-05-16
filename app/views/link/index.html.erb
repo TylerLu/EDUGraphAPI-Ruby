@@ -11,8 +11,14 @@ See LICENSE in the project root for license information.   -->
 <% end %>
 
 <% if flash[:notice] %>
-  <div class="message-container bg-danger">
+  <div class="message-container bg-success">
       <p><%= flash[:notice] %></p>
+  </div>
+<% end %>
+
+<% if flash[:alert] %>
+  <div class="message-container bg-danger">
+      <p><%= flash[:alert] %></p>
   </div>
 <% end %>
 
@@ -24,10 +30,10 @@ See LICENSE in the project root for license information.   -->
   <% if current_user.is_o365? %>
     <div class="form-horizontal">
       <% if @local_user %>
-        <p>There is a local account: <%= local_user.email %> matching your O365 account.</p>
+        <p>There is a local account: <%= @local_user.email %> matching your O365 account.</p>
         <p>
-          <a class="btn btn-primary disabled" href="javascript:void(0)">Continue with new Local Account</a>&nbsp; &nbsp;
-          <form action="/link/matched_local">
+          <form action="/link/matched_local" method="post">
+            <a class="btn btn-primary" disabled="disabled" href="javascript:void(0)">Continue with new Local Account</a>&nbsp; &nbsp;
             <button type="submit" class="btn btn-primary">Link with existing Local Account</button> &nbsp; &nbsp;
           </form>
         </p>
@@ -39,9 +45,11 @@ See LICENSE in the project root for license information.   -->
       <% end %> 
     </div>
   <% else # !current_user.is_o365? %> 
-    <div class="form-horizontal" id="linkAccountPrompt"><hr />
+    <div class="form-horizontal" id="linkAccountPrompt">
       <form action="/link/login_O365" method="post">
-      <p><input type="submit" value="Link to existing O365 account" class="btn btn-primary" /> &nbsp; &nbsp;</p>
+        <p>
+          <input type="submit" value="Link to existing O365 account" class="btn btn-primary" /> &nbsp; &nbsp;
+        </p>
       </form>        
     </div>
   <% end %>

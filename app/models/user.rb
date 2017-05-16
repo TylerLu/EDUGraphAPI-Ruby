@@ -6,4 +6,9 @@ class User < ApplicationRecord
   belongs_to :organization
   has_many :user_roles
   has_many :roles, through: :user_roles
+
+  def is_linked?
+    !self.o365_email.blank? && !self.o365_user_id.blank?
+  end
+
 end

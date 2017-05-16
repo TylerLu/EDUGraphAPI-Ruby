@@ -16,7 +16,7 @@ See LICENSE in the project root for license information.   -->
 
 <h4>Link to your local account - Log in with your local account:</h4>
 <section id="loginForm">
-    <form action="/link/link_to_local_account" class="form-horizontal" method="post" role="form">
+    <form action="/link/login_local" class="form-horizontal" method="post" role="form">
     <div class="validation-summary-errors text-danger">
         <ul>
             <% if flash[:alert] %>
@@ -27,15 +27,15 @@ See LICENSE in the project root for license information.   -->
     <div class="form-group">
         <label class="col-md-2 control-label" for="Email">Email</label>
         <div class="col-md-10">
-            <input class="input-validation-error form-control" data-val="true" data-val-email="The Email field is not a valid e-mail address." data-val-required="The Email field is required." id="Email" name="Email" type="text" value="" />
-            <span class="field-validation-error text-danger" data-valmsg-for="Email" data-valmsg-replace="true">The Email field is required.</span>
+            <input class="form-control" data-val="true" data-val-email="The Email field is not a valid e-mail address." data-val-required="The Email field is required." id="Email" name="Email" type="text" value="" />
+            <span class="field-validation-error text-danger" data-valmsg-for="Email" data-valmsg-replace="true"></span>
         </div>
     </div>
     <div class="form-group">
         <label class="col-md-2 control-label" for="Password">Password</label>
         <div class="col-md-10">
-            <input class="input-validation-error form-control" data-val="true" data-val-required="The Password field is required." id="Password" name="Password" type="password" />
-            <span class="field-validation-error text-danger" data-valmsg-for="Password" data-valmsg-replace="true">The Password field is required.</span>
+            <input class="form-control" data-val="true" data-val-required="The Password field is required." id="Password" name="Password" type="password" />
+            <span class="field-validation-error text-danger" data-valmsg-for="Password" data-valmsg-replace="true"></span>
         </div>
     </div>
     <div class="form-group">

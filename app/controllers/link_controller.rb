@@ -14,8 +14,8 @@ class LinkController < ApplicationController
   def matched_local
     user_service = UserService.new
     user = user_service.get_user_by_email(current_user.o365_email)
-    if user.o365_user_id || user.o365_email
-      redirect_to link_index_path, alert: 'The local account has already been linked to another Office 365 account.' and return 
+    if user.is_linked?
+      redirect_to account_index_path, notice: 'The local account has already been linked to another Office 365 account.' and return 
   	end
 
     link_service = LinkService.new()
@@ -36,28 +36,31 @@ class LinkController < ApplicationController
     link_service.link(user, o365_user.id, o365_user.email, o365_user.tenant_id, o365_user.roles)
 
     set_local_user(user)
-  	redirect_to schools_path
+  	redirect_to account_index_path, notice: 'Your local account has been successfully linked to your Office 365 account.'
   end
 
-  def local_login
+  def login_local
   end
 
-  def local_login_post       
-    user_service = UserService.new 
+  def login_local_post      
+    user_service = UserService.new
     user = user_service.authenticate(params["Email"], params["Password"])
     if !user
-      redirect_to login_local_link_index_path, alert: 'username or password is incorrect' and return
+      flash[:alert] = 'Email or password is incorrect'
+      render 'login_local' and return
     end
 
-    if user.o365_user_id || user.o365_email
-      redirect_to login_local_link_index_path, alert: 'The local account has already been linked to another Office 365 account.' and return
+    if user.is_linked?
+      flash[:alert] ='The local account has already been linked to another Office 365 account.'
+      render 'login_local' and return
     end
 
     link_service = LinkService.new()
     o365_user = current_user.o365_user
     link_service.link(user, o365_user.id, o365_user.email, o365_user.tenant_id, o365_user.roles)
+    set_local_user(user)
 
-    redirect_to schools_path and return
+    redirect_to account_index_path, notice: 'Your local account has been successfully linked to your Office 365 account.'
   end
 
   def login_O365
@@ -69,6 +72,13 @@ class LinkController < ApplicationController
 
   def azure_oauth2_callback
     auth = request.env['omniauth.auth']
+
+    # check if the o365 account is linked with other account
+    link_service = LinkService.new()
+    if link_service.is_linked_to_local_account(auth.info.email)
+      flash[:alert] = "Failed to link accounts. The Office 365 account '#{auth.info.email}' is already linked to another local account."
+      redirect_to account_index_path and return
+    end
     
 		# cahce tokens
 		token_service.cache_tokens(auth.info.oid, Constant::Resource::AADGraph, auth.credentials.refresh_token, auth.credentials.token, auth.credentials.expires_at)
@@ -85,12 +95,15 @@ class LinkController < ApplicationController
 		cookies[:o365_login_name] = auth.info.first_name + ' ' + auth.info.last_name
 		cookies[:o365_login_email] =  auth.info.email
 
-    # create organization and link local user
+    # create or update organization
     user_service = UserService.new
     user_service.create_or_update_organization(auth.info.tid, tenant.display_name)
+
+    # lin accounts
+    link_service = LinkService.new()
     link_service.link(current_user.local_user, o365_user.id, o365_user.email, o365_user.tenant_id, o365_user.roles)
     
-		redirect_to account_index_path
+		redirect_to account_index_path, notice: 'Your local account has been successfully linked to your Office 365 account.'
   end
 
 
@@ -99,8 +112,8 @@ class LinkController < ApplicationController
 
   def relogin_o365
     redirect_to azure_auth_path(
-      :logint_hint => current_user.o365_email
       :prompt => 'login',
+      :logint_hint => current_user.o365_email,
       :callback_path => '/account/azure_oauth2/callback'
     )
   end

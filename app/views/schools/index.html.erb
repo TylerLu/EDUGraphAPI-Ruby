@@ -15,11 +15,13 @@ See LICENSE in the project root for license information.   -->
   <br />
   <p>You will need to link your O365 and local accounts in order to use the functionality of this demo application. Please click on the browser 'Back' button to go back and link your existing local account or create a local account.</p>
 <% else %>
-<% if flash[:notice] == 'linked' %>
-<div class="message-container bg-success">
-    <p>Your local account has been successfully linked to your Office 365 account.</p>
-</div>
+
+<% if flash[:notice] %>
+  <div class="message-container bg-success">
+      <p><%= flash[:notice] %></p>
+  </div>
 <% end %>
+
 <div class="row schools">
   <div class="tophero">
       <div class="col-md-6">

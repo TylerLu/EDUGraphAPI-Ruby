@@ -2,12 +2,12 @@ class LinkService
 
   def is_linked_to_local_account(o365_email)
     user = User.find_by_o365_email(o365_email)
-    user.o365_email && user.o365_user_id
+    user && user.is_linked?
   end
 
   def is_linked_to_o365_account(email)
     user = User.find_by_email(email)
-    user.o365_email && user.o365_user_id
+    user && user.is_linked?
   end
 
   def link(local_user, o365_user_id, o365_email, tenant_id, roles)
