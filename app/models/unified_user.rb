@@ -63,6 +63,10 @@ class UnifiedUser
         o365_user ? o365_user.tenant_id : nil
     end
 
+    def tenant_name
+        o365_user ? o365_user.tenant_name : nil
+    end
+
     def is_local?
         o365_user.nil?
     end

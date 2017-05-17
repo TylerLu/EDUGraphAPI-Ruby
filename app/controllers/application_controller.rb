@@ -30,6 +30,10 @@ class ApplicationController < ActionController::Base
         session['_local_user_id'] = local_user.id
     end
 
+    def clear_local_user()
+        session.delete(:_local_user_id)
+    end 
+
     def set_o365_user(o365_user)
         session['_o365_user'] = o365_user
     end

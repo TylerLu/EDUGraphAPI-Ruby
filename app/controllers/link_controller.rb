@@ -63,14 +63,14 @@ class LinkController < ApplicationController
     redirect_to account_index_path, notice: 'Your local account has been successfully linked to your Office 365 account.'
   end
 
-  def login_O365
+  def login_o365
     redirect_to azure_auth_path(
       :prompt => 'login',
-      :callback_path => '/link/azure_oauth2/callback'
+      :callback_path => '/link/login_o365_callback'
     )
   end
 
-  def azure_oauth2_callback
+  def login_o365_callback
     auth = request.env['omniauth.auth']
 
     # check if the o365 account is linked with other account
@@ -105,7 +105,6 @@ class LinkController < ApplicationController
     
 		redirect_to account_index_path, notice: 'Your local account has been successfully linked to your Office 365 account.'
   end
-
 
   def login_o365_required
   end

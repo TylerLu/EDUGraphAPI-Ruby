@@ -20,5 +20,40 @@ class LinkService
     local_user.save
   end
 
+  def get_linked_users(tenant_id)
+    org = Organization.find_by_tenant_id(tenant_id)
+    if org
+      User.where(tenant_id: tenant_id)
+        .where.not(o365_user_id, '')
+        .where.not(o365_email, '')
+    else
+      User.none 
+    end
+  end
+
+  def unlink_accounts(tenant_id)
+    org = Organization.find_by_tenant_id(tenant_id)
+    if org
+      byebug
+      users = User.where(organization_id: org.id).update_all({
+        o365_user_id: nil,
+        o365_email: nil,
+        organization_id: nil,
+      })
+      # TODO clear roles
+    end
+  end
+
+  def unlink_account(user_id)
+    user = User.find_by_id(user_id)
+    if user
+      user.update_attributes({
+        o365_user_id: nil,
+        o365_email: nil,
+        organization: nil,
+        roles: Role.none
+      })
+    end
+  end
 
 end

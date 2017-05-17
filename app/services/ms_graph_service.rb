@@ -38,7 +38,7 @@ class MSGraphService
     end
     #
     admin_role = @graph.directoryRoles.first{|_| _.display_name == Constant.AADCompanyAdminRoleName }
-    members = @graph.directoryRoles.find(admin_role.id).members
+    members = @graph.directoryRoles.find(admin_role.id).members  #TODO memeber is empty
     if members.any?{|_| _.id == me.id}
       roles << Constant::Roles::Admin
     end
@@ -52,32 +52,5 @@ class MSGraphService
   def get_documents(section_id)
     @graph.groups.find(section_id).drive.root.children rescue []
   end
-#     return self.roles if self.roles.present?
-#     self.roles = []
-#     if get_current_user['assignedLicenses'].find{|_| _['skuId'] == Constant.get(:teacher_sku_id) || _['skuId'] == Constant.get(:teacher_pro_sku_id) }
-#     self.roles << 'Teacher'
-#     end
-
-#     if get_current_user['assignedLicenses'].find{|_| _['skuId'] == Constant.get(:student_sku_id) || _['skuId'] == Constant.get(:student_pro_sku_id) }
-#     self.roles << 'Student'
-#     end
-
-#     myroles = graph_request({
-#     host: Constant::Resource::AADGraph,
-#     tenant_name: self.tenant_name,
-#     resource_name: 'directoryRoles',
-#     access_token: self.aad_token,
-#     query: {
-#         "$expand" => 'members'
-#     }
-#     })['value'].select{|_| _['displayName'] == Constant.get(:aad_company_admin_role_name) }
-
-#     myroles.each do |_role|
-#     if _role['members'].find{|_| _['objectId'] == get_current_user['objectId'] }
-#         self.roles << 'Admin'
-#     end
-#     end
-
-#     return self.roles
-
+  
 end

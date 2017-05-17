@@ -7,6 +7,10 @@ class UserService
     return nil
   end
 
+  def get_user_by_id(user_id)
+    User.find_by_id(user_id)
+  end
+
   def get_user_by_email(email)
     User.find_by_email(email)
   end
@@ -32,7 +36,7 @@ class UserService
       email: email,
       first_name: first_name,
       last_name: last_name,
-      password: Settings.default_password,
+      password: '1111111', # TODO
       favorite_color: favorite_color
     })
     user.save
@@ -43,6 +47,14 @@ class UserService
     org = Organization.find_or_create_by(tenant_id: tenant_id)
 		org.name = tenant_name
 		org.save()
+  end
+
+  def update_organization(tenant_id, attributes)
+    org = Organization.find_by_tenant_id(tenant_id)
+    if org
+      org.update_attributes(attributes)
+      org.save
+    end
   end
 
 end

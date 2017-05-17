@@ -6,8 +6,8 @@ class AdminService
     self.graph = graph
   end
 
-  def get_service_principals(app_id)
-    self.graph.get_service_principals(app_id)
+  def get_service_principals(ClientId)
+    self.graph.get_service_principals(ClientId)
   end
 
   def delete_service_principals(object_id)

@@ -1,20 +1,46 @@
 
-class AADGraph
+class AADGraphService
 
-  def initialize(access_token, tenant_name)
-    baseUrl = Constant::Resource::AADGraph + '/' + tenant_name
-    self.rest_service = RESTService.new(baseUrl, access_token)
+  def initialize(access_token, tenant_id)
+    @access_token = access_token
+    @baseUrl = Constant::Resource::AADGraph + '/' + tenant_id + '/'
+    #self.rest_service = RESTService.new(baseUrl, access_token)
   end
 
+  def get_service_principal(appId)
+    result = request('get', 'servicePrincipals?api-version=1.6', {
+        '$filter': "appId eq '#{appId}'"
+    })
+    value = result['value']
+    value.length > 0 ? value[0] : nil
+  end
 
-# def get_service_principals(app_id)
+  def delete_service_principal(service_principal_id)
+    request('delete', "servicePrincipals/#{service_principal_id}?api-version=1.6")
+  end
+
+  private def request(request_method, path, query = {}, body = {})
+    body = HTTParty.method(request_method).call(
+      @baseUrl + path,
+      query: query,
+      body: body,
+      headers: {
+        "Authorization" => "Bearer #{@access_token}",
+        "Content-Type" => "application/x-www-form-urlencoded"  #TODO json
+      }
+    ).body
+    JSON.parse(body)
+  end
+
+end
+# def get_service_principals(ClientId)
 #     res = graph_request({
 #     host: Constant::Resource::AADGraph,
 #     tenant_name: self.tenant_name,
 #     resource_name: 'servicePrincipals',
 #     access_token: aad_token,
 #     query: {
-#         "$filter" => "appId eq '#{app_id}'"
+#         "$filter" => "appId eq '#{ClientId}'"
 #     }
 #     })
 #     res['value']
@@ -154,6 +180,7 @@ class AADGraph
 #     host: Constant::Resource::AADGraph,
 #     tenant_name: self.tenant_name,
 #     resource_name: 'directoryRoles',
+
 #     access_token: self.aad_token,
 #     query: {
 #         "$expand" => 'members'
@@ -167,4 +194,3 @@ class AADGraph
 #     end
 
 #     return self.roles
-end

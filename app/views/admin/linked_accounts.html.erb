@@ -17,12 +17,12 @@ See LICENSE in the project root for license information.   -->
         <th>Office 365 Account</th>
         <th></th>
     </tr>
-        <% @accounts.each do |_account| %>
+        <% @linked_users.each do |user| %>
         <tr>
-            <td><%= _account.email %></td>
-            <td><%= _account.o365_email %></td>
+            <td><%= user.email %></td>
+            <td><%= user.o365_email %></td>
             <td>
-                <a href="/admin/unlink_account?account_id=<%= _account.id %>">Unlink</a>
+                <a href="/admin/unlink_account/<%= user.id %>">Unlink</a>
             </td>
         </tr>
         <% end %>

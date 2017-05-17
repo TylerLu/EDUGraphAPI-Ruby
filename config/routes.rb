@@ -4,8 +4,8 @@ Rails.application.routes.draw do
   # oauth2
   get 'auth/azure_oauth2', as: :azure_auth
   match 'auth/azure_oauth2/callback', to: 'account#azure_oauth2_callback', via: [:get, :post]
-  match 'link/azure_oauth2/callback' => 'link#azure_oauth2_callback', via: [:get, :post]
-  match 'admin/azure_oauth2/callback' => 'admin#azure_oauth2_callback', via: [:get, :post]
+  match 'link/login_o365_callback', via: [:get, :post]
+  match 'admin/consent_callback', via: [:get, :post]
 
   # account
   get 'account/index'
@@ -28,15 +28,18 @@ Rails.application.routes.draw do
   post 'link/matched_local' 
   post 'link/login_local' => 'link#login_local_post'
   post 'link/create_local' => 'link#create_local_post'
-  post 'link/login_O365'
+  post 'link/login_o365'
 
   # admin
-  get 'admin/consent'
+  get 'admin' => 'admin#index'
+  get 'admin/index'
   get 'admin/linked_accounts'
+  #get 'admin/unlink_account/:id' => 'admin/unlink_account'
   post 'admin/consent'
   post 'admin/unconsent'
   post 'admin/add_app_role_assignments'
-  match 'admin/unlink_account', via: [:get, :post]
+  #post 'admin/unlink_account/:id' => 'admin/unlink_account_post'
+ 
 
   # manage
   get 'manage/about'

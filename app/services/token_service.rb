@@ -15,7 +15,7 @@ class TokenService
     cache.refresh_token = refresh_token
     access_tokens = cache.access_tokens ? JSON.parse(cache.access_tokens) : {}
     access_tokens[resource] = { 
-      expiresOn: self.get_expires_on(jwt_exp), 
+      expiresOn: get_expires_on(jwt_exp), 
       value: access_token 
     }
     cache.access_tokens = access_tokens.to_json();
@@ -38,9 +38,10 @@ class TokenService
       end
     end
     # refresh token and cache
+    # TODO
     auth_result = refresh_token(cache.refresh_token, resource)
     access_tokens[resource] = { 
-      expiresOn: self.get_expires_on(auth_result.expires_on), 
+      expiresOn: get_expires_on(auth_result.expires_on), 
       value: auth_result.access_token }
     cache.access_tokens = access_tokens.to_json()
     cache.refresh_token = auth_result.refresh_token
@@ -49,13 +50,17 @@ class TokenService
     return auth_result.access_token;
   end
 
-  def refresh_token(refresh_token, resource)
+  private def refresh_token(refresh_token, resource)
 		authentication_context = ADAL::AuthenticationContext.new
-		client_credential = ADAL::ClientCredential.new(Settings.edu_graph_api.app_id, Settings.edu_graph_api.default_key)
-    return authentication_context.acquire_token_with_refresh_token(refresh_token, client_credential, resource)
+		client_credential = ADAL::ClientCredential.new(Settings.AAD.ClientId, Settings.AAD.ClientSecret)
+    begin
+       authentication_context.acquire_token_with_refresh_token(refresh_token, client_credential, resource)
+    rescue
+      raise RefreshTokenError
+    end
   end
 
-  def get_expires_on(jwt_exp)
+  private def get_expires_on(jwt_exp)
     return DateTime.new(1970, 1, 1) + jwt_exp * 1.0 / (60 * 60 * 24)
   end
 

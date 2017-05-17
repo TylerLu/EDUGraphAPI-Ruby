@@ -1,13 +1,8 @@
-
-default_password: '111111'
-
-redirect_uri: '/auth/azure_oauth2/callback'
-
 BingMapKey: <%= ENV['BingMapKey'] || "Anu3xoioQvqyG6b3eZ30IyR8TwyeQYpeag6OBdQvrsfUn0FwsVwFH9OnkJZvX-8a" %>
 
-edu_graph_api:
-  app_id: <%= ENV['ClientId'] || "70288edd-ba06-4139-befc-1315f6b0a721" %>
-  default_key: <%= ENV['ClientSecret'] || 'S01BulKmE3s4nPR9pJU7GzRlefCOGwqTu1Zbp3KsUvk=' %>
+AAD:
+  ClientId: <%= ENV['ClientId'] || "70288edd-ba06-4139-befc-1315f6b0a721" %>
+  ClientSecret: <%= ENV['ClientSecret'] || 'S01BulKmE3s4nPR9pJU7GzRlefCOGwqTu1Zbp3KsUvk=' %>
 
 db:
   host: <%= ENV['DB_HOST'] || 'ap-cdbr-azure-east-a.cloudapp.net' %>

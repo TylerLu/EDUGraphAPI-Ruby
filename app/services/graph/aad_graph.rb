@@ -35,14 +35,14 @@ module Graph
       })
     end
 
-    def get_service_principals(app_id)
+    def get_service_principals(ClientId)
       res = graph_request({
         host: Constant::Resource::AADGraph,
         tenant_name: self.tenant_name,
         resource_name: 'servicePrincipals',
         access_token: aad_token,
         query: {
-          "$filter" => "appId eq '#{app_id}'"
+          "$filter" => "appId eq '#{ClientId}'"
         }
       })
       res['value']

@@ -15,9 +15,9 @@ See LICENSE in the project root for license information.   -->
 <div>
   <hr />
   <dl class="dl-horizontal"></dl>
-	<form action="/admin/unlink_account?account_id=<%= @account.id %>" method="post">
-	<p>Local Account: <%= @account.email %></p>
-  <p>Office 365 Account: <%= @account.o365_email %></p>
+	<form action="/admin/unlink_account/<%= @account.id %>" method="post">
+	<p>Local Account: <%= @user.email %></p>
+  <p>Office 365 Account: <%= @user.o365_email %></p>
     <div class="form-actions no-color">
       <input type="submit" value="Unlink" class="btn btn-default" /> |
       <a href="/admin/linked_accounts">Back to List</a>

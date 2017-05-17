@@ -6,13 +6,13 @@ end
 
 Rails.application.config.middleware.use OmniAuth::Builder do
   provider :AzureOAuth2, {
-    client_id: Settings.edu_graph_api.app_id, 
-    client_secret: Settings.edu_graph_api.default_key, 
+    client_id: Settings.AAD.ClientId, 
+    client_secret: Settings.AAD.ClientSecret, 
     provider_ignores_state: true,
     callback_paths: [ 
       '/auth/azure_oauth2/callback',
-      '/link/azure_oauth2/callback',
-      '/admin'
+      '/link/login_o365_callback',
+      '/admin/consent_callback'
     ]
   }
 end
