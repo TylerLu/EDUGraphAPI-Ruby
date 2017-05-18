@@ -5,7 +5,8 @@ class AdminController < ApplicationController
 	skip_before_action :verify_authenticity_token
 
   def index
-  	@local_user = current_user.local_user
+		organization_service = OrganizationService.new
+    @is_admin_consented = organization_service.is_admin_consented(current_user.tenant_id)
   end
 
   def consent
@@ -18,20 +19,23 @@ class AdminController < ApplicationController
 
   def consent_callback
 		auth = request.env['omniauth.auth']
-		# mark organization as admin consented
-		user_service = UserService.new
-		user_service.update_organization(auth.info.tid, {is_admin_consented: true})
+		organization_service = OrganizationService.new
+		organization_service.update_organization(auth.info.tid, {is_admin_consented: true})
 		redirect_to admin_index_path
   end
 
   def unconsent
-    token = token_service.get_access_token(current_user.o365_user_id, Constant::Resource::AADGraph)
+    token = token_service.get_access_token(current_user.o365_user_id, Constant::Resources::AADGraph)
     aad_graph_service = AADGraphService.new(token, current_user.tenant_id)
 
+    # delete the service principal from AAD
     service_principal = aad_graph_service.get_service_principal(Settings.AAD.ClientId)
     if service_principal
       aad_graph_service.delete_service_principal(service_principal['appId'])
     end
+
+		organization_service = OrganizationService.new
+		organization_service.update_organization(current_user.tenant_id, {is_admin_consented: false})
 
     link_service = LinkService.new
     link_service.unlink_accounts(current_user.tenant_id)
@@ -42,47 +46,40 @@ class AdminController < ApplicationController
 
 
   def add_app_role_assignments
-    admin_obj = AdminService.new(aad_graph)
-    res = admin_obj.get_service_principal(Settings.AAD.ClientId)
-    obj = res.first
+    token = token_service.get_access_token(current_user.o365_user_id, Constant::Resources::AADGraph)
+    aad_graph_service = AADGraphService.new(token, current_user.tenant_id)
 
-    if obj
-      resourceId = obj['objectId']
-      resoucreName = obj['displayName']
-
-      users = admin_obj.get_app_role_assignments
-
-      users.each do |user|
-        next if user['appRoleAssignments'].find{|_user| _user['resourceId'] == resourceId }
-        admin_obj.set_app_role_assignments(user['objectId'], resourceId, user['objectId'])
-      end
+    service_principal = aad_graph_service.get_service_principal(Settings.AAD.ClientId)
+    if !service_principal
+      redirect_to admin_index_path, alert: 'Could not found the service principal. Please provdie the admin consent.' and return
     end
+
+    count = aad_graph_service.add_app_role_assignments(service_principal['objectId'], service_principal['appDisplayName'])
     
-    redirect_to admin_index_path
+    flash[:notice] = count > 0  ? "User access was successfully enabled for #{count} user(s)." : 'User access was enabled for all users.'
+     % count if count > 0 else 
+    redirect_to admin_index_path    
   end
 
   def linked_accounts
     link_service = LinkService.new
-    @linked_users = link_service.get_linked_users()
+    @linked_users = link_service.get_linked_users(current_user.tenant_id)
   end
 
-  def unlink_account(id)
+  def unlink_account
     user_service = UserService.new
-    @user = user_service.get_user_by_id(user_id)
+    @user = user_service.get_user_by_id(params[:id])
   end
 
   def unlink_account_post
-  	id = params[:id]
     link_service = LinkService.new
-    link_service.unlink_account(id)
+    link_service.unlink_account(params[:id])
 
-  	if request.post?
-      # @account.unlink_email = @account.o365_email
-  		# @account.o365_email = nil
-      @local_user.organization_id = nil
-  		@local_user.save
-  		redirect_to admin_linked_accounts_path
+    if current_user.user_id == params[:id]
+      clear_local_user()    
   	end
+
+    redirect_to admin_linked_accounts_path
   end
 
 end

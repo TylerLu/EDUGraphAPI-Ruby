@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT license.  
+# See LICENSE in the project root for license information. 
+
 require_relative 'object_base.rb'
 require_relative 'paged_collection.rb'
 require_relative 'next_link.rb'
@@ -10,7 +13,7 @@ module Education
     class EducationService
 
         def initialize(tenant_id, access_token)
-            @base_url = "#{Constant::Resource::AADGraph}/#{tenant_id}/"
+            @base_url = "#{Constant::Resources::AADGraph}/#{tenant_id}/"
             @access_token = access_token
         end
 
@@ -47,7 +50,7 @@ module Education
                 '$top': 12,
                 '$filter': "extension_fe2174665583431c953114ff7268b7b3_Education_ObjectType eq 'Section' and extension_fe2174665583431c953114ff7268b7b3_Education_SyncSource_SchoolId eq '#{school_id}'",
                 '$skiptoken': skip_token
-            })        
+            })
         end
 
           def get_members(school_id, skip_token = nil, top = 12)

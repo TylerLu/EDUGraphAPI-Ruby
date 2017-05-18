@@ -38,11 +38,11 @@ class AccountController < ApplicationController
 		auth = request.env['omniauth.auth']
 
 		# cahce tokens
-		token_service.cache_tokens(auth.info.oid, Constant::Resource::AADGraph, 
+		token_service.cache_tokens(auth.info.oid, Constant::Resources::AADGraph, 
 			auth.credentials.refresh_token, auth.credentials.token, auth.credentials.expires_at)
 
 		# get tenant
-		token = token_service.get_access_token(auth.info.oid, Constant::Resource::MSGraph)
+		token = token_service.get_access_token(auth.info.oid, Constant::Resources::MSGraph)
 		ms_graph_service = MSGraphService.new(token)
 		tenant = ms_graph_service.get_organization(auth.info.tid)
 
@@ -53,9 +53,12 @@ class AccountController < ApplicationController
 		cookies[:o365_login_name] = auth.info.first_name + ' ' + auth.info.last_name
 		cookies[:o365_login_email] =  auth.info.email
 
-		# create organization and find linked local user
+		# create or update organization
+		organization_service = OrganizationService.new
+		organization_service.create_or_update_organization(auth.info.tid, tenant.display_name)
+
+		# linked local user
 		user_service = UserService.new
-		user_service.create_or_update_organization(auth.info.tid, tenant.display_name)
 		user = user_service.get_user_by_o365_email(auth.info.email)		
 		set_local_user(user) if user
 
@@ -96,7 +99,7 @@ class AccountController < ApplicationController
 	end
 
 	def photo
-		access_token = token_service.get_access_token(current_user.o365_user_id, Constant::Resource::MSGraph)
+		access_token = token_service.get_access_token(current_user.o365_user_id, Constant::Resources::MSGraph)
 		ms_graph_service = MSGraphService.new(access_token)		
 
 		response = ms_graph_service.get_user_photo(params[:id])
@@ -111,7 +114,7 @@ class AccountController < ApplicationController
 		cookies[:user_local_remember] = nil
 		session.clear
 		
-		post_logout_redirect_uri = URI.escape("#{get_request_schema}/account/login", Regexp.new("[^#{URI::PATTERN::UNRESERVED}]"))
+		post_logout_redirect_uri = URI.escape("#{full_host}/account/login", Regexp.new("[^#{URI::PATTERN::UNRESERVED}]"))
 		logoff_url = "#{Constant::AADInstance}common/oauth2/logout?post_logout_redirect_uri=#{post_logout_redirect_uri}"
 		redirect_to logoff_url #TODO only when o365 login
 	end

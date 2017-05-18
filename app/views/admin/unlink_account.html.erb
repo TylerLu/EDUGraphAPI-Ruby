@@ -15,7 +15,7 @@ See LICENSE in the project root for license information.   -->
 <div>
   <hr />
   <dl class="dl-horizontal"></dl>
-	<form action="/admin/unlink_account/<%= @account.id %>" method="post">
+	<form action="/admin/unlink_account/<%= @user.id %>" method="post">
 	<p>Local Account: <%= @user.email %></p>
   <p>Office 365 Account: <%= @user.o365_email %></p>
     <div class="form-actions no-color">
@@ -24,3 +24,4 @@ See LICENSE in the project root for license information.   -->
     </div>
 	</form>
 </div>
+<br />

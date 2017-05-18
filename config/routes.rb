@@ -29,36 +29,41 @@ Rails.application.routes.draw do
   post 'link/login_local' => 'link#login_local_post'
   post 'link/create_local' => 'link#create_local_post'
   post 'link/login_o365'
+  post 'link/relogin_o365'  
 
   # admin
   get 'admin' => 'admin#index'
   get 'admin/index'
   get 'admin/linked_accounts'
-  #get 'admin/unlink_account/:id' => 'admin/unlink_account'
+  get 'admin/unlink_account/:id' => 'admin#unlink_account'
   post 'admin/consent'
   post 'admin/unconsent'
   post 'admin/add_app_role_assignments'
-  #post 'admin/unlink_account/:id' => 'admin/unlink_account_post'
+  post 'admin/unlink_account/:id' => 'admin#unlink_account_post'
  
 
   # manage
-  get 'manage/about'
+  get 'manage/aboutme'
   post 'manage/update_favorite_color'
   
 
   # schools
   resources :schools, only: :index do
-  	member do
-  	  get :classes
-      post :next_classes
-      get 'classes/:class_id' => 'schools#class_info'
-  	  get :users
-      post :next_users
-  	end
-
-    collection do 
-      post :save_settings
+    resources :classes do
+      collection do
+        get :more
+      end
     end
+
+  	member do
+  	  #get :classes
+  	  get :users
+      get :users_next
+      #get 'classes/:class_id' => 'schools#class_info'
+      #post 'classes/:class_id/next' => 'schools#next_classes'
+      #post 'classes/:class_id/next' => 'schools#next_users' :
+      #post 'classes/:class_id/seatings' => 'schools#seatings_post' # :save_settings
+  	end
   end
 
 end

@@ -78,8 +78,8 @@ $(document).ready(function() {
 	        		var school_id = $('#school-id').val();
 
 	        		_this.addClass('disabled');
-	        		$.post({
-	        			url: '/schools/' + school_object_id + '/next_users',
+	        		$.get({
+	        			url: '/schools/' + school_object_id + '/users_next',
 	        			data: {
 	        				school_id: school_id,
 	        				skip_token: skip_token,

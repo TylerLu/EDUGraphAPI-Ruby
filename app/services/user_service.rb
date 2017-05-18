@@ -1,3 +1,5 @@
+# Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT license.  
+# See LICENSE in the project root for license information. 
 
 class UserService
 
@@ -42,19 +44,48 @@ class UserService
     user.save
     user
   end
-
-  def create_or_update_organization(tenant_id, tenant_name)
-    org = Organization.find_or_create_by(tenant_id: tenant_id)
-		org.name = tenant_name
-		org.save()
+  
+  def get_favorite_color(user_id)
+    user = User.find_by_id(user_id)
+    user ? user.favorite_color : nil
   end
 
-  def update_organization(tenant_id, attributes)
-    org = Organization.find_by_tenant_id(tenant_id)
-    if org
-      org.update_attributes(attributes)
-      org.save
+  def update_favorite_color(user_id, favorite_color)
+    user = User.find_by_id(user_id)
+    if user
+      user.favorite_color = favorite_color
+      user.save()
     end
+  end
+
+  def get_favorite_color_hash(o365_user_ids)
+    User
+			.where('o365_user_id', o365_user_ids)
+			.pluck(:o365_user_id, :favorite_color)
+			.to_h     
+  end
+
+  def get_seating_position_hash(class_object_id)
+		ClassroomSeatingArrangement
+			.where("class_id = ? and position != 0", class_object_id)
+			.pluck(:user_id, :position)
+			.to_h
+  end
+
+  def save_seating_positions(class_object_id, postions)
+		postions.values.each do |info|
+			user_set = ClassroomSeatingArrangement.find_by({class_id: info['ClassId'],user_id: info['O365UserId']})
+			if user_set
+				user_set.position = info['Position']
+				user_set.save
+			else
+				ClassroomSeatingArrangement.create({
+					class_id: info['ClassId'],
+					user_id: info['O365UserId'],
+					position: info['Position']
+				})
+			end
+		end
   end
 
 end

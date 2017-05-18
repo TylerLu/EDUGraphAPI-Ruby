@@ -1,9 +1,11 @@
+# Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT license.  
+# See LICENSE in the project root for license information. 
+
 class MSGraphService
 
-  
   def initialize(access_token)
     @access_token = access_token
-    @base_url = Constant::Resource::MSGraph + '/v1.0'
+    @base_url = Constant::Resources::MSGraph + '/v1.0'
 
     callback = Proc.new { |r| r.headers["Authorization"] = "Bearer #{@access_token}" }
     @graph = MicrosoftGraph.new(
@@ -11,7 +13,6 @@ class MSGraphService
         cached_metadata_file: File.join(MicrosoftGraph::CACHED_METADATA_DIRECTORY, "metadata_v1.0.xml"),
         &callback
       )
-    #@rest_service = RESTService.new(base_url, access_token)
   end
 
   def get_organization(tenant_id)
@@ -37,11 +38,11 @@ class MSGraphService
       roles << Constant::Roles::Student
     end
     #
-    admin_role = @graph.directoryRoles.first{|_| _.display_name == Constant.AADCompanyAdminRoleName }
-    members = @graph.directoryRoles.find(admin_role.id).members  #TODO memeber is empty
-    if members.any?{|_| _.id == me.id}
+    admin_role = @graph.directoryRoles.detect{|a|a.display_name == Constant::AADCompanyAdminRoleName }
+    admin_role.members.reload!    
+    if admin_role.members.any?{|_| _.id == me.id}
       roles << Constant::Roles::Admin
-    end
+    end       
     roles
   end  
 

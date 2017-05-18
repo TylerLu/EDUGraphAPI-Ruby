@@ -16,7 +16,7 @@ See LICENSE in the project root for license information.   -->
     </div>
 <% end %>
 
-<% if @local_user && @local_user.organization.try(:is_admin_consented) %>
+<% if @is_admin_consented %>
 <h2>Admin</h2>
 <div>
     <p>Admin Consent has been applied.</p><hr />

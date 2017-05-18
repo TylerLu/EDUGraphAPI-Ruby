@@ -3,46 +3,52 @@ See LICENSE in the project root for license information.   -->
 <%= content_for :title, 'About Me - EDUGraphAPI' %>
 
 <% content_for :user_login_info do %>
-	<%= render 'common/user_login_info', userinfo: session[:current_user] %>
+	<%= render 'common/user_login_info' %>
 <% end %>
 
 <% content_for :header_list do %>
   <%= render 'common/header_list' %>
 <% end %>
 
+<% if flash[:notice] %>
+  <div class="message-container bg-success">
+      <p><%= flash[:notice] %></p>
+  </div>
+<% end %>
+
 <div class="container ">
     <h2>About Me</h2>
     <div class="margin-top-12 margin-btm-12 aboutme">
-        <b>Username:</b><br /> <%= session[:current_user][:display_name] %> <%= session[:current_user][:surname]  %> <img src='<%= session[:current_user][:photo] %>'/>
+        <b>Username:</b><br /> <%= current_user.display_name %> 
+        <img src='/users/<%= current_user.o365_user_id %>/photo'/>
     </div>
     <div class="margin-top-12 margin-btm-12">
-        <b>Logged in as:</b><br /> <%= is_admin? ? 'Admin' : session[:current_user][:user_identify] %>
+        <b>Logged in as:</b><br /> <%= current_user.main_role %>
     </div>
-    <% if @account %>
+    <% if current_user.local_user %>
     <div class="margin-btm-12">
         <b>Favorite Color:</b>
-	   <form action="/manage/update_favorite_color" method="post">
-        <input type="hidden" value="<%= @account.try(:id) %>" name="account_id">
-		<select name="favoritecolor">
-            <option value="#2F19FF" <%= 'selected' if @account.try(:favorite_color) == '#2F19FF' %>>Blue</option>
-            <option value="#127605" <%= 'selected' if @account.try(:favorite_color) == '#127605' %>>Green</option>
-            <option value="#535353" <%= 'selected' if @account.try(:favorite_color) == '#535353' %>>Grey</option>
-    		</select>
-        <input type="submit" value="Save" />
-        <% if flash[:notice] && !is_admin? %>
-            <span class='saveresult'><%= flash[:notice] %></span>
-        <% end %>
+	    <form action="/manage/update_favorite_color" method="post">
+            <input type="hidden" value="<%= current_user.user_id %>" name="user_id">
+            <select name="favoritecolor">
+                <option value="#2F19FF" <%= 'selected' if @favorite_color == '#2F19FF' %>>Blue</option>
+                <option value="#127605" <%= 'selected' if @favorite_color == '#127605' %>>Green</option>
+                <option value="#535353" <%= 'selected' if @favorite_color == '#535353' %>>Grey</option>
+                </select>
+            <input type="submit" value="Save" />
 	   </form>
     </div>
     <% end %>
+    <% if @sections %>
     <div class="margin-btm-12 ">
         <b>Classes:</b>
         <br />
         <div>
-            <% (session[:current_user][:myclasses] || []).each do |class_name| %>
-				<%= class_name %> <br />
+            <% @sections.each do | section | %>
+				<%= section.display_name %> <br />
             <% end %>
         </div>
     </div>
+    <% end %>
 </div>
 

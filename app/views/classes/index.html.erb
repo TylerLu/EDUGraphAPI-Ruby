@@ -60,7 +60,7 @@ See LICENSE in the project root for license information.   -->
                     <% @classes.value.each_with_index do |c, index| %>
                     <div class="tile-container <%= 'hidden_course' if index > 11 %>" id="course_<%= index %>">
                         <% if c.custom_data[:is_my] %>
-                        <a class="mysectionlink" href="/schools/<%= @school_id %>/classes/<%= c.object_id %>">
+                        <a class="mysectionlink" href="/schools/<%= @school.object_id %>/classes/<%= c.object_id %>">
                             <div class="tile">
                                 <h5><%= c.display_name %></h5>
                                 <h2><%= c.combined_course_number %></h2>

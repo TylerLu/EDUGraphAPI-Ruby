@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT license.  
+# See LICENSE in the project root for license information. 
+
 class LinkService
 
   def is_linked_to_local_account(o365_email)
@@ -23,9 +26,9 @@ class LinkService
   def get_linked_users(tenant_id)
     org = Organization.find_by_tenant_id(tenant_id)
     if org
-      User.where(tenant_id: tenant_id)
-        .where.not(o365_user_id, '')
-        .where.not(o365_email, '')
+      User.where(organization_id: org.id)
+        .where.not(o365_user_id: '')
+        .where.not(o365_email: '')
     else
       User.none 
     end
@@ -34,13 +37,13 @@ class LinkService
   def unlink_accounts(tenant_id)
     org = Organization.find_by_tenant_id(tenant_id)
     if org
-      byebug
-      users = User.where(organization_id: org.id).update_all({
+      users = User.where(organization_id: org.id)      
+      users.update_all({
         o365_user_id: nil,
         o365_email: nil,
         organization_id: nil,
       })
-      # TODO clear roles
+      Role.where(user_id: users.map{|u|u.id}).delete_all()
     end
   end
 
@@ -51,8 +54,9 @@ class LinkService
         o365_user_id: nil,
         o365_email: nil,
         organization: nil,
-        roles: Role.none
       })
+      user.roles = Role.none
+      user.save()
     end
   end
 

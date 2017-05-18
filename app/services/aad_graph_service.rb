@@ -3,8 +3,7 @@ class AADGraphService
 
   def initialize(access_token, tenant_id)
     @access_token = access_token
-    @baseUrl = Constant::Resource::AADGraph + '/' + tenant_id + '/'
-    #self.rest_service = RESTService.new(baseUrl, access_token)
+    @baseUrl = Constant::Resources::AADGraph + '/' + tenant_id + '/'
   end
 
   def get_service_principal(appId)
@@ -19,23 +18,48 @@ class AADGraphService
     request('delete', "servicePrincipals/#{service_principal_id}?api-version=1.6")
   end
 
+  def add_app_role_assignments(service_principal_id, service_principal_id_name)
+    users = request('get', 'users?api-version=1.6&$expand=appRoleAssignments')['value']
+
+    count = 0
+    for user in users
+      if user['appRoleAssignments'].all? { |a| a['resourceId'] != service_principal_id }
+        add_app_role_assignment(user, service_principal_id, service_principal_id_name)
+        count = count + 1
+      end
+    end        
+    count
+  end
+
+  private def add_app_role_assignment(user, service_principal_id, service_principal_id_name)
+    app_role_assignment = {
+        'odata.type': 'Microsoft.DirectoryServices.AppRoleAssignment',
+        'principalDisplayName': user['displayName'],
+        'principalId': user['objectId'],
+        'principalType': 'User',
+        'resourceId': service_principal_id,
+        'resourceDisplayName': service_principal_id_name
+    }
+    request('post', "users/#{user['objectId']}/appRoleAssignments?api-version=1.6", {}, app_role_assignment.to_json)
+  end
+
   private def request(request_method, path, query = {}, body = {})
-    body = HTTParty.method(request_method).call(
+    response = HTTParty.method(request_method).call(
       @baseUrl + path,
       query: query,
       body: body,
       headers: {
         "Authorization" => "Bearer #{@access_token}",
-        "Content-Type" => "application/x-www-form-urlencoded"  #TODO json
+        "Content-Type" => "application/json"
       }
-    ).body
-    JSON.parse(body)
+    )
+    JSON.parse(response.body)
   end
 
 end
 # def get_service_principals(ClientId)
 #     res = graph_request({
-#     host: Constant::Resource::AADGraph,
+#     host: Constant::Resources::AADGraph,
 #     tenant_name: self.tenant_name,
 #     resource_name: 'servicePrincipals',
 #     access_token: aad_token,
@@ -49,7 +73,7 @@ end
 # def delete_service_principals(object_id)
 #     res = graph_request({
 #     http_method: 'delete',
-#     host: Constant::Resource::AADGraph,
+#     host: Constant::Resources::AADGraph,
 #     tenant_name: self.tenant_name,
 #     resource_name: "servicePrincipals/#{object_id}",
 #     access_token: aad_token,
@@ -59,7 +83,7 @@ end
 
 # def get_app_role_assignments
 #     graph_request({
-#     host: Constant::Resource::AADGraph,
+#     host: Constant::Resources::AADGraph,
 #     tenant_name: self.tenant_name,
 #     resource_name: 'users',
 #     api_version: '1.5',
@@ -72,7 +96,7 @@ end
 
 # def set_app_role_assignments(user_id, resourceId, principalId)
 #     graph_request({
-#     host: Constant::Resource::AADGraph,
+#     host: Constant::Resources::AADGraph,
 #     tenant_name: self.tenant_name,
 #     resource_name: "users/#{user_id}/appRoleAssignments",
 #     api_version: '1.5',
@@ -86,7 +110,7 @@ end
 
 # def get_administrative_units
 #     graph_request({
-#     host: Constant::Resource::AADGraph,
+#     host: Constant::Resources::AADGraph,
 #     tenant_name: self.tenant_name,
 #     resource_name: 'administrativeUnits',
 #     access_token: aad_token
@@ -95,7 +119,7 @@ end
 
 # def get_class_info(class_id)
 #     graph_request({
-#     host: Constant::Resource::AADGraph,
+#     host: Constant::Resources::AADGraph,
 #     tenant_name: self.tenant_name,
 #     resource_name: "groups/#{class_id}",
 #     access_token: aad_token
@@ -104,7 +128,7 @@ end
 
 # def get_class_members(class_id)
 #     graph_request({
-#     host: Constant::Resource::AADGraph,
+#     host: Constant::Resources::AADGraph,
 #     tenant_name: self.tenant_name,
 #     resource_name: "groups/#{class_id}/$links/members",
 #     access_token: aad_token
@@ -113,7 +137,7 @@ end
 
 # def get_user_classes(id_or_email)
 #     graph_request({
-#     host: Constant::Resource::AADGraph,
+#     host: Constant::Resources::AADGraph,
 #     tenant_name: self.tenant_name,
 #     access_token: aad_token,
 #     resource_name: "users/#{id_or_email}/memberOf"
@@ -122,7 +146,7 @@ end
 
 # def get_classes_with_members(object_id)
 #     graph_request({
-#     host: Constant::Resource::AADGraph,
+#     host: Constant::Resources::AADGraph,
 #     tenant_name: self.tenant_name,
 #     access_token: aad_token,
 #     resource_name: "groups/#{object_id}",
@@ -140,7 +164,7 @@ end
 #     _query.merge!({"$skiptoken" => skip_token}) if skip_token
 
 #     graph_request({
-#     host: Constant::Resource::AADGraph,
+#     host: Constant::Resources::AADGraph,
 #     tenant_name: self.tenant_name,
 #     resource_name: 'groups',
 #     access_token: aad_token,
@@ -157,7 +181,7 @@ end
 #     _query.merge!({"$filter" => "#{Constant.get('edu_object_type')} eq '#{role}' and #{Constant.get('edu_school_id')} eq '#{school_number}'"}) if role
 
 #     graph_request({
-#     host: Constant::Resource::AADGraph,
+#     host: Constant::Resources::AADGraph,
 #     tenant_name: self.tenant_name,
 #     resource_name: 'users',
 #     access_token: aad_token,
@@ -177,7 +201,7 @@ end
 #     end
 
 #     myroles = graph_request({
-#     host: Constant::Resource::AADGraph,
+#     host: Constant::Resources::AADGraph,
 #     tenant_name: self.tenant_name,
 #     resource_name: 'directoryRoles',
 

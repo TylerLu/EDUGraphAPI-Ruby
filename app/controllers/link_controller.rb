@@ -81,10 +81,10 @@ class LinkController < ApplicationController
     end
     
 		# cahce tokens
-		token_service.cache_tokens(auth.info.oid, Constant::Resource::AADGraph, auth.credentials.refresh_token, auth.credentials.token, auth.credentials.expires_at)
+		token_service.cache_tokens(auth.info.oid, Constant::Resources::AADGraph, auth.credentials.refresh_token, auth.credentials.token, auth.credentials.expires_at)
 
     # get tenant
-		token = token_service.get_access_token(auth.info.oid, Constant::Resource::MSGraph)
+		token = token_service.get_access_token(auth.info.oid, Constant::Resources::MSGraph)
 		ms_graph_service = MSGraphService.new(token)
 		tenant = ms_graph_service.get_organization(auth.info.tid)
 
@@ -96,8 +96,8 @@ class LinkController < ApplicationController
 		cookies[:o365_login_email] =  auth.info.email
 
     # create or update organization
-    user_service = UserService.new
-    user_service.create_or_update_organization(auth.info.tid, tenant.display_name)
+		organization_service = OrganizationService.new
+    organization_service.create_or_update_organization(auth.info.tid, tenant.display_name)
 
     # lin accounts
     link_service = LinkService.new()
@@ -112,8 +112,7 @@ class LinkController < ApplicationController
   def relogin_o365
     redirect_to azure_auth_path(
       :prompt => 'login',
-      :logint_hint => current_user.o365_email,
-      :callback_path => '/account/azure_oauth2/callback'
+      :login_hint => current_user.o365_email
     )
   end
 

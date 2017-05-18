@@ -186,20 +186,20 @@ See LICENSE in the project root for license information.   -->
                 <div class="left" id="dvleft">
                         <div class="assignseat tip"><div class="greenicon" style="background-color:#2F19FF"></div>Your assigned seat </div>
                     <ul id="lstproducts">
-                        <% @student_info.select{|_| _[:object_type] == 'Student'}.each do |student| %>
-                        <li id="<%= student[:user_id] %>">
+                        <% @class.students.each do |student| %>
+                        <li id="<%= student.object_id %>">
                             <img src="/images/header-default.jpg" realheader="/users/<%= student.object_id %>/photo" />
-                            <span class="disname"> <%= student[:displayName] %> </span>
-                            <span class="seated <%= 'hideitem' unless student[:has_seat] %>">seated ✓</span> 
+                            <span class="disname"> <%= student.display_name %> </span>
+                            <span class="seated <%= 'hideitem' unless student.custom_data[:position] %>">seated ✓</span> 
                         </li>
                         <% end %>
                     </ul>
                     <div id="hidtiles" class="hideitem">
-                        <% @student_info.select{|_| _[:object_type] == 'Student' && !_[:has_seat] }.each do |student| %>
-                        <div class="deskcontainer unsaved green" style="background-color:#2F19FF" position="0" userid="<%= student[:user_id] %>">
+                        <% @class.students.select{|s|!s.custom_data[:position]}.each do |student| %>
+                        <div class="deskcontainer unsaved green" style="background-color:#2F19FF" position="0" userid="<%= student.object_id %>">
                             <div class="deskclose"><img src="/Images/close.png"></div>
                             <div class="deskicon">
-                                <img src="/images/header-default.jpg" realheader="/users/<%= student.student_id %>/photo" />
+                                <img src="/images/header-default.jpg" realheader="/users/<%= student.object_id %>/photo" />
                             </div>
                             <div class="stuname"><%= student.display_name %></div>
                         </div>
@@ -211,7 +211,7 @@ See LICENSE in the project root for license information.   -->
                     <div>
                         <div id="graybg">
                             <% (1..36).each do |index| %>
-                                <% if student = @class.students %>
+                                <% if student = @class.students[index] %>
                                 <div class="desktile" position="<%= index %>">
                                     <div class="deskcontainer white" style="<%= 'background-color: ' + student.custom_data[:favorite_color] if student.custom_data[:favorite_color] %>" position="<%= index %>" userid="<%= student.object_id %>">
                                         <div class="deskclose"><img src="/Images/close.png"></div>

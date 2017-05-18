@@ -5,7 +5,7 @@ class SchoolsController < ApplicationController
 	skip_before_action :verify_authenticity_token
 
 	def index
-		aad_access_token = token_service.get_access_token(current_user.o365_user_id, Constant::Resource::AADGraph)
+		aad_access_token = token_service.get_access_token(current_user.o365_user_id, Constant::Resources::AADGraph)
 		education_service = Education::EducationService.new(current_user.tenant_id, aad_access_token)
 			
 		@me = education_service.get_me
@@ -23,86 +23,8 @@ class SchoolsController < ApplicationController
 		end
 	end
 
-	def classes
-		aad_access_token = token_service.get_access_token(current_user.o365_user_id, Constant::Resource::AADGraph)
-		education_service = Education::EducationService.new(current_user.tenant_id, aad_access_token)
-		
-		@school = education_service.get_school(params[:id])
-		@my_classes = education_service.get_my_sections(@school.school_id)	
-		@classes = education_service.get_sections(@school.school_id)
-		@classes.value.each do |c| 
-			c.custom_data[:is_my] = @my_classes.any?{ |mc| mc.object_id == c.object_id}
-		end
-	end
-
-	def next_classes
-		school_id = params[:school_id]
-		skip_token = params[:skip_token]
-
-		aad_access_token = token_service.get_access_token(current_user.o365_user_id, Constant::Resource::AADGraph)
-		education_service = Education::EducationService.new(current_user.tenant_id, aad_access_token)
-
-		@my_classes = education_service.get_my_sections(school_id)	
-		@classes = education_service.get_sections(school_id, skip_token)
-		@classes.value.each do |c| 
-			c.custom_data[:is_my] = @my_classes.any?{ |mc| mc.object_id == c.object_id}
-		end
-
-		render json: {
-			skip_token: @classes.next_link.skip_token,
-			values: @classes.value.map do |c|
-				{
-					is_my: c.custom_data[:is_my],
-					object_id: c.object_id,
-					display_name: c.display_name,
-					course_name: c.course_name,
-					course_id: c.course_id,
-					course_description: c.course_description,
-					combined_course_number: c.combined_course_number,
-					teacher_name: c.term_name,
-					term_start_time: Date.strptime(c.term_start_date, '%m/%d/%Y'),
-					term_end_time: Date.strptime(c.term_end_date, '%m/%d/%Y'),
-					period: c.period,
-				}
-			end
-		}
-	end
-
-	def class_info
-		aad_access_token = token_service.get_access_token(current_user.o365_user_id, Constant::Resource::AADGraph)
-		ms_access_token = token_service.get_access_token(current_user.o365_user_id, Constant::Resource::MSGraph)
-		education_service = Education::EducationService.new(current_user.tenant_id, aad_access_token)
-		ms_graph_servcie = MSGraphService.new(ms_access_token)
-
-		class_object_id = params[:class_id];
-		@school = education_service.get_school(params[:id])
-		@class = education_service.get_section(class_object_id)
-		@class.members = education_service.get_section_members(class_object_id)
-
-		@conversations = ms_graph_servcie.get_conversations(class_object_id)
-		@documents = ms_graph_servcie.get_documents(class_object_id)
-		
-		seating_position_hash = ClassroomSeatingArrangement
-			.where("class_id = ? and position != 0", class_object_id)
-			.pluck(:user_id, :position)
-			.to_h
-
-		favorite_color_hash = User
-			.where('o365_user_id', @class.members.map{ |m| m.object_id } )
-			.pluck(:o365_user_id, :favorite_color)
-			.to_h
-		
-		@class.members.each do |m|
-			m.custom_data[:position] = seating_position_hash[m.object_id]
-			m.custom_data[:favorite_color] = favorite_color_hash[m.object_id]
-			if m.is_teacher?
-				@teacher_favorite_color = favorite_color_hash[m.object_id]
-			end
-		end
-	end
-
 	def users
-		aad_access_token = token_service.get_access_token(current_user.o365_user_id, Constant::Resource::AADGraph)
+		aad_access_token = token_service.get_access_token(current_user.o365_user_id, Constant::Resources::AADGraph)
 		education_service = Education::EducationService.new(current_user.tenant_id, aad_access_token)
 
 		@school = education_service.get_school(params[:id])
@@ -111,13 +33,13 @@ class SchoolsController < ApplicationController
 		@students = education_service.get_students(@school.school_id)
 	end
 
-	def next_users
+	def users_next
 		school_object_id = params[:id]
 		school_id = params[:school_id]
 		skip_token = params[:skip_token]
 		type = params[:type]
 
-		aad_access_token = token_service.get_access_token(current_user.o365_user_id, Constant::Resource::AADGraph)
+		aad_access_token = token_service.get_access_token(current_user.o365_user_id, Constant::Resources::AADGraph)
 		education_service = Education::EducationService.new(current_user.tenant_id, aad_access_token)
 
 		if type == 'users'
@@ -140,25 +62,4 @@ class SchoolsController < ApplicationController
 		}
 	end
 
-	def save_settings
-		params[:postions].values.each do |info|
-			user_set = ClassroomSeatingArrangement.find_by({class_id: info['ClassId'],user_id: info['O365UserId']})
-			if user_set
-				user_set.position = info['Position']
-				user_set.save
-			else
-				ClassroomSeatingArrangement.create({
-					class_id: info['ClassId'],
-					user_id: info['O365UserId'],
-					position: info['Position']
-				})
-			end
-		end
-
-		render json: {status: 'success'}
-	end
-
-	class << self
-		attr_accessor :current_user_course_ids
-	end
 end

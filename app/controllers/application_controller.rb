@@ -3,6 +3,8 @@
 
 class ApplicationController < ActionController::Base
     protect_from_forgery with: :exception
+    around_action :handle_refresh_token_error
+
     include ApplicationHelper
     helper_method :current_user
 
@@ -42,4 +44,11 @@ class ApplicationController < ActionController::Base
         @token_service ||= TokenService.new
     end
 
+    def handle_refresh_token_error
+      begin
+        yield
+      rescue Exceptions::RefreshTokenError => exception
+        redirect_to link_login_o365_required_path
+      end
+    end
 end

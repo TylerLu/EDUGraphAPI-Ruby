@@ -1,10 +1,6 @@
-
-
-class RefreshTokenError < StandardError
-end
-
 # This class is responsible for cache and retrieve tokens to and from the backend database.
 # In this sample, tokens are cached in clear text in database. For real projects, they should be encrypted.
+
 class TokenService
     
   def initialize()
@@ -25,7 +21,7 @@ class TokenService
   def get_access_token(o365_user_id, resource)
     cache = TokenCache.find_by_o365_userId(o365_user_id)
     if !cache
-      raise RefreshTokenError
+      raise Exceptions::RefreshTokenError
     end
     # parse access_tokens
     access_tokens = JSON.parse(cache.access_tokens)
@@ -56,7 +52,7 @@ class TokenService
     begin
        authentication_context.acquire_token_with_refresh_token(refresh_token, client_credential, resource)
     rescue
-      raise RefreshTokenError
+      raise Exceptions::RefreshTokenError
     end
   end
 

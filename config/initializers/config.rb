@@ -33,4 +33,5 @@ Config.setup do |config|
   # Parse numeric values as integers instead of strings.
   #
   # config.env_parse_values = true
+
 end
