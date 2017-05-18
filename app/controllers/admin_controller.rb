@@ -62,9 +62,9 @@ class AdminController < ApplicationController
 
     count = aad_graph_service.add_app_role_assignments(service_principal['objectId'], service_principal['appDisplayName'])
     
-    flash[:notice] = count > 0  ? "User access was successfully enabled for #{count} user(s)." : 'User access was enabled for all users.'
+    flash[:notice] = count > 0 ? "User access was successfully enabled for #{count} user(s)." : 'User access was enabled for all users.'
      % count if count > 0 else 
-    redirect_to admin_index_path    
+    redirect_to admin_index_path
   end
 
   def linked_accounts
@@ -82,7 +82,7 @@ class AdminController < ApplicationController
     link_service.unlink_account(params[:id])
 
     if current_user.user_id == params[:id]
-      clear_local_user()    
+      clear_local_user()
   	end
 
     redirect_to admin_linked_accounts_path

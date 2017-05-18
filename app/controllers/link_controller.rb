@@ -16,7 +16,7 @@ class LinkController < ApplicationController
     user_service = UserService.new
     user = user_service.get_user_by_email(current_user.o365_email)
     if user.is_linked?
-      redirect_to account_index_path, notice: 'The local account has already been linked to another Office 365 account.' and return 
+      redirect_to account_index_path, notice: 'The local account has already been linked to another Office 365 account.' and return
   	end
 
     link_service = LinkService.new()

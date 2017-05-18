@@ -1,3 +1,8 @@
+/*   
+ *   * Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT license.  
+ *   * See LICENSE in the project root for license information.  
+ */
+
 $(document).ready(function() {
     function i() { $("img[realheader]").each(function(n, t) {
             var i = $(t);
@@ -116,39 +121,7 @@ $(document).ready(function() {
 	        			}
 	        		})
         		}
-
-        		// if(current_page + 1 > 1){
-        		// 	_this.siblings('.prev').removeClass('current');
-        		// }else{
-        		// 	_this.siblings('.prev').addClass('current');
-        		// }
-
-        		// _this.siblings('#curpage').val(current_page + 1); //更改current page 的值
         	}
-
-            // var h = i.siblings("#curpage"),
-            //     b = parseInt(h.val()),
-            //     u = i.hasClass("prev"),
-            //     c = b + (u ? -1 : 1),
-            //     e = u ? i.siblings(".next") : i,
-            //     o = u ? i : i.siblings(".prev"),
-            //     y = i.siblings("#skip_token"),
-            //     l = y.val(),
-            //     s = typeof l == "string" && l.length > 0;
-            // u && (e = i.siblings(".next"), o = i);
-            // var p = i.closest(".tiles-secondary-container"),
-            //     f = p.find(".content"),
-            //     k = (c - 1) * 12;
-                
-            // k < f.children().length ? t(u, c, s, o, e, h, f) : s && (a = $(".teacher-student input#school-objectid").val(), r = p.attr("id"), r = r[0].toUpperCase() + r.substr(1), w = "/schools/" + a + "/next_users", v = o.add(e), v.addClass("disabled"), $.ajax({ type: "POST", url: w, dataType: "json", data: { schoolId: a, nextLink: l }, success: function(n) {
-            //   var l, i, u;
-            //   if (n.error === "AdalException" || n.error === "Unauthorized") {
-            //    	alert("Your current session has expired. Please click OK to refresh the page.");
-            //     window.location.reload(!1);
-            //     return
-            //   }(l = n[r], i = l.Value, i instanceof Array && i.length != 0) && (f.html(""), $.each(i, function(n, t) {
-            //       var i = '<div class="element ' + (t.ObjectType == "Teacher" ? "teacher-bg" : "student-bg") + '"><div class="userimg"><img src="/Images/header-default.jpg" realheader="/Photo/UserPhoto/' + t.O365UserId + '" /><\/div><div class="username">' + t.DisplayName + "<\/div><\/div>";
-            //       $(i).appendTo(f) }), u = l.NextLink, y.val(u), s = typeof u == "string" && u.length > 0, t(!1, c, s, o, e, h, f)) }, complete: function() { v.removeClass("disabled") } })) 
           } 
       });
     $("#btnsearch").click(function() { n() });
