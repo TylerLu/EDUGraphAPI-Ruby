@@ -4,6 +4,7 @@
 class ApplicationController < ActionController::Base
     protect_from_forgery with: :exception
     around_action :handle_refresh_token_error
+    before_action :init_demo_helper
 
     include ApplicationHelper
     helper_method :current_user
@@ -50,5 +51,11 @@ class ApplicationController < ActionController::Base
       rescue Exceptions::RefreshTokenError => exception
         redirect_to link_login_o365_required_path
       end
+    end
+
+    def init_demo_helper
+        if request.get?
+          @demo_helper_links = DemoHelperService.get_links(params[:controller], params[:action])
+        end
     end
 end

@@ -10,7 +10,6 @@ See LICENSE in the project root for license information.   -->
     <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
     <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
   </head>
-
   <body>
   	<div class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
@@ -47,18 +46,12 @@ See LICENSE in the project root for license information.   -->
     <div class="body">
         <p class="desc">Code sample links for this page:</p>
         <ul>
+            <% @demo_helper_links.keys.each do |key| %>
             <li>
-                <p class="title">Controller</p>
-                <p><a href="<%= Settings.github_source_code_url %>/blob/master/app/controllers/<%= controller_name %>_controller.rb" target="_blank"><%= Settings.github_source_code_url %>/blob/master/app/controllers/<%= controller_name %>_controller.rb</a></p>
+                <p class="title"><%=key%></p>
+                <p><a href="<%= Settings.github_source_code_url %>/blob/master/app/controllers/<%= controller_name %>_controller.rb" target="_blank"><%= Settings.github_source_code_url %>/blob/master<%= @demo_helper_links[key] %></a></p>
             </li>
-            <li>
-                <p class="title">View</p>
-                <p><a href="<%= Settings.github_source_code_url %>/blob/master/app/views/<%= controller_name %>/<%= action_name %>.html.erb" target="_blank"><%= Settings.github_source_code_url %>/blob/master/app/views/<%= controller_name %>/<%= action_name %>.html.erb</a></p>
-            </li>
-            <li>
-                <p class="title">Model</p>
-                <p><a href="" target="_blank"></a></p>
-            </li>
+            <% end %>
         </ul>
     </div>
     </div>
