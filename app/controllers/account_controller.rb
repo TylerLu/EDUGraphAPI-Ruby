@@ -2,11 +2,10 @@
 # See LICENSE in the project root for license information.  
 
 class AccountController < ApplicationController
-	skip_before_action :verify_authenticity_token
-
+	
 	def index
 		url = ''
-		if !current_user.is_authenticated
+		if !current_user.is_authenticated?
 			url = '/account/login'
 		elsif !current_user.are_linked?
 			url = '/link'

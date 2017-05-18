@@ -1,7 +1,7 @@
 <!-- Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT license.  
 See LICENSE in the project root for license information.   -->
 
-<% if current_user.is_authenticated %>
+<% if current_user.is_authenticated? %>
 <form action="/account/logoff" class="navbar-right" id="logoutForm" method="post">
     <div class="userinfo">
     <a href="javascript:void(0);" id="userinfolink">Logged in as: <%= current_user.main_role %>. Hello <%= current_user.display_name %>

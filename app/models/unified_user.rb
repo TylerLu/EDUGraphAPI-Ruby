@@ -11,7 +11,7 @@ class UnifiedUser
         self.o365_user = o365_user
     end
 
-    def is_authenticated
+    def is_authenticated?
         self.o365_user || self.local_user
     end
 

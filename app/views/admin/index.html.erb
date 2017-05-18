@@ -3,7 +3,7 @@ See LICENSE in the project root for license information.   -->
 <%= content_for :title, 'Admin - EDUGraphAPI' %>
 
 <% content_for :user_login_info do %>
-    <%= render 'common/user_login_info', userinfo: session[:current_user] %>
+    <%= render 'common/user_login_info' %>
 <% end %>
 
 <% content_for :header_list do %>

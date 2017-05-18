@@ -2,7 +2,8 @@
 # See LICENSE in the project root for license information.  
 
 class LinkController < ApplicationController
-  skip_before_action :verify_authenticity_token
+  
+  before_action :require_login
 
   def index
     if !current_user.are_linked? && current_user.is_o365?

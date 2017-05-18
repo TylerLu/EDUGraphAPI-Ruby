@@ -2,7 +2,9 @@
 # See LICENSE in the project root for license information.  
 
 class AdminController < ApplicationController
-	skip_before_action :verify_authenticity_token
+
+	before_action :require_login, :except => [:consent, :consent_post, :consent_callback]
+	before_action :admin_only, :except => [:consent, :consent_post, :consent_callback]
 
   def index
 		organization_service = OrganizationService.new
@@ -10,6 +12,9 @@ class AdminController < ApplicationController
   end
 
   def consent
+  end
+
+  def consent_post
     redirect_to azure_auth_path(
       :prompt => 'admin_consent',
       :login_hint => current_user.o365_email,
@@ -21,7 +26,8 @@ class AdminController < ApplicationController
 		auth = request.env['omniauth.auth']
 		organization_service = OrganizationService.new
 		organization_service.update_organization(auth.info.tid, {is_admin_consented: true})
-		redirect_to admin_index_path
+    flash[:notice] = 'Admin unconsented successfully!'
+		redirect_to current_user.is_admin? ? admin_index_path : admin_consent_path
   end
 
   def unconsent

@@ -2,7 +2,8 @@
 # See LICENSE in the project root for license information.  
 
 class ManageController < ApplicationController
-	skip_before_action :verify_authenticity_token
+	
+  before_action :require_login
 
   def aboutme
 		if current_user.are_linked? or current_user.local_user

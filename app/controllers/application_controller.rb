@@ -2,9 +2,10 @@
 # See LICENSE in the project root for license information.  
 
 class ApplicationController < ActionController::Base
-    protect_from_forgery with: :exception
-    around_action :handle_refresh_token_error
+
+    # protect_from_forgery with: :exception
     before_action :init_demo_helper
+    around_action :handle_refresh_token_error
 
     include ApplicationHelper
     helper_method :current_user
@@ -13,14 +14,6 @@ class ApplicationController < ActionController::Base
         return unless session[:user_id]
         @current_user ||= User.find(session[:user_id])
     end
-
-    # def o365_user
-    #     session[:o365_user]
-    # end 
-
-    # def o365_user=(o365_user)
-    #     session[:o365_user] = o365_user
-    # end 
 
     def current_user
         #session[:current_user]
@@ -54,8 +47,26 @@ class ApplicationController < ActionController::Base
     end
 
     def init_demo_helper
-        if request.get?
-          @demo_helper_links = DemoHelperService.get_links(params[:controller], params[:action])
-        end
+      if request.get?
+        @demo_helper_links = DemoHelperService.get_links(params[:controller], params[:action])
+      end
+    end
+
+    def require_login
+      if !current_user.is_authenticated?
+        redirect_to account_login_path
+      end
+    end
+
+    def admin_only
+      if !current_user.is_admin?
+        redirect_to account_login_path
+      end
+    end
+
+    def link_users_only
+      if !current_user.is_admin?
+        redirect_to account_index_path
+      end
     end
 end

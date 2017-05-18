@@ -2,7 +2,9 @@
 # See LICENSE in the project root for license information.  
 
 class SchoolsController < ApplicationController
-	skip_before_action :verify_authenticity_token
+
+	before_action :require_login
+	before_action :link_users_only
 
 	def index
 		aad_access_token = token_service.get_access_token(current_user.o365_user_id, Constant::Resources::AADGraph)

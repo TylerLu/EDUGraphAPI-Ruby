@@ -4,7 +4,7 @@ See LICENSE in the project root for license information.   -->
 <%= content_for :title, 'ALL SCHOOLS - EDUGraphAPI' %>
 
 <% content_for :header_list do %>
-  <%= render 'common/header_list' %>
+  <%= render 'common/header_list', school: @school %>
 <% end %>
 
 <% content_for :user_login_info do %>

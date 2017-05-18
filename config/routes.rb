@@ -34,9 +34,10 @@ Rails.application.routes.draw do
   # admin
   get 'admin' => 'admin#index'
   get 'admin/index'
+  get 'admin/consent'
   get 'admin/linked_accounts'
   get 'admin/unlink_account/:id' => 'admin#unlink_account'
-  post 'admin/consent'
+  post 'admin/consent' => 'admin#consent_post'
   post 'admin/unconsent'
   post 'admin/add_app_role_assignments'
   post 'admin/unlink_account/:id' => 'admin#unlink_account_post'
