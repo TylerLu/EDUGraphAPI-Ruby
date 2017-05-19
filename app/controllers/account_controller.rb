@@ -61,6 +61,7 @@ class AccountController < ApplicationController
     user = user_service.get_user_by_o365_email(auth.info.email)    
     set_local_user(user) if user
 
+    clear_session_expire_after()
     redirect_to account_index_path
   end
 
@@ -69,6 +70,12 @@ class AccountController < ApplicationController
     user = user_service.authenticate(params["Email"], params["Password"])
     if !user
       redirect_to account_login_path, alert: 'Invalid login attempt.' and return
+    end
+
+    if params[:RememberMe]
+      set_session_expire_after(30)
+    else
+      clear_session_expire_after()
     end
 
     set_local_user(user)
@@ -112,6 +119,8 @@ class AccountController < ApplicationController
   def logoff
     cookies[:user_local_remember] = nil
     session.clear
+    reset_session()
+    clear_session_expire_after()
     
     post_logout_redirect_uri = URI.escape("#{full_host}/account/login", Regexp.new("[^#{URI::PATTERN::UNRESERVED}]"))
     logoff_url = "#{Constants::AADInstance}common/oauth2/logout?post_logout_redirect_uri=#{post_logout_redirect_uri}"

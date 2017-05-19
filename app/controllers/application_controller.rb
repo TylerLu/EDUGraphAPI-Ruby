@@ -38,6 +38,14 @@ class ApplicationController < ActionController::Base
     @token_service ||= TokenService.new
   end
 
+  def set_session_expire_after(days)
+    session.options[:expire_after] = 60 * 60 * 24 * days
+  end
+
+  def clear_session_expire_after
+    session.options[:expire_after] = nil 
+  end
+
   def handle_refresh_token_error
     begin
     yield
