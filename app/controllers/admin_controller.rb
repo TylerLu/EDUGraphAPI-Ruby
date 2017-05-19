@@ -31,7 +31,7 @@ class AdminController < ApplicationController
   end
 
   def unconsent
-    token = token_service.get_access_token(current_user.o365_user_id, Constant::Resources::AADGraph)
+    token = token_service.get_access_token(current_user.o365_user_id, Constants::Resources::AADGraph)
     aad_graph_service = AADGraphService.new(token, current_user.tenant_id)
 
     # delete the service principal from AAD
@@ -52,7 +52,7 @@ class AdminController < ApplicationController
 
 
   def add_app_role_assignments
-    token = token_service.get_access_token(current_user.o365_user_id, Constant::Resources::AADGraph)
+    token = token_service.get_access_token(current_user.o365_user_id, Constants::Resources::AADGraph)
     aad_graph_service = AADGraphService.new(token, current_user.tenant_id)
 
     service_principal = aad_graph_service.get_service_principal(Settings.AAD.ClientId)

@@ -7,7 +7,7 @@ class SchoolsController < ApplicationController
   before_action :link_users_only
 
   def index
-    aad_access_token = token_service.get_access_token(current_user.o365_user_id, Constant::Resources::AADGraph)
+    aad_access_token = token_service.get_access_token(current_user.o365_user_id, Constants::Resources::AADGraph)
     education_service = Education::EducationService.new(current_user.tenant_id, aad_access_token)
       
     @me = education_service.get_me
@@ -26,7 +26,7 @@ class SchoolsController < ApplicationController
   end
 
   def users
-    aad_access_token = token_service.get_access_token(current_user.o365_user_id, Constant::Resources::AADGraph)
+    aad_access_token = token_service.get_access_token(current_user.o365_user_id, Constants::Resources::AADGraph)
     education_service = Education::EducationService.new(current_user.tenant_id, aad_access_token)
 
     @school = education_service.get_school(params[:id])
@@ -41,7 +41,7 @@ class SchoolsController < ApplicationController
     skip_token = params[:skip_token]
     type = params[:type]
 
-    aad_access_token = token_service.get_access_token(current_user.o365_user_id, Constant::Resources::AADGraph)
+    aad_access_token = token_service.get_access_token(current_user.o365_user_id, Constants::Resources::AADGraph)
     education_service = Education::EducationService.new(current_user.tenant_id, aad_access_token)
 
     if type == 'users'

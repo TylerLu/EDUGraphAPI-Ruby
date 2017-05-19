@@ -5,7 +5,7 @@ class AADGraphService
 
   def initialize(access_token, tenant_id)
     @access_token = access_token
-    @baseUrl = Constant::Resources::AADGraph + '/' + tenant_id + '/'
+    @baseUrl = Constants::Resources::AADGraph + '/' + tenant_id + '/'
   end
 
   def get_service_principal(appId)

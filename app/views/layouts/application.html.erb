@@ -49,7 +49,7 @@
             <% @demo_helper_links.keys.each do |key| %>
             <li>
                 <p class="title"><%=key%></p>
-                <p><a href="<%= Settings.github_source_code_url %>/blob/master<%= @demo_helper_links[key] %>" target="_blank"><%= Settings.github_source_code_url %>/blob/master<%= @demo_helper_links[key] %></a></p>
+                <p><a href="<%= Settings.SourceCodeRepositoryUrl %>/blob/master<%= @demo_helper_links[key] %>" target="_blank"><%= Settings.SourceCodeRepositoryUrl %>/blob/master<%= @demo_helper_links[key] %></a></p>
             </li>
             <% end %>
         </ul>

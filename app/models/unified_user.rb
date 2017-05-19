@@ -20,15 +20,15 @@ class UnifiedUser
   end  
 
   def is_admin?
-    self.o365_user && (self.o365_user.roles.include? Constant::Roles::Admin)
+    self.o365_user && (self.o365_user.roles.include? Constants::Roles::Admin)
   end
 
   def is_teacher?
-    self.o365_user && (self.o365_user.roles.include? Constant::Roles::Faculty)
+    self.o365_user && (self.o365_user.roles.include? Constants::Roles::Faculty)
   end
 
   def is_student?
-    self.o365_user && (self.o365_user.roles.include? Constant::Roles::Student)
+    self.o365_user && (self.o365_user.roles.include? Constants::Roles::Student)
   end
 
   def roles
@@ -37,7 +37,7 @@ class UnifiedUser
 
   def main_role
     if o365_user && o365_user.roles
-      for role in [Constant::Roles::Admin, Constant::Roles::Faculty, Constant::Roles::Student]
+      for role in [Constants::Roles::Admin, Constants::Roles::Faculty, Constants::Roles::Student]
         if o365_user.roles.include? role
           return role
         end

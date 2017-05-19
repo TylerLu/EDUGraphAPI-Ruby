@@ -13,7 +13,7 @@ module Education
   class EducationService
 
     def initialize(tenant_id, access_token)
-      @base_url = "#{Constant::Resources::AADGraph}/#{tenant_id}/"
+      @base_url = "#{Constants::Resources::AADGraph}/#{tenant_id}/"
       @access_token = access_token
     end
 
