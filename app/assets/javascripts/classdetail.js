@@ -184,22 +184,21 @@ function disableDragAndDrop() {
 function saveEditDesk() {
     var classroomSeatingArrangements = [];
     var classId = $("#hidSectionid").val();
-    $(".deskcontainer").each(function () {
+    $("#seatingchart #dvright .deskcontainer").each(function () {
         var userid = $(this).attr("userid");
         if (userid) {
-            //getSeatingArrangements(userid, $(this).attr("position"))
             var position = $(this).attr("position");
             classroomSeatingArrangements.push({
-                O365UserId: userid,
-                Position: position,
-                ClassId: classId
+                o365_user_id: userid,
+                position: position
             });
         }
     });
 
+    url = window.location.href.endsWith('/') ? window.location.href.slice(0, -1) : window.location.href + '/save_seating_positions';
     $.ajax({
         type: 'POST',
-        url: "/Schools/SaveSeatingArrangements",
+        url: url,
         dataType: 'json',
         data: JSON.stringify(classroomSeatingArrangements),
         contentType: "application/json; charset=utf-8",

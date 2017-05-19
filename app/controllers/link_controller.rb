@@ -104,7 +104,7 @@ class LinkController < ApplicationController
     link_service = LinkService.new()
     link_service.link(current_user.local_user, o365_user.id, o365_user.email, o365_user.tenant_id, o365_user.roles)
     
-    azure_oauth2_logout_required = true
+    self.azure_oauth2_logout_required = true
 		redirect_to account_index_path, notice: 'Your local account has been successfully linked to your Office 365 account.'
   end
 

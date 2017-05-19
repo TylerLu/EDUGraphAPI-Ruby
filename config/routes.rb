@@ -52,18 +52,16 @@ Rails.application.routes.draw do
   resources :schools, only: :index do
     resources :classes do
       collection do
-        get :more
+        get :more        
+      end
+      member do
+        post :save_seating_positions
       end
     end
 
   	member do
-  	  #get :classes
   	  get :users
       get :users_next
-      #get 'classes/:class_id' => 'schools#class_info'
-      #post 'classes/:class_id/next' => 'schools#next_classes'
-      #post 'classes/:class_id/next' => 'schools#next_users' :
-      #post 'classes/:class_id/seatings' => 'schools#seatings_post' # :save_settings
   	end
   end
 

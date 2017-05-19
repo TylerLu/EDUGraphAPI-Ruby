@@ -48,21 +48,21 @@ class ApplicationController < ActionController::Base
 
   def handle_refresh_token_error
     begin
-    yield
+      yield
     rescue Exceptions::RefreshTokenError => exception
-    redirect_to link_login_o365_required_path
+      redirect_to link_login_o365_required_path
     end
   end
 
   def init_demo_helper
     if request.get?
-    @demo_helper_links = DemoHelperService.get_links(params[:controller], params[:action])
+      @demo_helper_links = DemoHelperService.get_links(params[:controller], params[:action])
     end
   end
 
   def require_login
     if !current_user.is_authenticated?
-    redirect_to account_login_path
+      redirect_to account_login_path
     end
   end
 
@@ -78,12 +78,12 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def azure_oauth2_logout_required?
+  def azure_oauth2_logout_required
     session['azure_logout_required']
   end
 
-  def azure_oauth2_logout_required= required
-    session['azure_logout_required'] = required
+  def azure_oauth2_logout_required=(value)
+    session['azure_logout_required'] = value
   end
 
 end

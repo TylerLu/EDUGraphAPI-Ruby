@@ -38,7 +38,7 @@ class UserService
       email: email,
       first_name: first_name,
       last_name: last_name,
-      password: nil,
+      password: SecureRandom.base64,
       favorite_color: favorite_color
     })
     user.save
@@ -72,20 +72,27 @@ class UserService
 			.to_h
   end
 
-  def save_seating_positions(class_object_id, postions)
-		postions.values.each do |info|
-			user_set = ClassroomSeatingArrangement.find_by({class_id: info['ClassId'],user_id: info['O365UserId']})
-			if user_set
-				user_set.position = info['Position']
-				user_set.save
-			else
-				ClassroomSeatingArrangement.create({
-					class_id: info['ClassId'],
-					user_id: info['O365UserId'],
-					position: info['Position']
-				})
-			end
-		end
+  def save_seating_positions(class_object_id, positions)
+    
+    old_positions = ClassroomSeatingArrangement.where(class_id: class_object_id)
+    old_positions.each do |item|
+      new_item = positions.detect { |i| i['o365_user_id'] == item.user_id }
+      if new_item
+        item.position = new_item['position']
+        item.save()
+      else
+        item.destroy()
+      end
+    end
+		positions.each do | new_item |
+      if old_positions.all? {|i| i.user_id != new_item['o365_user_id'] }
+        ClassroomSeatingArrangement.create({
+          class_id: class_object_id,
+					user_id: new_item['o365_user_id'],
+					position: new_item['position']
+        })
+      end
+    end
   end
 
 end

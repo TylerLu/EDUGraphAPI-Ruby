@@ -78,9 +78,9 @@ class ClassesController < ApplicationController
     end
   end
 
-  def seatings_post
+  def save_seating_positions
     user_service = UserService.new
-    user_service.save_seating_positions(params[:class_id], params[:postions].values)
+    user_service.save_seating_positions(params[:id], params['_json'])
     render json: {status: 'success'}
   end
 

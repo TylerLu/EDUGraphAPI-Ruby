@@ -62,7 +62,7 @@ class AccountController < ApplicationController
     set_local_user(user) if user
 
     clear_session_expire_after()
-    azure_oauth2_logout_required = true
+    self.azure_oauth2_logout_required = true
     redirect_to account_index_path
   end
 
@@ -118,11 +118,13 @@ class AccountController < ApplicationController
   end
 
   def logoff
+    azure_oauth2_logout_required = self.azure_oauth2_logout_required 
+
     session.clear
     reset_session()
     clear_session_expire_after()
 
-    if azure_oauth2_logout_required? 
+    if azure_oauth2_logout_required 
       post_logout_redirect_uri = URI.escape("#{full_host}/account/login", Regexp.new("[^#{URI::PATTERN::UNRESERVED}]"))
       logoff_url = "#{Constants::AADInstance}common/oauth2/logout?post_logout_redirect_uri=#{post_logout_redirect_uri}"
       redirect_to logoff_url

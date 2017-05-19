@@ -19,7 +19,7 @@ module Constants
   # O365 product licenses
   module Licenses
     #Microsoft Classroom Preview
-      Classroom = "80f12768-d8d9-4e93-99a8-fa2464374d34"
+    Classroom = "80f12768-d8d9-4e93-99a8-fa2464374d34"
     #Office 365 Education for faculty
     Faculty = "94763226-9b3c-4e75-a931-5c89701abe66"
     #Office 365 Education for students

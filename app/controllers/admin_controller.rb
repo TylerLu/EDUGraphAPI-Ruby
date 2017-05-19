@@ -27,7 +27,7 @@ class AdminController < ApplicationController
 		organization_service = OrganizationService.new
 		organization_service.update_organization(auth.info.tid, {is_admin_consented: true})
     flash[:notice] = 'Admin unconsented successfully!'
-    azure_oauth2_logout_required = true
+    self.azure_oauth2_logout_reqcuired = true
 		redirect_to current_user.is_admin? ? admin_index_path : admin_consent_path
   end
 

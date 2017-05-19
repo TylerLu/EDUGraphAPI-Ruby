@@ -13,5 +13,5 @@ login.css bootstrap.js
 jqueryval.js site.js
 moment.min.js sections.js
 users.js classdetail.js
-schools.js
+schools.js jquery.tablesorter.min.js
 )

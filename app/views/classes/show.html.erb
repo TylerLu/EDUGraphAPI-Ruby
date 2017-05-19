@@ -158,12 +158,12 @@
                     <div>
                         <div id="graybg">
                             <% (1..36).each do |index| %>
-                                <% if student = @class.members[index] %>
+                                <% if student = @class.students.detect {|s| s.custom_data[:position] == index } %>
                                 <div class="desktile" position="<%= index %>">
                                     <div class="deskcontainer white" style="<%= 'background-color: ' + student.custom_data[:favorite_color] if student.custom_data[:favorite_color] %>" position="<%= index %>" userid="<%= student.object_id %>">
                                         <div class="deskclose" style="display: none;"><img src="/Images/close.png"></div>
                                         <div class="deskicon">
-                                            <img src="/Images/header-default.png" realheader="/users/<%= student.object_id%>/photo">
+                                            <img src="/Images/header-default.jpg" realheader="/users/<%= student.object_id%>/photo">
                                         </div>
                                     <div class="stuname"><%= student.display_name %></div>
                                     </div>
@@ -239,4 +239,4 @@
 </div>
 <input type="hidden" name="hidSectionid" id="hidSectionid" value="<%= @class.object_id %>" />
 
-<%= javascript_include_tag "classdetail" %>
+<%= javascript_include_tag "jquery.tablesorter.min", "classdetail" %>
