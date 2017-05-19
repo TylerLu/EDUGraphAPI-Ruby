@@ -55,6 +55,10 @@ module Education
       get_education_extension_value('Period')
     end
 
+    def anchor_id
+      get_education_extension_value('AnchorId')
+    end
+
     def combined_course_number
       "#{course_name[0..2].upcase()}#{course_number}"
     end
