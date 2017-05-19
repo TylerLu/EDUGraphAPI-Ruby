@@ -1,10 +1,10 @@
-BingMapKey: <%= ENV['BingMapKey'] || "Anu3xoioQvqyG6b3eZ30IyR8TwyeQYpeag6OBdQvrsfUn0FwsVwFH9OnkJZvX-8a" %>
+BingMapKey: <%= ENV['BingMapKey'] %>
 
 SourceCodeRepositoryUrl: 'https://github.com/TylerLu/EDUGraphAPI-Ruby'
 
 AAD:
-  ClientId: <%= ENV['ClientId'] || "70288edd-ba06-4139-befc-1315f6b0a721" %>
-  ClientSecret: <%= ENV['ClientSecret'] || 'S01BulKmE3s4nPR9pJU7GzRlefCOGwqTu1Zbp3KsUvk=' %>
+  ClientId: <%= ENV['ClientId'] %>
+  ClientSecret: <%= ENV['ClientSecret'] %>
 
 db:
   host: <%= ENV['DB_HOST'] %>
