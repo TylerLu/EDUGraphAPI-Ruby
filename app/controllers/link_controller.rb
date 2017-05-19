@@ -82,10 +82,10 @@ class LinkController < ApplicationController
     end
     
 		# cahce tokens
-		token_service.cache_tokens(auth.info.oid, Constant::Resources::AADGraph, auth.credentials.refresh_token, auth.credentials.token, auth.credentials.expires_at)
+		token_service.cache_tokens(auth.info.oid, Constants::Resources::AADGraph, auth.credentials.refresh_token, auth.credentials.token, auth.credentials.expires_at)
 
     # get tenant
-		token = token_service.get_access_token(auth.info.oid, Constant::Resources::MSGraph)
+		token = token_service.get_access_token(auth.info.oid, Constants::Resources::MSGraph)
 		ms_graph_service = MSGraphService.new(token)
 		tenant = ms_graph_service.get_organization(auth.info.tid)
 
@@ -104,6 +104,7 @@ class LinkController < ApplicationController
     link_service = LinkService.new()
     link_service.link(current_user.local_user, o365_user.id, o365_user.email, o365_user.tenant_id, o365_user.roles)
     
+    azure_oauth2_logout_required = true
 		redirect_to account_index_path, notice: 'Your local account has been successfully linked to your Office 365 account.'
   end
 

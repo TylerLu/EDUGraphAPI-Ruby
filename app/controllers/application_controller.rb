@@ -77,4 +77,13 @@ class ApplicationController < ActionController::Base
     redirect_to account_index_path
     end
   end
+
+  def azure_oauth2_logout_required?
+    session['azure_logout_required']
+  end
+
+  def azure_oauth2_logout_required= required
+    session['azure_logout_required'] = required
+  end
+
 end
