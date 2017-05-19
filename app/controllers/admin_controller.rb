@@ -57,7 +57,7 @@ class AdminController < ApplicationController
 
     service_principal = aad_graph_service.get_service_principal(Settings.AAD.ClientId)
     if !service_principal
-      redirect_to admin_index_path, alert: 'Could not found the service principal. Please provdie the admin consent.' and return
+      redirect_to admin_index_path, alert: 'Could not find the service principal. Please provide admin consent.' and return
     end
 
     count = aad_graph_service.add_app_role_assignments(service_principal['objectId'], service_principal['appDisplayName'])

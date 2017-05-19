@@ -47,7 +47,7 @@ class LinkController < ApplicationController
     user_service = UserService.new
     user = user_service.authenticate(params["Email"], params["Password"])
     if !user
-      flash[:alert] = 'Email or password is incorrect'
+      flash[:alert] = 'Email or password is incorrect.'
       render 'login_local' and return
     end
 
@@ -82,10 +82,10 @@ class LinkController < ApplicationController
     end
     
 		# cahce tokens
-		token_service.cache_tokens(auth.info.oid, Constants::Resources::AADGraph, auth.credentials.refresh_token, auth.credentials.token, auth.credentials.expires_at)
+		token_service.cache_tokens(auth.info.oid, Constant::Resources::AADGraph, auth.credentials.refresh_token, auth.credentials.token, auth.credentials.expires_at)
 
     # get tenant
-		token = token_service.get_access_token(auth.info.oid, Constants::Resources::MSGraph)
+		token = token_service.get_access_token(auth.info.oid, Constant::Resources::MSGraph)
 		ms_graph_service = MSGraphService.new(token)
 		tenant = ms_graph_service.get_organization(auth.info.tid)
 
