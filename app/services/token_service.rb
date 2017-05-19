@@ -34,7 +34,6 @@ class TokenService
       end
     end
     # refresh token and cache
-    # TODO
     auth_result = refresh_token(cache.refresh_token, resource)
     access_tokens[resource] = { 
       expiresOn: get_expires_on(auth_result.expires_on), 
