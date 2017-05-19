@@ -16,7 +16,6 @@ $(document).ready(function () {
     });
 
     $('.demo-helper-control .header').on('click', function () {
-        console.log(12321);
         console.log($(this).closest('.demo-helper-control').html());
         $(this).closest('.demo-helper-control').toggleClass('collapsed');
     });

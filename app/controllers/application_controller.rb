@@ -64,8 +64,8 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def link_users_only
-    if !current_user.is_admin?
+  def linked_users_only
+    if !current_user.are_linked?
     redirect_to account_index_path
     end
   end

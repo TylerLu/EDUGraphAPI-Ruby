@@ -4,7 +4,7 @@
 class ClassesController < ApplicationController
 
   before_action :require_login
-  before_action :link_users_only
+  before_action :linked_users_only
 
   def index
     aad_access_token = token_service.get_access_token(current_user.o365_user_id, Constants::Resources::AADGraph)

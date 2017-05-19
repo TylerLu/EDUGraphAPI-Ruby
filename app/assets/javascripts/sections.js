@@ -50,20 +50,21 @@ $(document).ready(function () {
 
         element.find('span').addClass('disabled');
 
-        if(skip_token != ''){
+        if(skip_token != '') {
             $.ajax({
                 type: 'GET',
                 url: '/schools/' + school_object_id + '/classes/more',
                 dataType: 'json',
                 data: { skip_token: skip_token, edu_school_id: school_id },
-                success: function(res){
+                success: function(res) {
                     var html = '';
-                    $.each(res['values'], function(index, value){
+                    $.each(res['values'], function(index, value) {
                         html += '<div class="tile-container">';
-                        if(value['is_my_course'] == true){
+                        if(value['is_my_course'] == true) {
                             html += '<a class="mysectionlink" href="/schools/'+ school_object_id +'/classes/'+ value['object_id'] +'">' + 
                             '<div class="tile"><h5>' +value['display_name']+ '</h5><h2>' + value['combined_course_number'] + '</h2></div></a>';
-                        }else{
+                        }
+                        else {
                             html += '<div class="tile"><h5>' +value['display_name']+ '</h5><h2>' + value['combined_course_number'] + '</h2></div>';
                         }
                         html += '<div class="detail"><h5>Course Id:</h5><h6>' +value['course_id']+ '</h6><h5>Description:</h5><h6>'+ value['course_description'] +'</h6>' + 
@@ -74,8 +75,6 @@ $(document).ready(function () {
                     _ = $(html);
                     _.appendTo($('#class_content')).hide().fadeIn("slow");
                     bindShowDetail(_);
-                    // $("#class_content").append(html);
-                    // bindShowDetail($("#class_content"));
                     element.data('skip-token', res['skip_token']);
                     element.find('span').removeClass('disabled');
                 }
@@ -83,12 +82,12 @@ $(document).ready(function () {
         }
     });
 
-    $("#my-see-more").click(function(){
+    $("#my-see-more").click(function() {
         var start_index = parseInt($(this).data('index'));
         var all_count = parseInt($(this).data('count'));
 
-        for(var i = start_index; i < start_index + 12; i++){
-            if(i >= all_count){   
+        for(var i = start_index; i < start_index + 12; i++) {
+            if(i >= all_count) {   
                 $(this).unbind('click');
                 $(this).find('span').html('END');
                 return;

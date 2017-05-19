@@ -4,16 +4,35 @@
  */
 
 BingMapHelper = {};
-BingMapHelper.BingMap = { 
-	displayPin: function(n, t, i) {
-  var r = new Microsoft.Maps.Map(document.getElementById("myMap"), { credentials: i, center: new Microsoft.Maps.Location(n, t), mapTypeId: Microsoft.Maps.MapTypeId.road, showMapTypeSelector: !1, zoom: 10 }),
-      u = new Microsoft.Maps.Pushpin(r.getCenter(), null);
-      r.entities.push(u) } };
-$(document).ready(function() {
-    var n = $("#BingMapKey").val();
-    n && ($(".bingMapLink").click(function(t) {
-        var i, r, u;
-        t.stopPropagation ? t.stopPropagation() : t.cancelBubble = !0;
-        i = $(this).attr("lat");
-        r = $(this).attr("lon");
-        i && r && (BingMapHelper.BingMap.displayPin(i, r, n), u = $(this).offset(), $("#myMap").offset({ top: u.top - 50, left: u.left + 50 }).css({ width: "200px", height: "200px" }).show()) }), $(document).click(function() { $("#myMap").offset({ top: 0, left: 0 }).hide() })) })
+BingMapHelper.BingMap = {
+    displayPin: function (latitude, longitude, bingMapKey) {
+        var map = new Microsoft.Maps.Map(document.getElementById('myMap'), {
+            credentials: bingMapKey,
+            center: new Microsoft.Maps.Location(latitude, longitude),
+            mapTypeId: Microsoft.Maps.MapTypeId.road,
+            showMapTypeSelector: false,
+            zoom: 10
+        });
+        var pushpin = new Microsoft.Maps.Pushpin(map.getCenter(), null);
+        map.entities.push(pushpin);
+    }
+};
+
+$(document).ready(function () {
+    var bingMapKey = $("#BingMapKey").val();
+    if (bingMapKey) {
+        $(".bingMapLink").click(function (evt) {
+            evt.stopPropagation ? evt.stopPropagation() : evt.cancelBubble = true;
+            var lat = $(this).attr("lat");
+            var lon = $(this).attr("lon");
+            if (lat && lon) {
+                BingMapHelper.BingMap.displayPin(lat, lon, bingMapKey);
+                var offset = $(this).offset();
+                $("#myMap").offset({ top: offset.top - 50, left: offset.left + 50 }).css({ width: "200px", height: "200px" }).show();
+            }
+        });
+        $(document).click(function () {
+            $("#myMap").offset({ top: 0, left: 0 }).hide();
+        });
+    }
+});

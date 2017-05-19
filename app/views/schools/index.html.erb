@@ -71,7 +71,7 @@
                   <div class="schoolmap">
                     <% if school.address.present? %>
                       <% location = school.custom_data[:location] %>
-                      <a class="bingMapLink" lat="<%= location[:latitude] %>" lon="location[:longitude] %>" href="javascript:void(0)">
+                      <a class="bingMapLink" lat="<%= location[:latitude] %>" lon="<%= location[:longitude] %>" href="javascript:void(0)">
                       <img src="<%= school.number == @me.school_id ? '/Images/icon-map_30x28px-WHT.png' : '/Images/icon-map_30x28px-BLU.png' %>" /></a>
                     <% end %>
                   </div>
