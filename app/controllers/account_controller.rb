@@ -125,7 +125,7 @@ class AccountController < ApplicationController
     if azure_oauth2_logout_required? 
       post_logout_redirect_uri = URI.escape("#{full_host}/account/login", Regexp.new("[^#{URI::PATTERN::UNRESERVED}]"))
       logoff_url = "#{Constants::AADInstance}common/oauth2/logout?post_logout_redirect_uri=#{post_logout_redirect_uri}"
-      redirect_to logoff_url #TODO only when o365 login
+      redirect_to logoff_url
     else
       redirect_to account_login_path 
     end   

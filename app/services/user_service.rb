@@ -38,7 +38,7 @@ class UserService
       email: email,
       first_name: first_name,
       last_name: last_name,
-      password: '1111111', # TODO
+      password: nil,
       favorite_color: favorite_color
     })
     user.save
