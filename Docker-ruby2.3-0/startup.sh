@@ -44,7 +44,8 @@ if [ -n "$APP_COMMAND_LINE" ]
         sed -i "23 a require_relative \'request_parameters.rb\'" /usr/local/bundle/gems/adal-1.0.0/lib/adal/client_assertion_certificate.rb
     fi
 
-    rails db:migrate 
+    rake db:schema:load
+    rake db:seed
     rake assets:precompile
     rails server
 fi
