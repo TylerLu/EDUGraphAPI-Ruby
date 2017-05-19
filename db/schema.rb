@@ -48,8 +48,8 @@ ActiveRecord::Schema.define(version: 20170501145527) do
     t.datetime "created_at",                     null: false
     t.datetime "updated_at",                     null: false
     t.string   "o365_userId"
-    t.string   "refresh_token"
-    t.string   "access_tokens"
+    t.text     "refresh_token"
+    t.text     "access_tokens"
   end
 
   create_table "user_roles", force: :cascade do |t|
