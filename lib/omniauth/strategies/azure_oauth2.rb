@@ -73,6 +73,10 @@ module OmniAuth
         super
       end
 
+      def ssl?
+        request.env['HTTP_X_ARR_SSL'] || super
+      end
+
     end
   end
 end
