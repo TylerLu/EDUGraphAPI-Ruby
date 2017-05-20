@@ -93,7 +93,6 @@ class ApplicationController < ActionController::Base
       request.headers['HTTP_X_FORWARDED_SCHEME'] = 'https'
     #end
 
-    byebug
   end
 
 end
