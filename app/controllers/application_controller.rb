@@ -90,7 +90,6 @@ class ApplicationController < ActionController::Base
   def convert_ssl_header
     if request.headers['HTTP_X_ARR_SSL']
       request.headers['HTTP_X_FORWARDED_SCHEME'] = 'https'
-      request.env['HTTP_X_FORWARDED_SCHEME'] = 'https'
     end
   end
 
