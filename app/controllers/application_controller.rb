@@ -4,6 +4,7 @@
 class ApplicationController < ActionController::Base
 
   # protect_from_forgery with: :exception
+  before_action :ssl_patch
   before_action :init_demo_helper
   around_action :handle_refresh_token_error
 
@@ -84,6 +85,12 @@ class ApplicationController < ActionController::Base
 
   def azure_oauth2_logout_required=(value)
     session['azure_logout_required'] = value
+  end
+
+  def ssl_patch
+    if request.headers['HTTP_X_ARR_SSL']
+      request.env['HTTP_X_FORWARDED_SCHEME'] == 'https'
+    end
   end
 
 end
