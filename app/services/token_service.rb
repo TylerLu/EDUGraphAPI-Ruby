@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT license.  
+# See LICENSE in the project root for license information. 
+
 # This class is responsible for cache and retrieve tokens to and from the backend database.
 # In this sample, tokens are cached in clear text in database. For real projects, they should be encrypted.
 
