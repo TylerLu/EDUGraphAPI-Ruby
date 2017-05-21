@@ -84,7 +84,7 @@ Create a key to enable Bing Maps API features in the app:
 
 4. Input a **Name**, and select **Web app / API** as **Application Type**.
 
-   Input **Sign-on URL**: http://localhost:44311/
+   Input **Sign-on URL**: http://localhost:3000/
 
    ![](Images/aad-create-app-02.png)
 
@@ -129,6 +129,7 @@ You need to have some prerequisites installed:
 
 - The [Ruby](https://www.ruby-lang.org/en/downloads) language version 2.3 or newer.
 - The [RubyGems](https://rubygems.org/) packaging system, which is installed with Ruby by default. To learn more about RubyGems, please read the [RubyGems Guides](http://guides.rubygems.org/).
+- The [rails](http://rubyonrails.org/) version 5.0.0 or above.
 - A working installation of the [SQLite3 Database](https://www.sqlite.org/).
 
 Run the **EDUGraphAPI**:
@@ -144,10 +145,10 @@ Run the **EDUGraphAPI**:
 
    ```shell
    bundle install
-   rails s -p 44311
+   rails s
    ```
 
-3. Press **F5**. 
+3. Open http://localhost:3000 in a browser.
 
 ## Deploy the sample to Azure
 
@@ -247,7 +248,7 @@ Run the **EDUGraphAPI**:
 
    ![](Images/aad-add-reply-url.png)
 
-   > Note: to debug the sample locally, make sure that http://localhost:44311/ is in the reply URLs.
+   > Note: to debug the sample locally, make sure that http://localhost:3000/ is in the reply URLs.
 
 4. Click **SAVE**.
 
@@ -259,22 +260,9 @@ Run the **EDUGraphAPI**:
 
 ![](Images/solution-component-diagram.png)
 
-The top layer of the solution contains the two parts of the EDUGraphAPI.Web project:
-
-* The server side Node.js app.
-* The client side Angular 2 app.
-
-The bottom layers contain the three data sources.
-
-* The EDUGraphAPI database.
-* Education data exposed by REST APIs.
-* Azure AD data exposed by Graph APIs.
-
 **Authentication Mechanisms**
 
-TODO: [https://github.com/omniauth/omniauth](https://github.com/omniauth/omniauth)
-
-
+[OmniAuth OAuth2](https://github.com/intridea/omniauth-oauth2) and a custom Azure OAuth2 strategy `lib/omniauth/azure_oauth2.rb` are used to enable O365 users login.
 
 **Data Access**
 
@@ -286,13 +274,22 @@ Below are the main tables used in this sample:
 
 | Table                          | Description                              |
 | ------------------------------ | ---------------------------------------- |
-| accounts                       | Contains the user's information: name, email, hashed password...<br>*o365_user_id* and *o365_email* are used to connect the local user with an O365 user. |
+| users                          | Contains the user's information: name, email, hashed password...<br>*o365_user_id* and *o365_email* are used to connect the local user with an O365 user. |
 | user_roles                     | Contains users' role. Three roles are used in this sample: admin, teacher, and student. |
 | organizations                  | A row in this table represents a tenant in AAD.<br>*IsAdminConsented* column records than if the tenant consented by an administrator. |
-| token                          | Contains the users' access/refresh tokens. |
+| token_caches                   | Contains the users' access/refresh tokens. |
 | classroom_seating_arrangements | Contains the classroom seating arrangements. |
 
 You may change the database settings in the **/config/database.yml** file. SQLite is used for the development environment.
+
+**Libs**
+
+In the **lib** folder, there are 2 libs.
+
+| Lib       | Description                              |
+| --------- | ---------------------------------------- |
+| education | Contains EducationService and several model classes. Theyencapsulate education REST APIs. |
+| omniauth  | Contains AzureOauth2 class which implemented Azure OAuth2 strategy for OmniAuth |
 
 **Controllers**
 
@@ -300,24 +297,37 @@ In the **app/controllers** folder, there are 6 controllers:
 
 | Controller            | Description                              |
 | --------------------- | ---------------------------------------- |
-| ApplicationController | The base controller of the other controllers |
-| AccountController     | Contains actions for user to register, login and logout |
-| AdminController       | Contains administrative actions like consent tenant, manage linked accounts. |
+| ApplicationController | The base controller of the other controllers. |
+| AccountController     | Contains actions for user to register, login and logout. |
 | LinkController        | Contains actions used for users to link accounts. |
-| SchoolsController     | Contains actions used to show education data, link schools, classes and class details. |
-|                       |                                          |
+| ManageController      | Contains the about me action.            |
+| AdminController       | Contains administrative actions like consent tenant, manage linked accounts. |
+| SchoolsController     | Contains actions used to show schools data. |
+| ClassesController     | Contains actions used to show classes data. |
 
 **Services**
 
-All the serveries are in the **app:/services** folder: 
+Service classes are in the **app/services** folder. Below are the main services used in the sample:
 
-| Service           | Description                              |
-| ----------------- | ---------------------------------------- |
-| MSGraphClient     | Contains methods used to access MS Graph APIs |
-| SchoolService     | Contains two methods: get/update seating arrangements |
-| TenantService     | Contains methods that operate tenants in the database |
-| TokenCacheService | Contains method used to get and update cache from the database |
-| UserService       | Contains method used to manipulate users in the database |
+| Service             | Description                              |
+| ------------------- | ---------------------------------------- |
+| MSGraphService      | Contains methods used to access MS Graph APIs |
+| AADGraphService     | Contains methods used to access AAD Graph APIs |
+| TokenCacheService   | Contains method used to get and update cache from the database |
+| UserService         | Contains method used to manipulate users in the database |
+| OrganizationService | Contains methods that operate organizations in the database |
+| LinkService         | Contains methods used to link user accounts |
+
+**Action filters**
+
+In the ApplicationController, several action filters were created and used by itself and other controllers.
+
+| Name                       | Type          | Description                              |
+| -------------------------- | ------------- | ---------------------------------------- |
+| require_login              | before_action | Redirects user to login page if the user is not logged in. |
+| admin_only                 | before_action | Only allow admin users to access the protected actions. |
+| linked_users_only          | before_action | Only allow linked users to access the protected actions. |
+| handle_refresh_token_error | around_action | Rescue RefreshTokenError raised by TokenService when refresh token is missing or expired. It will redirect the user to page which explains the reason and instructs the user to re-login. |
 
 **Multi-tenant app**
 
@@ -335,47 +345,50 @@ For more information, see [Build a multi-tenant SaaS web application using Azure
 
 The [Office 365 Education APIs](https://msdn.microsoft.com/office/office365/api/school-rest-operations) return data from any Office 365 tenant which has been synced to the cloud by Microsoft School Data Sync. The APIs provide information about schools, sections, teachers, students, and rosters. The Schools REST API provides access to school entities in Office 365 for Education tenants.
 
-In this sample, the **Microsoft.Education** Class Library project encapsulates the Office 365 Education API. 
+In this sample, the **lib/education** lib encapsulates the Office 365 Education API. 
 
-The **EducationServiceClient** is the core class of the library. It is used to easily get education data.
+The **EducationService** is the core class of the library. It is used to easily get education data.
 
 **Get schools**
 
 ~~~typescript
-getSchools(): Observable<any[]> {
-    return this.dataService.getArray<any>(this.urlBase + "/administrativeUnits?api-version=beta");
-}
+def get_all_schools
+  get_objects(Education::School, 'administrativeUnits?api-version=beta')
+end
 ~~~
 
 ~~~typescript
-getSchoolById(id: string): Observable<any> {
-    return this.dataService.getObject(this.urlBase + '/administrativeUnits/' + id + '?api-version=beta');
-}
+def get_school(object_id)
+  get_object(Education::School, "administrativeUnits/#{object_id}?api-version=beta")
+end
 ~~~
 
 **Get classes**
 
 ~~~typescript
-getClasses(schoolId: string, nextLink: string): Observable<PagedCollection<any>> {
-    let url: string = this.urlBase + "/groups?api-version=beta&$top=12&$filter=extension_fe2174665583431c953114ff7268b7b3_Education_ObjectType%20eq%20'Section'%20and%20extension_fe2174665583431c953114ff7268b7b3_Education_SyncSource_SchoolId%20eq%20'" + schoolId + "'" +
-        (nextLink ? "&" + GraphHelper.getSkipToken(nextLink) : '');
-    return this.dataService.getPagedCollection<any>(url);
-}
+def get_sections(school_id, skip_token = nil, top = 12)
+  get_paged_objects(Education::Section, 'groups?api-version=1.5', {
+    '$top': 12,
+    '$filter': "extension_fe2174665583431c953114ff7268b7b3_Education_ObjectType eq 'Section' and extension_fe2174665583431c953114ff7268b7b3_Education_SyncSource_SchoolId eq '#{school_id}'",
+    '$skiptoken': skip_token
+  })
+end
 ~~~
 
 ```typescript
-getClassById(classId: string): Observable<any> {
-    return this.dataService.getObject<any>(this.urlBase + "/groups/" + classId + "?api-version=beta&$expand=members");
-}
+def get_section(section_id)
+  get_object(Education::Section, "groups/#{section_id}?api-version=1.5")
+end
 ```
 **Get users**
 
 ```typescript
-getUsers(schoolId: string, nextLink: string): Observable<PagedCollection<any>> {
-    var url = this.urlBase + "/administrativeUnits/" + schoolId + "/members?api-version=beta&$top=12" +
-        (nextLink ? "&" + GraphHelper.getSkipToken(nextLink) : '');
-    return this.dataService.getPagedCollection<any>(url);
-}
+def get_members(school_id, skip_token = nil, top = 12)
+  get_paged_objects(Education::User, "administrativeUnits/#{school_id}/members?api-version=beta", {
+    '$top': top,
+    '$skiptoken': skip_token
+  })
+end
 ```
 Below are some screenshots of the sample app that show the education data.
 
@@ -386,14 +399,6 @@ Below are some screenshots of the sample app that show the education data.
 ![](Images/edu-classes.png)
 
 ![](Images/edu-class.png)
-
-In **/app/services/dataService.ts**, three generic methods simplify the invoking of REST APIs.
-
-* **getObject<T>**: sends a http GET request to the target endpoint, and deserializes the JSON response string to T, and return the result object.  
-* **getPagedCollection<T>**:  sends a http GET request to the target endpoint, and deserializes the JSON response string to PagedCollection<T>, and return the result object. 
-* **getArray<T>**: sends a http GET request to the target endpoint, and deserializes the JSON response string to array, and return the array.
-
-For http GET request sent by the 3 methods above, an access token is included in the bearer authentication header.
 
 ### Authentication Flows
 
@@ -436,20 +441,15 @@ There are two distinct Graph APIs used in this sample:
 
 > Therefore, please use the new Microsoft Graph API as much as possible and minimize how much you use the Azure AD Graph API.
 
-Below is a piece of code shows how to get "me" from the Microsoft Graph API.
+Below is a piece of code shows how to get user photo from the Microsoft Graph API.
 
 ```typescript
-public getMe(): Promise<any> {
-    return new Promise((resolve, reject) => {
-        request
-            .get(Constants.MSGraphResource + "/v1.0/me/?$select=id,givenName,surname,userPrincipalName,assignedLicenses")
-            .set('Authorization', 'Bearer ' + this.accessToken)
-            .end((err, res) => {
-                if (err) { return reject(err) }
-                resolve(res.body);
-            })
-    })
-}
+def get_user_photo(o365_user_id)
+  url = @base_url + "/users/#{o365_user_id}/photo/$value"
+  HTTParty.get(url, headers: {
+     "Authorization" => "Bearer #{@access_token}"
+  })
+end
 ```
 
 Note that in the AAD Application settings, permissions for each Graph API are configured separately:
