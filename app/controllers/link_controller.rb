@@ -8,7 +8,7 @@ class LinkController < ApplicationController
   def index
     if !current_user.are_linked? && current_user.is_o365?
 		  user_service = UserService.new
-      @local_user = user_service.get_user_by_email(current_user.o365_email)
+      @matched_local_user = user_service.get_user_by_email(current_user.o365_email)
     end
   end
 
@@ -23,6 +23,7 @@ class LinkController < ApplicationController
     o365_user = current_user.o365_user
     link_service.link(user, o365_user.id, o365_user.email, o365_user.tenant_id, o365_user.roles)
     set_local_user(user)
+    redirect_to account_index_path, notice: 'Your local account has been successfully linked to your Office 365 account.'
   end
 
   def create_local

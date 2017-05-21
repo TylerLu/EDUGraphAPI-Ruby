@@ -30,8 +30,8 @@
   <hr />
   <% if current_user.is_o365? %>
     <div class="form-horizontal">
-      <% if @local_user %>
-        <p>There is a local account: <%= @local_user.email %> matching your O365 account.</p>
+      <% if @matched_local_user %>
+        <p>There is a local account: <%= @matched_local_user.email %> matching your O365 account.</p>
         <p>
           <form action="/link/matched_local" method="post">
             <a class="btn btn-primary" disabled="disabled" href="javascript:void(0)">Continue with new Local Account</a>&nbsp; &nbsp;

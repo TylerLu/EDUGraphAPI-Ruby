@@ -81,11 +81,6 @@ class AdminController < ApplicationController
   def unlink_account_post
     link_service = LinkService.new
     link_service.unlink_account(params[:id])
-
-    if current_user.user_id == params[:id]
-      clear_local_user()
-  	end
-
     redirect_to admin_linked_accounts_path
   end
 

@@ -11,15 +11,12 @@ class ApplicationController < ActionController::Base
   include ApplicationHelper
   helper_method :current_user
 
-  def local_user
-    return unless session[:user_id]
-    @current_user ||= User.find(session[:user_id])
-  end
-
   def current_user
-    #session[:current_user]
-    local_user = session['_local_user_id'] ? User.find_by_id(session['_local_user_id']) : nil
     o365_user = session['_o365_user']
+    local_user = session['_local_user_id'] ? User.find_by_id(session['_local_user_id']) : nil
+    if o365_user && local_user && (local_user.o365_user_id != o365_user.id || local_user.o365_email != o365_user.email)
+      local_user = nil
+    end
     UnifiedUser.new(local_user, o365_user)
   end
 
