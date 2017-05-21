@@ -53,7 +53,7 @@ module Education
       })
     end
 
-      def get_members(school_id, skip_token = nil, top = 12)
+    def get_members(school_id, skip_token = nil, top = 12)
       get_paged_objects(Education::User, "administrativeUnits/#{school_id}/members?api-version=beta", {
         '$top': top,
         '$skiptoken': skip_token
