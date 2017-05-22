@@ -53,9 +53,7 @@ class ApplicationController < ActionController::Base
   end
 
   def init_demo_helper
-    if request.get?
-      @demo_helper_links = DemoHelperService.get_links(params[:controller], params[:action])
-    end
+    @demo_helper_links = DemoHelperService.get_links(params[:controller], params[:action])
   end
 
   def require_login
