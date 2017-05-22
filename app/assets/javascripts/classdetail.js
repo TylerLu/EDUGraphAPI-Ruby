@@ -2,6 +2,7 @@
  *   * Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT license.  
  *   * See LICENSE in the project root for license information.  
  */
+
 $(document).ready(function () {
     iniTiles();
     iniControl();
@@ -114,14 +115,22 @@ function enableDragAndDrop() {
         if (typeof (idData) === "string" && idData.indexOf(prefix) == 0) {
             id = idData.substr(prefix.length);
         }
+        var position = $(this).attr("position");
         var container = $(this).find(".deskcontainer");
-        if (container.length > 0 || id.length == 0)
+        if (container.length > 0 || id.length === 0) {
+            if (container.attr("prev-position") === position) {
+                container.removeAttr("prev-position");
+            }
             return;
+        }
         $(".greenTileTooltip").remove();
         enableDragOnLeft($("#" + id), false).removeClass("greenlist").find(".seated").removeClass("hideitem");
         $(".deskcontainer[userid='" + id + "']").addClass("white").appendTo($(this));
-        var position = $(this).attr("position");
-        $(this).find(".deskcontainer").attr("position", position);
+        container = $(this).find(".deskcontainer");
+        container.attr("position", position);
+        if (container.attr("prev-position") === position) {
+            container.removeAttr("prev-position");
+        }
     });
 
     $(".desktile").on('dragenter', function (evt) {
@@ -184,7 +193,7 @@ function disableDragAndDrop() {
 function saveEditDesk() {
     var classroomSeatingArrangements = [];
     var classId = $("#hidSectionid").val();
-    $("#seatingchart #dvright .deskcontainer").each(function () {
+    $(".desktile .deskcontainer.unsaved, #hidtiles .deskcontainer:not(.unsaved), .desktile .deskcontainer[prev-position]").each(function () {
         var userid = $(this).attr("userid");
         if (userid) {
             var position = $(this).attr("position");
@@ -205,9 +214,7 @@ function saveEditDesk() {
         success: function (responseData) {
             $(".desktile .deskcontainer.unsaved").removeClass("unsaved");
             $(".desktile .deskcontainer[prev-position]").removeAttr("prev-position");
-            //$("#hidtiles .deskcontainer:not(.unsaved)").remove();
-            $('<div id="saveResult"><div>Seating map changes saved.</div></div>')
-            .insertBefore($('#dvleft'))
+            $('<div id="saveResult"><div>Seating map changes saved.</div></div>').insertBefore($('#dvleft'))
            .fadeIn("slow", function () { $(this).delay(3000).fadeOut("slow"); });
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -229,15 +236,8 @@ function cancelEditDesk() {
     $(".desktile .deskcontainer[prev-position]").each(function (i, e) {
         var $e = $(e);
         var prevPosition = $e.attr("prev-position");
-        if (prevPosition == $e.attr("position")) {
-            return;
-        }
         $e.attr("position", prevPosition).removeAttr("prev-position").appendTo($(".desktile[position=" + prevPosition + "]"));
     })
-}
-
-function getSeatingArrangements(O365UserId, Position) {
-    return { O365UserId: O365UserId, Position: Position };
 }
 
 $.urlParam = function (name) {
@@ -248,14 +248,4 @@ $.urlParam = function (name) {
     else {
         return results[1] || 0;
     }
-}
-
-function addParam(url, param, value) {
-    var a = document.createElement('a'), regex = /(?:\?|&amp;|&)+([^=]+)(?:=([^&]*))*/g;
-    var match, str = []; a.href = url; param = encodeURIComponent(param);
-    while (match = regex.exec(a.search))
-        if (param != match[1]) str.push(match[1] + (match[2] ? "=" + match[2] : ""));
-    str.push(param + (value ? "=" + encodeURIComponent(value) : ""));
-    a.search = str.join("&");
-    return a.href;
 }
