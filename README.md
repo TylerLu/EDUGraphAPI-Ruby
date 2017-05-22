@@ -146,9 +146,9 @@ Run the **EDUGraphAPI**:
 2. Open terminal and navigate to the source code folder. Execute the command below:
 
    ```shell
+   bundle install
    rails db:schema:load
    rails db:seed
-   bundle install
    rails s
    ```
 
