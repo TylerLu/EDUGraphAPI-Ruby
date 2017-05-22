@@ -142,7 +142,7 @@
                         <% end %>
                     </ul>
                     <div id="hidtiles" class="hideitem">
-                        <% @class.students.select{|s| !s.custom_data['position'] }.each do |student| %>
+                        <% @class.students.select{|s| !s.custom_data[:position]  }.each do |student| %>
                         <div class="deskcontainer unsaved" style="<%= 'background-color: ' + student.custom_data[:favorite_color] if student.custom_data[:favorite_color] %>" position="0" userid="<%= student.object_id %>">
                             <div class="deskclose"><img src="/Images/close.png"></div>
                             <div class="deskicon">
@@ -195,17 +195,6 @@
                         </li>
                         <% end %>
                     </ul>
-                    <div id="hidtiles" class="hideitem">
-                        <% @class.students.select{|s|!s.custom_data[:position]}.each do |student| %>
-                        <div class="deskcontainer unsaved green" style="background-color:#2F19FF" position="0" userid="<%= student.object_id %>">
-                            <div class="deskclose"><img src="/Images/close.png"></div>
-                            <div class="deskicon">
-                                <img src="/images/header-default.jpg" realheader="/users/<%= student.object_id %>/photo" />
-                            </div>
-                            <div class="stuname"><%= student.display_name %></div>
-                        </div>
-                        <% end %>
-                    </div>
                 </div>
                 <div class="right" id="dvright">
                     <div class="teacherdesk" style="">Teacher's desk</div>

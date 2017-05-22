@@ -114,14 +114,22 @@ function enableDragAndDrop() {
         if (typeof (idData) === "string" && idData.indexOf(prefix) == 0) {
             id = idData.substr(prefix.length);
         }
+        var position = $(this).attr("position");
         var container = $(this).find(".deskcontainer");
-        if (container.length > 0 || id.length == 0)
+        if (container.length > 0 || id.length === 0) {
+            if (container.attr("prev-position") === position) {
+                container.removeAttr("prev-position");
+            }
             return;
+        }
         $(".greenTileTooltip").remove();
         enableDragOnLeft($("#" + id), false).removeClass("greenlist").find(".seated").removeClass("hideitem");
         $(".deskcontainer[userid='" + id + "']").addClass("white").appendTo($(this));
-        var position = $(this).attr("position");
-        $(this).find(".deskcontainer").attr("position", position);
+        container = $(this).find(".deskcontainer");
+        container.attr("position", position);
+        if (container.attr("prev-position") === position) {
+            container.removeAttr("prev-position");
+        }
     });
 
     $(".desktile").on('dragenter', function (evt) {
