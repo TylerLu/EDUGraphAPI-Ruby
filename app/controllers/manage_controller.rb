@@ -12,7 +12,7 @@ class ManageController < ApplicationController
 		end
 		if current_user.o365_user
 			token = token_service.get_access_token(current_user.o365_user_id, Constants::Resources::AADGraph)
-			education_service = Education::EducationService.new(current_user.o365_user_id, token)
+			education_service = Education::EducationService.new(current_user.tenant_id, token)
 			me = education_service.get_me()
 			if me.school_id
 				@sections = education_service.get_my_sections(me.school_id)
