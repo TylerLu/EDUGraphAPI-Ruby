@@ -21,7 +21,9 @@
     <h2>About Me</h2>
     <div class="margin-top-12 margin-btm-12 aboutme">
         <b>Username:</b><br /> <%= current_user.display_name %> 
+        <% if current_user.are_linked? or current_user.is_o365? %>
         <img src='/users/<%= current_user.o365_user_id %>/photo'/>
+        <% end %>
     </div>
     <div class="margin-top-12 margin-btm-12">
         <b>Logged in as:</b><br /> <%= current_user.main_role %>
