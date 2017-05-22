@@ -19,7 +19,10 @@ class SchoolsController < ApplicationController
       bing_map_service = BingMapService.new(Settings.BingMapKey)
       @schools.each do |s| 
         if s.address
-          s.custom_data[:location] = bing_map_service.get_longitude_and_latitude_by_address(s.state, s.city, s.address)
+          begin
+            s.custom_data[:location] = bing_map_service.get_longitude_and_latitude_by_address(s.state, s.city, s.address)
+          rescue
+          end
         end
       end
     end
