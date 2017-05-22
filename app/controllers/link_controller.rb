@@ -93,7 +93,6 @@ class LinkController < ApplicationController
     # o365 user
 		roles = ms_graph_service.get_my_roles()
 		o365_user = O365User.new(auth.info.oid, auth.info.email, auth.info.first_name, auth.info.last_name,  auth.info.tid, tenant.display_name, roles)
-		set_o365_user(o365_user)
 		cookies[:o365_login_name] = auth.info.first_name + ' ' + auth.info.last_name
 		cookies[:o365_login_email] =  auth.info.email
 
@@ -105,6 +104,7 @@ class LinkController < ApplicationController
     link_service = LinkService.new()
     link_service.link(current_user.local_user, o365_user.id, o365_user.email, o365_user.tenant_id, o365_user.roles)
     
+    set_o365_user(o365_user)
     self.azure_oauth2_logout_required = true
 		redirect_to account_index_path, notice: 'Your local account has been successfully linked to your Office 365 account.'
   end
