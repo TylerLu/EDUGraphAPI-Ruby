@@ -26,7 +26,7 @@ class AdminController < ApplicationController
 		auth = request.env['omniauth.auth']
 		organization_service = OrganizationService.new
 		organization_service.update_organization(auth.info.tid, {is_admin_consented: true})
-    flash[:notice] = 'Admin unconsented successfully!'
+    flash[:notice] = 'Admin consented successfully!'
     self.azure_oauth2_logout_required = true
 		redirect_to current_user.is_admin? ? admin_index_path : admin_consent_path
   end
@@ -38,7 +38,7 @@ class AdminController < ApplicationController
     # delete the service principal from AAD
     service_principal = aad_graph_service.get_service_principal(Settings.AAD.ClientId)
     if service_principal
-      aad_graph_service.delete_service_principal(service_principal['appId'])
+      aad_graph_service.delete_service_principal(service_principal['objectId'])
     end
 
 		organization_service = OrganizationService.new
@@ -48,7 +48,7 @@ class AdminController < ApplicationController
     link_service.unlink_accounts(current_user.tenant_id)
     clear_local_user()
 
-    redirect_to admin_index_path
+    redirect_to admin_index_path, notice: 'Admin unconsented successfully!'
   end
 
 

@@ -55,7 +55,7 @@ class AADGraphService
         "Content-Type" => "application/json"
       }
     )
-    JSON.parse(response.body)
+    response.body ? JSON.parse(response.body) : nil
   end
 
 end
