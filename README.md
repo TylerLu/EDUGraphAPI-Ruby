@@ -136,14 +136,18 @@ Run the **EDUGraphAPI**:
 
 1. Configure the following **Environment Variables**:
 
-   - **clientId**: use the Client Id of the app registration you created earlier.
-   - **clientSecret**: use the Key value of the app registration you created earlier.
+   - **ClientId**: use the Client Id of the app registration you created earlier.
+   - **ClientSecret**: use the Key value of the app registration you created earlier.
    - **BingMapKey**: use the key of Bing Map you got earlier. This setting is optional.
    - **SourceCodeRepositoryURL**: use the URL of this repository.
+
+   Or update these values in `config/settings.yml` directly.
 
 2. Open terminal and navigate to the source code folder. Execute the command below:
 
    ```shell
+   rails db:schema:load
+   rails db:seed
    bundle install
    rails s
    ```
