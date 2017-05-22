@@ -244,7 +244,7 @@ Run the **EDUGraphAPI**:
 
    ![](Images/azure-web-app.png)
 
-   Copy the URL aside and change the schema to **https**. This is the replay URL and will be used in next step.
+   Copy the URL aside, change the schema to **https**, and add a trailing slash. This is the replay URL and will be used in next step.
 
 3. Navigate to the app registration in the new Azure portal, then open the setting windows.
 
