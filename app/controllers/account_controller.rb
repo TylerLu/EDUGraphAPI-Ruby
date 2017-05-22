@@ -1,7 +1,6 @@
 # Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT license.  
 # See LICENSE in the project root for license information.  
 
-
 # This sample uses an open source OpenID Connect library that is compatible with the Azure AD.
 # Microsoft does not provide fixes or direct support for this library.
 # Refer to the library’s repository to file issues or for other support.

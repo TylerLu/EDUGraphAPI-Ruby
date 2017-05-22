@@ -292,7 +292,7 @@ In the **lib** folder, there are 2 libs.
 
 | Lib       | Description                              |
 | --------- | ---------------------------------------- |
-| education | Contains EducationService and several model classes. Theyencapsulate education REST APIs. |
+| education | Contains EducationService and several model classes. They encapsulate education REST APIs. |
 | omniauth  | Contains AzureOauth2 class which implemented Azure OAuth2 strategy for OmniAuth |
 
 **Controllers**
@@ -422,7 +422,7 @@ The first 2 flows (Local login_o365 Login) enable users to login in with either 
 
 This flow shows how an administrator logs into the system and performs administrative operations.
 
-After logging into the app with an Office 365 account,the administrator will be asked to link to a local account. This step is not required and can be skipped. 
+After logging into the app with an Office 365 account, the administrator will be asked to link to a local account. This step is not required and can be skipped. 
 
 As mentioned earlier, the web app is a multi-tenant app which uses some application permissions, so tenant administrator must consent the app first.  
 
