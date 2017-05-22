@@ -7,9 +7,9 @@ class BingMapService
     @bing_map_key = bing_map_key
   end
 
-  def get_longitude_and_latitude_by_address(address)
+  def get_longitude_and_latitude_by_address(state, city, address)
     if address && Settings.BingMapKey
-      url = build_bing_map_url(address, @bing_map_key)
+      url = build_bing_map_url(state, city, address, @bing_map_key)
       res = JSON.parse HTTParty.get(url).body
       latitude, longitude = res['resourceSets'].first['resources'].first['point']['coordinates']
       { latitude: latitude, longitude: longitude}
@@ -18,8 +18,8 @@ class BingMapService
     end
   end
 
-  private def build_bing_map_url(address, key)
-    URI.encode "http://dev.virtualearth.net/REST/v1/Locations/US/#{address}?output=json&key=#{key}"
+  private def build_bing_map_url(state, city, address, key)
+    URI.encode "http://dev.virtualearth.net/REST/v1/Locations/US/#{state}/#{city}/#{address}?output=json&key=#{key}"
   end
   
 end
