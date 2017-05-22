@@ -1,6 +1,6 @@
 BingMapKey: <%= ENV['BingMapKey'] %>
 
-SourceCodeRepositoryUrl: 'https://github.com/TylerLu/EDUGraphAPI-Ruby'
+SourceCodeRepositoryUrl: <%= ENV['SourceCodeRepositoryUrl'] ? ENV['SourceCodeRepositoryUrl'].chomp('/') : 'https://github.com/OfficeDev/O365-EDU-Ruby-Samples'  %>
 
 AAD:
   ClientId: <%= ENV['ClientId'] %>
