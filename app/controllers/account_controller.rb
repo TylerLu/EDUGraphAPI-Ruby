@@ -55,8 +55,6 @@ class AccountController < ApplicationController
     roles = ms_graph_service.get_my_roles()
     o365_user = O365User.new(auth.info.oid, auth.info.email, auth.info.first_name, auth.info.last_name,  auth.info.tid, tenant.display_name, roles)
     set_o365_user(o365_user)
-    cookies[:o365_login_name] = auth.info.first_name + ' ' + auth.info.last_name
-    cookies[:o365_login_email] =  auth.info.email
 
     # create or update organization
     organization_service = OrganizationService.new
@@ -65,7 +63,14 @@ class AccountController < ApplicationController
     # linked local user
     user_service = UserService.new
     user = user_service.get_user_by_o365_email(auth.info.email)    
-    set_local_user(user) if user
+    if user
+      set_local_user(user)
+      cookies[:o365_login_name] = auth.info.first_name + ' ' + auth.info.last_name
+      cookies[:o365_login_email] =  auth.info.email
+    else
+      cookies.delete :o365_login_name
+      cookies.delete :o365_login_email
+    end
 
     clear_session_expire_after()
     self.azure_oauth2_logout_required = true
@@ -88,10 +93,23 @@ class AccountController < ApplicationController
     set_local_user(user)
 
     if user.is_linked?
-      o365_user = O365User.new(user.o365_user_id, user.o365_email, user.first_name, user.last_name, 
+      first_name = user.first_name
+      last_name = user.last_name
+      if first_name.empty? || last_name.empty?
+        token = token_service.get_access_token(user.o365_user_id, Constants::Resources::MSGraph)
+        ms_graph_service = MSGraphService.new(token)
+        me = ms_graph_service.get_me
+        first_name = me.given_name
+        last_name = me.surname
+      end      
+
+      o365_user = O365User.new(user.o365_user_id, user.o365_email, first_name, last_name, 
         user.organization.tenant_id, user.organization.name, user.roles.map { |r| r.name })
       set_o365_user(o365_user)
-    end  
+      cookies[:o365_login_name] = first_name + ' ' + last_name
+      cookies[:o365_login_email] = user.o365_email
+    end
+    
     redirect_to account_index_path
   end
 

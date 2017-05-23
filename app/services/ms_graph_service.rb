@@ -15,6 +15,10 @@ class MSGraphService
       )
   end
 
+  def get_me
+    @graph.me
+  end
+
   def get_organization(tenant_id)
     @graph.organization.find(tenant_id)
   end
