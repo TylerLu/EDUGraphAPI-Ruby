@@ -204,10 +204,9 @@ function saveEditDesk() {
         }
     });
 
-    url = window.location.href.endsWith('/') ? window.location.href.slice(0, -1) : window.location.href + '/save_seating_positions';
     $.ajax({
         type: 'POST',
-        url: url,
+        url: $('#imgsave').data('url'),
         dataType: 'json',
         data: JSON.stringify(classroomSeatingArrangements),
         contentType: "application/json; charset=utf-8",
