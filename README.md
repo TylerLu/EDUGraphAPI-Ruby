@@ -194,7 +194,7 @@ Run the **EDUGraphAPI**:
 
 3. Click the Deploy to Azure Button:
 
-   [![Deploy to Azure](http://azuredeploy.net/deploybutton.png)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FTylerLu%2FEDUGraphAPI-Ruby%2Fmaster%2Fazuredeploy.json)
+   [![Deploy to Azure](http://azuredeploy.net/deploybutton.png)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FOfficeDev%2FO365-EDU-Ruby-Samples%2Fmaster%2Fazuredeploy.json)
 
 4. Fill in the values in the deployment page:
 
@@ -462,7 +462,7 @@ Note that in the AAD Application settings, permissions for each Graph API are co
 
 ## Questions and comments
 
-- If you have any trouble running this sample, please [log an issue](https://github.com/OfficeDev/O365-EDU-AspNetMVC-Samples/issues).
+- If you have any trouble running this sample, please [log an issue](https://github.com/OfficeDev/O365-EDU-Ruby-Samples/issues).
 - Questions about GraphAPI development in general should be posted to [Stack Overflow](http://stackoverflow.com/questions/tagged/office-addins). Make sure that your questions or comments are tagged with [ms-graph-api]. 
 
 ## Contributing
