@@ -7,8 +7,8 @@ class ClassesController < ApplicationController
   before_action :linked_users_only
 
   def index
-    aad_access_token = token_service.get_access_token(current_user.o365_user_id, Constants::Resources::AADGraph)
-    education_service = Education::EducationService.new(current_user.tenant_id, aad_access_token)
+    ms_access_token = token_service.get_access_token(current_user.o365_user_id, Constants::Resources::MSGraph)
+    education_service = Education::EducationService.new(current_user.tenant_id, ms_access_token)
 
     @school = education_service.get_school(params[:school_id])
     @my_classes = education_service.get_my_sections(@school.school_id)
@@ -22,8 +22,8 @@ class ClassesController < ApplicationController
     edu_school_id = params[:edu_school_id]
     skip_token = params[:skip_token]
 
-    aad_access_token = token_service.get_access_token(current_user.o365_user_id, Constants::Resources::AADGraph)
-    education_service = Education::EducationService.new(current_user.tenant_id, aad_access_token)
+    ms_access_token = token_service.get_access_token(current_user.o365_user_id, Constants::Resources::MSGraph)
+    education_service = Education::EducationService.new(current_user.tenant_id, ms_access_token)
     
     @my_classes = education_service.get_my_sections(edu_school_id)  
     @classes = education_service.get_sections(edu_school_id, skip_token)
@@ -52,9 +52,9 @@ class ClassesController < ApplicationController
   end
 
   def show
-    aad_access_token = token_service.get_access_token(current_user.o365_user_id, Constants::Resources::AADGraph)
+    #aad_access_token = token_service.get_access_token(current_user.o365_user_id, Constants::Resources::AADGraph)
     ms_access_token = token_service.get_access_token(current_user.o365_user_id, Constants::Resources::MSGraph)
-    education_service = Education::EducationService.new(current_user.tenant_id, aad_access_token)
+    education_service = Education::EducationService.new(current_user.tenant_id, ms_access_token)
     ms_graph_servcie = MSGraphService.new(ms_access_token)
 
     class_object_id = params[:id];

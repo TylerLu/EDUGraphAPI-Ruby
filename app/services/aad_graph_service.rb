@@ -22,14 +22,13 @@ class AADGraphService
 
   def add_app_role_assignments(service_principal_id, service_principal_id_name)
     users = request('get', 'users?api-version=1.6&$expand=appRoleAssignments')['value']
-
     count = 0
     for user in users
       if user['appRoleAssignments'].all? { |a| a['resourceId'] != service_principal_id }
         add_app_role_assignment(user, service_principal_id, service_principal_id_name)
         count = count + 1
       end
-    end        
+    end      
     count
   end
 

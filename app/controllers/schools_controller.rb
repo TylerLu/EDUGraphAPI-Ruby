@@ -7,30 +7,17 @@ class SchoolsController < ApplicationController
   before_action :linked_users_only
 
   def index
-    aad_access_token = token_service.get_access_token(current_user.o365_user_id, Constants::Resources::AADGraph)
-    education_service = Education::EducationService.new(current_user.tenant_id, aad_access_token)
+    ms_access_token = token_service.get_access_token(current_user.o365_user_id, Constants::Resources::MSGraph)
+    education_service = Education::EducationService.new(current_user.tenant_id, ms_access_token)
       
     @me = education_service.get_me
     @schools = education_service.get_all_schools
       .sort_by { |s| ((s.school_id == @me.school_id) ? 'A' : 'Z') + s.display_name }
-
-    # get locations
-    if Settings.BingMapKey
-      bing_map_service = BingMapService.new(Settings.BingMapKey)
-      @schools.each do |s| 
-        if s.address
-          begin
-            s.custom_data[:location] = bing_map_service.get_longitude_and_latitude_by_address(s.state, s.city, s.address)
-          rescue
-          end
-        end
-      end
-    end
   end
 
   def users
-    aad_access_token = token_service.get_access_token(current_user.o365_user_id, Constants::Resources::AADGraph)
-    education_service = Education::EducationService.new(current_user.tenant_id, aad_access_token)
+    ms_access_token = token_service.get_access_token(current_user.o365_user_id, Constants::Resources::MSGraph)
+    education_service = Education::EducationService.new(current_user.tenant_id, ms_access_token)
 
     @school = education_service.get_school(params[:id])
     @users = education_service.get_members(@school.object_id)
@@ -44,8 +31,8 @@ class SchoolsController < ApplicationController
     skip_token = params[:skip_token]
     type = params[:type]
 
-    aad_access_token = token_service.get_access_token(current_user.o365_user_id, Constants::Resources::AADGraph)
-    education_service = Education::EducationService.new(current_user.tenant_id, aad_access_token)
+    ms_access_token = token_service.get_access_token(current_user.o365_user_id, Constants::Resources::MSGraph)
+    education_service = Education::EducationService.new(current_user.tenant_id, ms_access_token)
 
     if type == 'users'
       users = education_service.get_members(school_object_id, skip_token)

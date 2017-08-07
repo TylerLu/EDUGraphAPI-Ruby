@@ -24,7 +24,7 @@ class ObjectBase
   end
 
   def object_id
-    get_value('objectId')
+    get_value('id')
   end
 
   def education_object_type

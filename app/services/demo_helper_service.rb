@@ -120,8 +120,7 @@ class DemoHelperService
       'links': {
         'SchoolsController': '/app/controllers/schools_controller.rb',
         'TokenService': '/app/services/token_service.rb',
-        'EducationService': '/lib/education/education_service.rb',
-        'BingMapService': '/app/services/bing_map_service.rb',        
+        'EducationService': '/lib/education/education_service.rb',   
         'View': '/app/views/schools/index.html.erb',
       }
     },

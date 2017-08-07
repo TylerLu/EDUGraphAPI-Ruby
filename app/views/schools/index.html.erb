@@ -68,14 +68,6 @@
                       -
                     <% end %>
                   </div>
-                  <div class="schoolmap">
-                    <% location = school.custom_data[:location] %>
-                    <% if location %>
-                      <a class="bingMapLink" lat="<%= location[:latitude] %>" lon="<%= location[:longitude] %>" href="javascript:void(0)">
-                        <img src="<%= school.number == @me.school_id ? '/Images/icon-map_30x28px-WHT.png' : '/Images/icon-map_30x28px-BLU.png' %>" />
-                      </a>
-                    <% end %>
-                  </div>
               </td>
               <td>
                   <a class="btnlink" href="/schools/<%= school.object_id %>/classes">Classes</a>
@@ -86,9 +78,5 @@
       </table>
       <% end %> 
 </div>
-<div id='myMap'></div>
-<input type="hidden" name="BingMapKey" id="BingMapKey" value="<%= Settings.BingMapKey %>" />
-<script type='text/javascript' src='https://www.bing.com/api/maps/mapcontrol' async defer></script>
-<%= javascript_include_tag "schools" %>
 
 <% end %>

@@ -56,7 +56,8 @@ class AdminController < ApplicationController
     token = token_service.get_access_token(current_user.o365_user_id, Constants::Resources::AADGraph)
     aad_graph_service = AADGraphService.new(token, current_user.tenant_id)
 
-    service_principal = aad_graph_service.get_service_principal(Settings.AAD.ClientId)
+    service_principal = aad_graph_service.get_service_przincipal(Settings.AAD.ClientId)
+    
     if !service_principal
       redirect_to admin_index_path, alert: 'Could not find the service principal. Please provide admin consent.' and return
     end
@@ -65,6 +66,16 @@ class AdminController < ApplicationController
     
     flash[:notice] = count > 0 ? "User access was successfully enabled for #{count} user(s)." : 'User access was enabled for all users.'
      % count if count > 0 else 
+    redirect_to admin_index_path
+  end
+
+  def clear_adal_cache
+    token_service.clear_token_cache()
+    session.clear
+    reset_session()
+    clear_session_expire_after()
+    
+    flash[:notice] = "Login cache cleared successfully!"
     redirect_to admin_index_path
   end
 

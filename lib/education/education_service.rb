@@ -13,24 +13,24 @@ module Education
   class EducationService
 
     def initialize(tenant_id, access_token)
-      @base_url = "#{Constants::Resources::AADGraph}/#{tenant_id}/"
+      @base_url = "#{Constants::Resources::MSGraph}/beta/"
       @access_token = access_token
     end
 
     def get_me
-      get_object(Education::User, 'me?api-version=1.6')
+      get_object(Education::User, 'me')
     end
 
     def get_all_schools
-      get_objects(Education::School, 'administrativeUnits?api-version=beta')
+      get_objects(Education::School, 'administrativeUnits')
     end
 
     def get_school(object_id)
-      get_object(Education::School, "administrativeUnits/#{object_id}?api-version=beta")
+      get_object(Education::School, "administrativeUnits/#{object_id}")
     end
     
     def get_my_sections(school_id)
-      sections = get_objects(Education::Section, "me/memberOf?api-version=1.5")
+      sections = get_objects(Education::Section, "me/memberOf")
       my_sections = sections.select{|s| s.education_object_type == 'Section' && s.school_id == school_id}  
       my_sections.each do |s|
         s.members = get_section_members(s.object_id)
@@ -38,15 +38,15 @@ module Education
     end
 
     def get_section(section_id)
-      get_object(Education::Section, "groups/#{section_id}?api-version=1.5")
+      get_object(Education::Section, "groups/#{section_id}")
     end
     
     def get_section_members(section_id)
-      get_objects(Education::User, "groups/#{section_id}/members?api-version=1.5")
+      get_objects(Education::User, "groups/#{section_id}/members")
     end
 
     def get_sections(school_id, skip_token = nil, top = 12)
-      get_paged_objects(Education::Section, 'groups?api-version=1.5', {
+      get_paged_objects(Education::Section, 'groups', {
         '$top': 12,
         '$filter': "extension_fe2174665583431c953114ff7268b7b3_Education_ObjectType eq 'Section' and extension_fe2174665583431c953114ff7268b7b3_Education_SyncSource_SchoolId eq '#{school_id}'",
         '$skiptoken': skip_token
@@ -54,14 +54,14 @@ module Education
     end
 
     def get_members(school_id, skip_token = nil, top = 12)
-      get_paged_objects(Education::User, "administrativeUnits/#{school_id}/members?api-version=beta", {
+      get_paged_objects(Education::User, "administrativeUnits/#{school_id}/members", {
         '$top': top,
         '$skiptoken': skip_token
       })
     end
 
     def get_teachers(school_id, skip_token = nil, top = 12)
-      get_paged_objects(Education::User, "users?api-version=1.5", {
+      get_paged_objects(Education::User, "users", {
         '$top': top,
         '$filter': "extension_fe2174665583431c953114ff7268b7b3_Education_SyncSource_SchoolId eq '#{school_id}' and extension_fe2174665583431c953114ff7268b7b3_Education_ObjectType eq 'Teacher'",
         '$skiptoken': skip_token
@@ -69,7 +69,7 @@ module Education
     end
 
     def get_students(school_id, skip_token = nil, top = 12)
-      get_paged_objects(Education::User, "users?api-version=1.5", {
+      get_paged_objects(Education::User, "users", {
         '$top': top,
         '$filter': "extension_fe2174665583431c953114ff7268b7b3_Education_SyncSource_SchoolId eq '#{school_id}' and extension_fe2174665583431c953114ff7268b7b3_Education_ObjectType eq 'Student'",
         '$skiptoken': skip_token
@@ -80,7 +80,7 @@ module Education
 
     def graph_request(row = {}, kclass)
       response = HTTParty.get(
-        "#{@base_url}/#{row[:resource_name]}?api-version=#{row[:api_version] || 'beta'}",
+        "#{@base_url}/#{row[:resource_name]}",
         query: row[:query] || {},
         headers: {
           "Authorization" => "Bearer #{@access_token}"
@@ -102,8 +102,9 @@ module Education
 
     def get_paged_objects(kclass, path, query = {})
       hash = get_hash(path, query)
+      
       objects = hash['value'].map{ |i| kclass.new(i) }
-      next_link = hash.key?('odata.nextLink') ? Education::NextLink.new(hash['odata.nextLink']) : nil
+      next_link = hash.key?('@odata.nextLink') ? Education::NextLink.new(hash['@odata.nextLink']) : nil
       Education::PagedCollection.new(objects, next_link)
     end
 

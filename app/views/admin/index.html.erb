@@ -52,6 +52,15 @@
     <p>Note: The App will take a while to take effect.</p>
 </div>
 <hr />
+<div>
+    <p>In some cases, your supplier may make changes that require them to ask you to reset a login cache. Click the button below to reset the cache.</p>
+    <form action="/admin/clear_adal_cache" method="post">            
+        <p class="form-group">
+            <input type="submit" value="Clear Login Cache" class="btn btn-default" />
+        </p>
+    </form>     
+</div>
+<hr />
 <p><a class="btn btn-default" href="/schools">Return to home</a></p>
 <% else %>
 <h2>Admin</h2>

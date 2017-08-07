@@ -48,6 +48,13 @@ class TokenService
     return auth_result.access_token;
   end
 
+  def clear_token_cache
+    caches = TokenCache.all();
+    caches.each do |cache|
+      cache.destroy()
+    end
+  end
+
   private def refresh_token(refresh_token, resource)
 		authentication_context = ADAL::AuthenticationContext.new
 		client_credential = ADAL::ClientCredential.new(Settings.AAD.ClientId, Settings.AAD.ClientSecret)

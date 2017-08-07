@@ -1,5 +1,3 @@
-BingMapKey: <%= ENV['BingMapKey'] %>
-
 SourceCodeRepositoryUrl: <%= ENV['SourceCodeRepositoryUrl'] ? ENV['SourceCodeRepositoryUrl'].chomp('/') : 'https://github.com/OfficeDev/O365-EDU-Ruby-Samples'  %>
 
 AAD:

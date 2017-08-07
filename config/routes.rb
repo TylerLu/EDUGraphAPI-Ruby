@@ -41,7 +41,7 @@ Rails.application.routes.draw do
   post 'admin/unconsent'
   post 'admin/add_app_role_assignments'
   post 'admin/unlink_account/:id' => 'admin#unlink_account_post'
- 
+  post 'admin/clear_adal_cache'
 
   # manage
   get 'manage/aboutme'
