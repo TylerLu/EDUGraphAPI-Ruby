@@ -109,9 +109,16 @@ module Education
     end
 
     def get_hash(path, query = {})
+      url = "#{@base_url}/#{path}"
+      if(!query.empty?)
+        url = url + "?"
+        query.each do |key, value|
+          url = value ? url + "#{key}=#{value}&" : url
+        end
+        url = url[0, url.length-1]
+      end
       response = HTTParty.get(
-        "#{@base_url}/#{path}",
-        query: query.select{ |k,v| v },
+        url,
         headers: {
           "Authorization" => "Bearer #{@access_token}"
         }
