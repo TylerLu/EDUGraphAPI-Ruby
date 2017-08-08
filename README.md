@@ -338,13 +338,13 @@ The **EducationService** is the core class of the library. It is used to easily 
 
 ~~~typescript
 def get_all_schools
-  get_objects(Education::School, 'administrativeUnits?api-version=beta')
+  get_objects(Education::School, 'administrativeUnits')
 end
 ~~~
 
 ~~~typescript
 def get_school(object_id)
-  get_object(Education::School, "administrativeUnits/#{object_id}?api-version=beta")
+  get_object(Education::School, "administrativeUnits/#{object_id}")
 end
 ~~~
 
@@ -352,7 +352,7 @@ end
 
 ~~~typescript
 def get_sections(school_id, skip_token = nil, top = 12)
-  get_paged_objects(Education::Section, 'groups?api-version=1.5', {
+  get_paged_objects(Education::Section, 'groups', {
     '$top': 12,
     '$filter': "extension_fe2174665583431c953114ff7268b7b3_Education_ObjectType eq 'Section' and extension_fe2174665583431c953114ff7268b7b3_Education_SyncSource_SchoolId eq '#{school_id}'",
     '$skiptoken': skip_token
@@ -362,14 +362,14 @@ end
 
 ```typescript
 def get_section(section_id)
-  get_object(Education::Section, "groups/#{section_id}?api-version=1.5")
+  get_object(Education::Section, "groups/#{section_id}")
 end
 ```
 **Get users**
 
 ```typescript
 def get_members(school_id, skip_token = nil, top = 12)
-  get_paged_objects(Education::User, "administrativeUnits/#{school_id}/members?api-version=beta", {
+  get_paged_objects(Education::User, "administrativeUnits/#{school_id}/members", {
     '$top': top,
     '$skiptoken': skip_token
   })
