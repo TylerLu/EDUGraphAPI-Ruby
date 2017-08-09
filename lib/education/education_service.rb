@@ -45,6 +45,7 @@ module Education
       get_objects(Education::User, "groups/#{section_id}/members")
     end
 
+
     def get_sections(school_id, skip_token = nil, top = 12)
       get_paged_objects(Education::Section, 'groups', {
         '$top': 12,
@@ -111,7 +112,7 @@ module Education
     def get_hash(path, query = {})
       url = "#{@base_url}/#{path}"
       if(!query.empty?)
-        url = url + "?"
+        url += "?"
         query.each do |key, value|
           url = value ? url + "#{key}=#{value}&" : url
         end

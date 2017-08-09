@@ -23,7 +23,11 @@
             <div class="infocontainer">
                 <div class="infoheader">PRINCIPAL</div>
                 <div class="infobody" title="<%= @school.principal_name %>">
+                    <%if @school.principal_name%>
                     <%= @school.principal_name %>
+                    <% else %>
+                     - 
+                    <% end %>
                 </div>
             </div>
             <div class="infocontainer">

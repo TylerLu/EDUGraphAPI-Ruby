@@ -118,7 +118,7 @@ class AccountController < ApplicationController
 
   def register_post
     user_service = UserService.new
-    user = user_service.get_user_by_o365_email(params["Email"])
+    user = user_service.get_user_by_email(params["Email"])
     if user
       flash[:alert] = "Email #{params['Email']} is already taken"
         render 'register' and return

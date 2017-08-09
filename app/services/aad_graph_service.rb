@@ -12,8 +12,13 @@ class AADGraphService
     result = request('get', 'servicePrincipals?api-version=1.6', {
         '$filter': "appId eq '#{appId}'"
     })
-    value = result['value']
-    value.length > 0 ? value[0] : nil
+    if result
+      value = result['value']
+      value.length > 0 ? value[0] : nil
+    else
+      
+      nil
+    end
   end
 
   def delete_service_principal(service_principal_id)
@@ -25,8 +30,10 @@ class AADGraphService
     count = 0
     for user in users
       if user['appRoleAssignments'].all? { |a| a['resourceId'] != service_principal_id }
-        add_app_role_assignment(user, service_principal_id, service_principal_id_name)
-        count = count + 1
+          result = add_app_role_assignment(user, service_principal_id, service_principal_id_name)
+          if result
+            count = count + 1
+          end
       end
     end      
     count
@@ -45,16 +52,20 @@ class AADGraphService
   end
 
   private def request(request_method, path, query = {}, body = {})
-    response = HTTParty.method(request_method).call(
-      @baseUrl + path,
-      query: query,
-      body: body,
-      headers: {
-        "Authorization" => "Bearer #{@access_token}",
-        "Content-Type" => "application/json"
-      }
-    )
-    response.body ? JSON.parse(response.body) : nil
+    begin
+      response = HTTParty.method(request_method).call(
+        @baseUrl + path,
+        query: query,
+        body: body,
+        headers: {
+          "Authorization" => "Bearer #{@access_token}",
+          "Content-Type" => "application/json"
+        }
+      )
+      response.body ? JSON.parse(response.body) : nil
+    rescue => exception
+      nil
+    end
   end
 
 end

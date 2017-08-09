@@ -56,7 +56,7 @@ class AdminController < ApplicationController
     token = token_service.get_access_token(current_user.o365_user_id, Constants::Resources::AADGraph)
     aad_graph_service = AADGraphService.new(token, current_user.tenant_id)
 
-    service_principal = aad_graph_service.get_service_przincipal(Settings.AAD.ClientId)
+    service_principal = aad_graph_service.get_service_principal(Settings.AAD.ClientId)
     
     if !service_principal
       redirect_to admin_index_path, alert: 'Could not find the service principal. Please provide admin consent.' and return
