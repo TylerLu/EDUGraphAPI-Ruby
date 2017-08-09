@@ -64,7 +64,6 @@ class ClassesController < ApplicationController
 
     @conversations = ms_graph_servcie.get_conversations(class_object_id)
     @documents = ms_graph_servcie.get_documents(class_object_id)
-    
     user_service = UserService.new    
     seating_position_hash = user_service.get_seating_position_hash(class_object_id)
     favorite_color_hash = user_service.get_favorite_color_hash(@class.members.map{ |m| m.object_id })
