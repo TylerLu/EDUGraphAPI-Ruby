@@ -15,6 +15,9 @@ $(document).ready(function() {
     loadImages();
 
     $(".teacher-student .filterlink-container .filterlink").click(function() {
+        tabname = $(this).attr("id");
+        showDemoHelper(tabname);
+
         var element = $(this);
         element.addClass("selected").siblings("a").removeClass("selected");
         var filterType = element.data("type");
@@ -102,4 +105,10 @@ $(document).ready(function() {
             }
         }          
     })
+
+    var tabname = '';
+    if ($(".filterlink-container a.selected").length > 0) {
+        tabname = $(".filterlink-container a.selected").attr("id");
+    }
+    showDemoHelper(tabname);
 })

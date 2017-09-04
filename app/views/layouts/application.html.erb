@@ -45,12 +45,29 @@
     <div class="header-right-shadow-mask"></div>
     <div class="body">
         <p class="desc">Code sample links for this page:</p>
-        <ul>
-            <% @demo_helper_links.keys.each do |key| %>
-            <li>
-                <p class="title"><%=key%></p>
-                <p><a href="<%= Settings.SourceCodeRepositoryUrl %>/blob/master<%= @demo_helper_links[key] %>" target="_blank"><%= Settings.SourceCodeRepositoryUrl %>/blob/master<%= @demo_helper_links[key] %></a></p>
-            </li>
+        <ul class="functions">
+            <% if @demo_helper_links %>
+                <% @demo_helper_links.each do |function| %>
+                <li>
+                    <p class="title"><%= function[:title] %></p>
+                    <p class="tab"><%= function[:tab] %></p>
+                    <ul class="files">
+                        <% function[:files].each do |file| %>
+                        <li>
+                            <p class="title"><a href="<%= Settings.SourceCodeRepositoryUrl %>/blob/master<%= file[:url] %>"><%= Settings.SourceCodeRepositoryUrl %>/blob/master<%= file[:url] %></a></p>
+                            <ul class="methods">
+                                <% file[:methods].each do |method| %>
+                                <li>
+                                    <p class="title"><%= method[:title]%></p>
+                                    <p class="desc"><%= method[:description]%></p>
+                                </li>
+                                <% end %>
+                            </ul>
+                        </li>
+                        <% end %>
+                    </ul>
+                </li>
+                <% end %>
             <% end %>
         </ul>
     </div>

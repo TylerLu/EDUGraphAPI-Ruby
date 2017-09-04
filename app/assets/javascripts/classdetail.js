@@ -9,6 +9,7 @@ $(document).ready(function () {
     formatDateTime();
     loadImages();
     iniTableSort();
+    initDemoHelper();
 });
 
 function iniTiles(){
@@ -82,6 +83,19 @@ function iniTableSort() {
     $("#studentsTable").tablesorter({ sortList: [[0, 0]] });
 
     $("#studoc").tablesorter({ sortList: [[2, 0]] });
+}
+
+function initDemoHelper(){
+    var tabname = '';
+    if ($(".nav-tabs li.active").length > 0) {
+        tabname = $(".nav-tabs li.active").find("a").attr("href");
+    }
+    showDemoHelper(tabname);
+    $('.nav-tabs li').click(function (e) {
+        console.log("cloris test")
+        tabname = $(this).find("a").attr("href");
+        showDemoHelper(tabname);
+    });
 }
 
 function enableDragAndDrop() {
