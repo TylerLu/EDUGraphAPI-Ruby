@@ -227,6 +227,14 @@ class DemoHelperService
                 {
                   'title': 'index',
                   'description': 'Page action.'
+                },
+                {
+                  'title': 'clear_adal_cache',
+                  'description': 'Clean adal cache action.'
+                },
+                {
+                  'title': 'add_app_role_assignments',
+                  'description': 'Enable user access action.'
                 }
               ]
             },
@@ -236,6 +244,32 @@ class DemoHelperService
                 {
                   'title': 'is_admin_consented',
                   'description': 'Get admin\'s tenant and organization information.'
+                }
+              ]
+            },
+            {
+              'url': '/app/services/token_service.rb',
+              'methods': [
+                {
+                  'title': 'clear_token_cache',
+                  'description': 'Remove all user tokens from database.'
+                },
+                {
+                  'title': 'get_access_token',
+                  'description': 'Get current user access token.'
+                }
+              ]
+            },
+            {
+              'url': '/app/services/aad_graph_service.rb',
+              'methods': [
+                {
+                  'title': 'get_service_principal',
+                  'description': 'Get service principal.'
+                },
+                {
+                  'title': 'add_app_role_assignments',
+                  'description': 'Enable access to all your tenant users.'
                 }
               ]
             }
@@ -444,7 +478,7 @@ class DemoHelperService
               },
               {
                 'title': 'users_next',
-                'description': 'Nex page action.'
+                'description': 'Next page action.'
               }
             ]
           },
