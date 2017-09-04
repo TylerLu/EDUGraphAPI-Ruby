@@ -397,7 +397,11 @@ class DemoHelperService
               'methods': [
                 {
                   'title': 'get_favorite_color',
-                  'description': 'Get Favorite Color.'
+                  'description': 'Get current user\'s favorite color.'
+                },
+                {
+                  'title': 'update_favorite_color',
+                  'description': 'Update current user\'s favorite color.'
                 }
               ]
             },
