@@ -13,7 +13,7 @@ class DemoHelperService
           'tab': '',
           'files': [
             {
-              'url': '/app/controllers/account_controller.rb',
+              'url': '/src/app/controllers/account_controller.rb',
               'methods': [
                 {
                   'title': 'Login',
@@ -34,7 +34,7 @@ class DemoHelperService
           'tab': '',
           'files': [
             {
-              'url': '/app/controllers/account_controller.rb',
+              'url': '/src/app/controllers/account_controller.rb',
               'methods': [
                 {
                   'title': 'Register',
@@ -55,7 +55,7 @@ class DemoHelperService
           'tab': '',
           'files': [
             {
-              'url': '/app/controllers/account_controller.rb',
+              'url': '/src/app/controllers/account_controller.rb',
               'methods': [
                 {
                   'title': 'Register',
@@ -76,7 +76,7 @@ class DemoHelperService
           'tab': '',
           'files': [
             {
-              'url': '/app/controllers/link_controller.rb',
+              'url': '/src/app/controllers/link_controller.rb',
               'methods': [
                 {
                   'title': 'index',
@@ -85,7 +85,7 @@ class DemoHelperService
               ]
             },
             {
-              'url': '/app/controllers/application_controller.rb',
+              'url': '/src/app/controllers/application_controller.rb',
               'methods': [
                 {
                   'title': 'current_user',
@@ -94,7 +94,7 @@ class DemoHelperService
               ]
             },
             {
-              'url': '/app/services/user_service.rb',
+              'url': '/src/app/services/user_service.rb',
               'methods': [
                 {
                   'title': 'get_user_by_email',
@@ -115,7 +115,7 @@ class DemoHelperService
           'tab': '',
           'files': [
             {
-              'url': '/app/controllers/link_controller.rb',
+              'url': '/src/app/controllers/link_controller.rb',
               'methods': [
                 {
                   'title': 'create_local',
@@ -128,7 +128,7 @@ class DemoHelperService
               ]
             },
             {
-              'url': '/app/services/user_service.rb',
+              'url': '/src/app/services/user_service.rb',
               'methods': [
                 {
                   'title': 'create',
@@ -137,7 +137,7 @@ class DemoHelperService
               ]
             },
             {
-              'url': '/app/services/link_service.rb',
+              'url': '/src/app/services/link_service.rb',
               'methods': [
                 {
                   'title': 'link',
@@ -158,7 +158,7 @@ class DemoHelperService
           'tab': '',
           'files': [
             {
-              'url': '/app/controllers/link_controller.rb',
+              'url': '/src/app/controllers/link_controller.rb',
               'methods': [
                 {
                   'title': 'login_local',
@@ -171,7 +171,7 @@ class DemoHelperService
               ]
             },
             {
-              'url': '/app/services/user_service.rb',
+              'url': '/src/app/services/user_service.rb',
               'methods': [
                 {
                   'title': 'authenticate',
@@ -180,7 +180,7 @@ class DemoHelperService
               ]
             },
             {
-              'url': '/app/services/link_service.rb',
+              'url': '/src/app/services/link_service.rb',
               'methods': [
                 {
                   'title': 'link',
@@ -201,7 +201,7 @@ class DemoHelperService
           'tab': '',
           'files': [
             {
-              'url': '/app/controllers/link_controller.rb',
+              'url': '/src/app/controllers/link_controller.rb',
               'methods': [
                 {
                   'title': 'login_o365_required',
@@ -222,33 +222,45 @@ class DemoHelperService
           'tab': '',
           'files': [
             {
-              'url': '/app/controllers/admin_controller.rb',
+              'url': '/src/app/controllers/admin_controller.rb',
               'methods': [
                 {
                   'title': 'index',
                   'description': 'Page action.'
                 },
                 {
-                  'title': 'clear_adal_cache',
-                  'description': 'Clean adal cache action.'
+                  'title': 'consent_post',
+                  'description': 'Consent post action.'
+                },
+                {
+                  'title': 'unconsent',
+                  'description': 'Unconsent post action.'
                 },
                 {
                   'title': 'add_app_role_assignments',
                   'description': 'Enable user access action.'
+                },
+                {
+                  'title': 'clear_adal_cache',
+                  'description': 'Clean adal cache action.'
                 }
               ]
             },
             {
-              'url': '/app/services/organization_service.rb',
+              'url': '/src/app/services/organization_service.rb',
               'methods': [
                 {
                   'title': 'is_admin_consented',
                   'description': 'Get admin\'s tenant and organization information.'
+                },
+                {
+                  'title': 'update_organization',
+                  'description': 'Create (or update) an organization, and make it as AdminConsented.'
                 }
               ]
             },
             {
-              'url': '/app/services/token_service.rb',
+              'url': '/src/app/services/token_service.rb',
               'methods': [
                 {
                   'title': 'clear_token_cache',
@@ -261,11 +273,15 @@ class DemoHelperService
               ]
             },
             {
-              'url': '/app/services/aad_graph_service.rb',
+              'url': '/src/app/services/aad_graph_service.rb',
               'methods': [
                 {
                   'title': 'get_service_principal',
                   'description': 'Get service principal.'
+                },
+                {
+                  'title': 'delete_service_principal',
+                  'description': 'Delete service principal.'
                 },
                 {
                   'title': 'add_app_role_assignments',
@@ -286,7 +302,7 @@ class DemoHelperService
           'tab': '',
           'files': [
             {
-              'url': '/app/controllers/admin_controller.rb',
+              'url': '/src/app/controllers/admin_controller.rb',
               'methods': [
                 {
                   'title': 'consent',
@@ -299,7 +315,7 @@ class DemoHelperService
               ]
             },
             {
-              'url': '/app/services/organization_service.rb',
+              'url': '/src/app/services/organization_service.rb',
               'methods': [
                 {
                   'title': 'update_organization',
@@ -320,7 +336,7 @@ class DemoHelperService
           'tab': '',
           'files': [
             {
-              'url': '/app/controllers/admin_controller.rb',
+              'url': '/src/app/controllers/admin_controller.rb',
               'methods': [
                 {
                   'title': 'linked_accounts',
@@ -329,7 +345,7 @@ class DemoHelperService
               ]
             },
             {
-              'url': '/app/services/link_service.rb',
+              'url': '/src/app/services/link_service.rb',
               'methods': [
                 {
                   'title': 'get_linked_users',
@@ -350,7 +366,7 @@ class DemoHelperService
           'tab': '',
           'files': [
             {
-              'url': '/app/controllers/admin_controller.rb',
+              'url': '/src/app/controllers/admin_controller.rb',
               'methods': [
                 {
                   'title': 'unlink_account',
@@ -363,7 +379,7 @@ class DemoHelperService
               ]
             },
             {
-              'url': '/app/services/user_service.rb',
+              'url': '/src/app/services/user_service.rb',
               'methods': [
                 {
                   'title': 'get_user_by_id',
@@ -384,7 +400,7 @@ class DemoHelperService
           'tab': '',
           'files': [
             {
-              'url': '/app/controllers/manage_controller.rb',
+              'url': '/src/app/controllers/manage_controller.rb',
               'methods': [
                 {
                   'title': 'aboutme',
@@ -393,7 +409,7 @@ class DemoHelperService
               ]
             },
             {
-              'url': '/app/services/user_service.rb',
+              'url': '/src/app/services/user_service.rb',
               'methods': [
                 {
                   'title': 'get_favorite_color',
@@ -406,7 +422,7 @@ class DemoHelperService
               ]
             },
             {
-              'url': '/lib/education/education_service.rb',
+              'url': '/src/lib/education/education_service.rb',
               'methods': [
                 {
                   'title': 'get_me',
@@ -431,7 +447,7 @@ class DemoHelperService
         'tab': '',
         'files': [
           {
-            'url': '/app/controllers/schools_controller.rb',
+            'url': '/src/app/controllers/schools_controller.rb',
             'methods': [
               {
                 'title': 'index',
@@ -440,7 +456,7 @@ class DemoHelperService
             ]
           },
           {
-            'url': '/app/services/token_service.rb',
+            'url': '/src/app/services/token_service.rb',
             'methods': [
               {
                 'title': 'get_access_token',
@@ -449,7 +465,7 @@ class DemoHelperService
             ]
           },
           {
-            'url': '/lib/education/education_service.rb',
+            'url': '/src/lib/education/education_service.rb',
             'methods': [
               {
                 'title': 'get_me',
@@ -474,7 +490,7 @@ class DemoHelperService
         'tab': '',
         'files': [
           {
-            'url': '/app/controllers/schools_controller.rb',
+            'url': '/src/app/controllers/schools_controller.rb',
             'methods': [
               {
                 'title': 'users',
@@ -487,7 +503,7 @@ class DemoHelperService
             ]
           },
           {
-            'url': '/app/services/token_service.rb',
+            'url': '/src/app/services/token_service.rb',
             'methods': [
               {
                 'title': 'get_access_token',
@@ -496,7 +512,7 @@ class DemoHelperService
             ]
           },
           {
-            'url': '/lib/education/education_service.rb',
+            'url': '/src/lib/education/education_service.rb',
             'methods': [
               {
                 'title': 'get_all_schools',
@@ -511,7 +527,7 @@ class DemoHelperService
         'tab': 'filterall',
         'files': [
           {
-            'url': '/lib/education/education_service.rb',
+            'url': '/src/lib/education/education_service.rb',
             'methods': [
               {
                 'title': 'get_members',
@@ -526,7 +542,7 @@ class DemoHelperService
         'tab': 'filterstudnet',
         'files': [
           {
-            'url': '/lib/education/education_service.rb',
+            'url': '/src/lib/education/education_service.rb',
             'methods': [
               {
                 'title': 'get_students',
@@ -541,7 +557,7 @@ class DemoHelperService
         'tab': 'filterteacher',
         'files': [
           {
-            'url': '/lib/education/education_service.rb',
+            'url': '/src/lib/education/education_service.rb',
             'methods': [
               {
                 'title': 'get_teachers',
@@ -562,7 +578,7 @@ class DemoHelperService
         'tab': '',
         'files': [
           {
-            'url': '/app/controllers/classes_controller.rb',
+            'url': '/src/app/controllers/classes_controller.rb',
             'methods': [
               {
                 'title': 'index',
@@ -575,7 +591,7 @@ class DemoHelperService
             ]
           },
           {
-            'url': '/app/services/token_service.rb',
+            'url': '/src/app/services/token_service.rb',
             'methods': [
               {
                 'title': 'get_access_token',
@@ -584,7 +600,7 @@ class DemoHelperService
             ]
           },
           {
-            'url': '/lib/education/education_service.rb',
+            'url': '/src/lib/education/education_service.rb',
             'methods': [
               {
                 'title': 'get_school',
@@ -599,7 +615,7 @@ class DemoHelperService
         'tab': 'filtermyclasses',
         'files': [
           {
-            'url': '/lib/education/education_service.rb',
+            'url': '/src/lib/education/education_service.rb',
             'methods': [
               {
                 'title': 'get_my_sections',
@@ -614,7 +630,7 @@ class DemoHelperService
         'tab': 'filterclasses',
         'files': [
           {
-            'url': '/lib/education/education_service.rb',
+            'url': '/src/lib/education/education_service.rb',
             'methods': [
               {
                 'title': 'get_sections',
@@ -635,7 +651,7 @@ class DemoHelperService
         'tab': '',
         'files': [
           {
-            'url': '/app/controllers/classes_controller.rb',
+            'url': '/src/app/controllers/classes_controller.rb',
             'methods': [
               {
                 'title': 'show',
@@ -644,7 +660,7 @@ class DemoHelperService
             ]
           },
           {
-            'url': '/app/services/token_service.rb',
+            'url': '/src/app/services/token_service.rb',
             'methods': [
               {
                 'title': 'get_access_token',
@@ -653,7 +669,7 @@ class DemoHelperService
             ]
           },
           {
-            'url': '/lib/education/education_service.rb',
+            'url': '/src/lib/education/education_service.rb',
             'methods': [
               {
                 'title': 'get_school',
@@ -672,7 +688,7 @@ class DemoHelperService
         'tab': '#students',
         'files': [
           {
-            'url': '/lib/education/education_service.rb',
+            'url': '/src/lib/education/education_service.rb',
             'methods': [
               {
                 'title': 'get_section_members',
@@ -687,7 +703,7 @@ class DemoHelperService
         'tab': '#conversations',
         'files': [
           {
-            'url': '/app/services/ms_graph_service.rb',
+            'url': '/src/app/services/ms_graph_service.rb',
             'methods': [
               {
                 'title': 'get_conversations',
@@ -702,7 +718,7 @@ class DemoHelperService
         'tab': '#documents',
         'files': [
           {
-            'url': '/app/services/ms_graph_service.rb',
+            'url': '/src/app/services/ms_graph_service.rb',
             'methods': [
               {
                 'title': 'get_documents',
@@ -713,11 +729,11 @@ class DemoHelperService
         ]
       },
       {
-        'title': 'Dispaly, edit and save students charts',
+        'title': 'Display, edit and save students charts',
         'tab': '#seatingchart',
         'files': [
           {
-            'url': '/app/services/user_service.rb',
+            'url': '/src/app/services/user_service.rb',
             'methods': [
               {
                 'title': 'get_seating_position_hash',
