@@ -76,6 +76,24 @@ module Education
         '$skiptoken': skip_token
       })
     end
+    
+    def get_studentsInMyClasses(school_id)
+      studentsInMyClasses = Array.new
+      mysections = get_my_sections(school_id)
+      mysections.each do |section|
+        
+        if section.school_id == school_id
+          result = section.members.select do |user|
+            user.education_object_type == 'Student' && studentsInMyClasses.select{|student| student.object_id == user.object_id}.length == 0
+          end
+          if result
+            studentsInMyClasses.concat(result)
+           end
+        end
+      end
+      return studentsInMyClasses
+    end
+
 
     private
 

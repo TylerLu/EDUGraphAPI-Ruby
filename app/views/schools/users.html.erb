@@ -47,7 +47,11 @@
                     <input type="text" placeholder="Search" class="txtsearch" />
                     <button type="submit" id="btnsearch" title="Search" data-bi-dnt="" tabindex="40" class="btnsubmit"></button>
                 </div> -->
-                <span>FILTER:</span> <a id="filterteacher" class="filterlink" data-type="teachers">Teachers</a> | <a id="filterstudnet" class="filterlink" data-type="students">Students</a> | <a id="filterall" class="filterlink selected" data-type="users">All</a>
+                <span>FILTER:</span> 
+                <% if current_user.is_teacher? %>
+                    <a id="filterstudentsinmyclasses" class="filterlink" data-type="studentsinmyclasses">Students in my classes</a> | 
+                <% end %>
+                <a id="filterteacher" class="filterlink" data-type="teachers">Teachers</a> | <a id="filterstudnet" class="filterlink" data-type="students">Students</a> | <a id="filterall" class="filterlink selected" data-type="users">All</a>
             </div>
         </div>
         <br style="clear:both;" />
@@ -116,6 +120,23 @@
                 <span class="next">Next</span>
             </div>
         </div>
+        <% if current_user.is_teacher? %>
+            <div id="studentsinmyclasses" class="tiles-secondary-container">
+                <div class="content" id="studentsinmyclasses_1">
+                    <% if @studentsInMyClasses.empty? %>
+                        <div class="nodata"> There is no data available for this page at this time.</div>
+                    <% end %>
+                    <% @studentsInMyClasses.each do |student| %>
+                    <div class="element student-bg">
+                        <div class="userimg">
+                        <img src="/Images/header-default.jpg" realheader="/users/<%= student.object_id %>/photo" />
+                        </div>
+                        <div class="username"><%= student.display_name %></div>
+                    </div>
+                    <% end %>
+                </div>
+            </div>
+        <% end %>
     </div>
     <input id="school-id" type="hidden" value="<%= @school.school_id %>" />
     <input id="school-object-id" type="hidden" value="<%= @school.object_id %>" />
