@@ -566,6 +566,21 @@ class DemoHelperService
             ]
           }
         ]
+      },
+      {
+        "title": "Get all students in my classes",
+        "tab": "filterstudentsinmyclasses",
+        "files": [
+          {
+            "url": "/lib/education/education_service.rb",
+            "methods": [
+              {
+                "title": "get_studentsInMyClasses",
+                "description": "Get all my classes with students."
+              }
+            ]
+          }
+        ]
       }
     ]
   },
