@@ -75,8 +75,20 @@ class ClassesController < ApplicationController
         @teacher_favorite_color = favorite_color_hash[m.object_id]
       end
     end
-  end
 
+    school_teachers = education_service.get_allteachers(@school.school_id);
+    @schoolTeachers = school_teachers.select do |teacher|
+      @class.teachers.select{|classteacher| classteacher.object_id == teacher.object_id}.length == 0
+    end
+
+  end
+  def add_coteacher
+    ms_access_token = token_service.get_access_token(current_user.o365_user_id, Constants::Resources::MSGraph)
+    education_service = Education::EducationService.new(current_user.tenant_id, ms_access_token)
+    result = education_service.add_user_to_section_members(params[:id], params[:user_id])
+    education_service.add_user_to_section_owners(params[:id], params[:user_id])
+    render json: {status: 'success'}
+  end
   def save_seating_positions
     user_service = UserService.new
     user_service.save_seating_positions(params[:id], params['_json'])

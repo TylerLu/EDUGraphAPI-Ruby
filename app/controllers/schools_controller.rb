@@ -23,9 +23,7 @@ class SchoolsController < ApplicationController
     @users = education_service.get_members(@school.object_id)
     @teachers = education_service.get_teachers(@school.school_id)
     @students = education_service.get_students(@school.school_id)
-    if current_user.is_teacher?
-        @studentsInMyClasses = education_service.get_studentsInMyClasses(@school.school_id)
-    end
+    @studentsInMyClasses = education_service.get_studentsInMyClasses(@school.school_id)
   end
 
   def users_next

@@ -56,6 +56,7 @@ Rails.application.routes.draw do
       end
       member do
         post :save_seating_positions
+        post :add_coteacher
       end
     end
 

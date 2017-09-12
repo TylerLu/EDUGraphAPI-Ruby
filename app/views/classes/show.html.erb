@@ -41,8 +41,38 @@
             </div>
             <div class="col-md-6">
                 <span>Teacher:</span> 
-                <%= (@class.teachers.first || {}).display_name %>
+                <% @class.teachers.each_with_index do |teacher, index| %>
+                    <% if index < @class.teachers.count - 1%>
+                        <span class="coteacher-name"><%= teacher.display_name %>, </span>
+                    <% else %>
+                        <span class="coteacher-name"><%= teacher.display_name %></span>
+                    <% end %>
+                <% end %>
+                <% if current_user.is_teacher? %>
+                    <a id="addateacher" href="javascript:void(0)">Add a teacher</a>
+                <% end %>
             </div>
+            <% if current_user.is_teacher? %>
+                <div class="schoolteachers">
+                    <div class="close"><img src="/Images/close.png"></div>
+                    <div class="title">Select a teacher</div>
+                    <div class="list">
+                        <% if @schoolTeachers.empty? %>
+                            <div > There is no data available at this time.</div>
+                        <% else %>
+                            <ul>
+                                <% @schoolTeachers.each do |teacher| %>
+                                    <li>
+                                        <a data-userid="<%= teacher.object_id %>" data-url="<%= "/schools/#{@school.object_id}/classes/#{@class.object_id}/add_coteacher" %>" href="javascript:void(0)" class="addcoteacher">
+                                        <img src="/images/header-default.jpg" realheader="/users/<%= teacher.object_id %>/photo" /> <%= teacher.display_name %>
+                                        </a>
+                                    </li>
+                                <% end %>
+                            </ul>
+                        <% end %>
+                    </div>
+                </div>
+            <% end %>
         </div>
         <div style="clear:both;"></div>
     </div>

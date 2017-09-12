@@ -10,6 +10,7 @@ $(document).ready(function () {
     loadImages();
     iniTableSort();
     initDemoHelper();
+    initTeacherList();
 });
 
 function iniTiles(){
@@ -250,6 +251,32 @@ function cancelEditDesk() {
         var $e = $(e);
         var prevPosition = $e.attr("prev-position");
         $e.attr("position", prevPosition).removeAttr("prev-position").appendTo($(".desktile[position=" + prevPosition + "]"));
+    })
+}
+
+function initTeacherList(){
+    $('.schoolteachers .close').click(function (e) {
+       $(this).parent().hide();
+    });
+    $('#addateacher').click(function (e) {
+        $('.schoolteachers').show();
+    });
+
+    $(".addcoteacher").click(function(){
+        var postdata = {user_id: $(this).data("userid")}
+        $.ajax({
+        type: 'POST',
+        url: $(this).data('url'),
+        dataType: 'json',
+        data: JSON.stringify(postdata),
+        contentType: "application/json; charset=utf-8",
+        success: function (responseData) {
+            window.location.reload();
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
+            
+        }
+    });
     })
 }
 

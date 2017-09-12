@@ -69,6 +69,12 @@ module Education
       })
     end
 
+    def get_allteachers(school_id)
+      get_objects(Education::User, "users", {
+        '$filter': "extension_fe2174665583431c953114ff7268b7b3_Education_SyncSource_SchoolId eq '#{school_id}' and extension_fe2174665583431c953114ff7268b7b3_Education_ObjectType eq 'Teacher'"
+      })
+    end
+
     def get_students(school_id, skip_token = nil, top = 12)
       get_paged_objects(Education::User, "users", {
         '$top': top,
@@ -92,6 +98,16 @@ module Education
         end
       end
       return studentsInMyClasses
+    end
+
+    def add_user_to_section_members(class_id, user_id) 
+        data = { "@odata.id": "#{Constants::Resources::MSGraph}/v1.0/users/#{user_id}"}
+       request('post', "#{Constants::Resources::MSGraph}/v1.0/groups/#{class_id}/members/$ref", {}, data.to_json)
+    end
+
+    def add_user_to_section_owners(class_id, user_id) 
+       data = { "@odata.id": "#{Constants::Resources::MSGraph}/v1.0/users/#{user_id}"}
+       request('post', "#{Constants::Resources::MSGraph}/v1.0/groups/#{class_id}/owners/$ref", {}, data.to_json)
     end
 
 
@@ -144,6 +160,25 @@ module Education
       )
       JSON.parse(response.body)    
     end
+
+
+    def request(request_method, path, query = {}, body = {})
+      begin
+        response = HTTParty.method(request_method).call(
+          path,
+          query: query,
+          body: body,
+          headers: {
+            "Authorization" => "Bearer #{@access_token}",
+            "Content-Type" => "application/json"
+          }
+        )
+        response.body ? JSON.parse(response.body) : nil
+      rescue => exception
+        nil
+      end
+    end
+
 
   end
 end
