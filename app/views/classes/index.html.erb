@@ -130,11 +130,9 @@
                                 <h5>Description:</h5>
                                 <h6><%= c.course_description %></h6>
                                 <h5>Teachers:</h5>
-                                <h6>
-                                    <% c.teachers.each do |t| %>
-                                        <%= t.display_name %>
-                                    <% end %>
-                                </h6>
+                                <% c.teachers.each do |t| %>
+                                    <h6><%= t.display_name %></h6>
+                                <% end %>
                                 <h5>Term Name:</h5>
                                 <h6><%= c.term_name %></h6>
                                 <h5>Start/Finish Date:</h5>

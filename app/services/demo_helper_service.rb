@@ -568,15 +568,15 @@ class DemoHelperService
         ]
       },
       {
-        "title": "Get all students in my classes",
-        "tab": "filterstudentsinmyclasses",
-        "files": [
+        'title': 'Get all students in my classes',
+        'tab': 'filterstudentsinmyclasses',
+        'files': [
           {
-            "url": "/lib/education/education_service.rb",
-            "methods": [
+            'url': '/lib/education/education_service.rb',
+            'methods': [
               {
-                "title": "get_studentsInMyClasses",
-                "description": "Get all my classes with students."
+                'title': 'get_studentsInMyClasses',
+                'description': 'Get all my classes with students.'
               }
             ]
           }
@@ -671,6 +671,10 @@ class DemoHelperService
               {
                 'title': 'show',
                 'description': 'Show action.'
+              },
+              {
+                'title': 'add_coteacher',
+                'description': 'Add a teacher action.'
               }
             ]
           },
@@ -693,6 +697,18 @@ class DemoHelperService
               {
                 'title': 'get_section',
                 'description': 'Get a class by using the id.'
+              },
+              {
+                'title': 'get_allteachers',
+                'description': 'Get teachers within a school.'
+              },
+              {
+                'title': 'add_user_to_section_members',
+                'description': 'Add a member to class.'
+              },
+              {
+                'title': 'add_user_to_section_owners',
+                'description': 'Add a user to the calss\'s owners.'
               }
             ]
           }
