@@ -59,7 +59,7 @@ The starter project is a simple application with only SQL authentication configu
 
 Follow these instructions to add SSO functionality to the starter project application. You will need to configure your app in Azure, create files and copy and paste code from the instructions.
 
-All code referenced in these instructions is also used in the associated files in the [Demo App](../)
+All code referenced in these instructions is also used in the associated files in the [Demo App](../../)
 
 ## Register the application in Azure Active Directory
 
@@ -343,20 +343,20 @@ All code referenced in these instructions is also used in the associated files i
 
 10.  Add new file named **constants.rb** into **app/models** folder, add the following code into it .
 
-   ```ruby
-   module Constants
+  ```ruby
+  module Constants
 
-     AADInstance = "https://login.microsoftonline.com/"
+    AADInstance = "https://login.microsoftonline.com/"
 
-     module Resources
-       MSGraph = 'https://graph.microsoft.com' 
-       AADGraph = 'https://graph.windows.net'
-     end
+    module Resources
+      MSGraph = 'https://graph.microsoft.com' 
+      AADGraph = 'https://graph.windows.net'
+    end
 
-   end
-   ```
+  end
+  ```
 
-   This is AAD/MSGraph/ AADGraph Url constants. To see how this file works in the Demo app, refer to the file located [here](../app/models/constants.rb) in the Demo app.
+  This is AAD/MSGraph/ AADGraph Url constants. To see how this file works in the Demo app, refer to the file located [here](../app/models/constants.rb) in the Demo app.
 
 11.  Open **app/models/unified_user.rb** folder, delete all code and add the following code into it .
 
@@ -408,13 +408,12 @@ All code referenced in these instructions is also used in the associated files i
         o365_user = O365User.new(auth.info.oid, auth.info.email, auth.info.first_name, auth.info.last_name,  auth.info.tid)
         set_o365_user(o365_user)
 
-
         clear_session_expire_after()
         self.azure_oauth2_logout_required = true
         redirect_to account_index_path
       end
-    ```
-
+    ​```
+    
     This code is used to login with O365 user and azure oauth2 callback. To see how this file works in the Demo app, refer to the file located [here](../app/controllers/application_controller.rb) in the Demo app.
 
 13.  Open **app/controllers/application_controller.rb** file,  find `logoff` method and use the following code to replace it..
@@ -498,15 +497,15 @@ All code referenced in these instructions is also used in the associated files i
     rails s
     ```
 
-37. Open a browser window and navigate to [http://localhost:3000](http://localhost:3000/).
+21. Open a browser window and navigate to [http://localhost:3000](http://localhost:3000/).
 
 
 
-38. Click the **Sign in with Office 365** button and then login to O365..
+22. Click the **Sign in with Office 365** button and then login to O365..
 
     ![proj04](Images/proj04.png)
 
-39. After login with O365 user it will redirect to a basic page.
+23. After login with O365 user it will redirect to a basic page.
 
     ![proj05](Images/proj05.png)
 
