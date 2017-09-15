@@ -484,10 +484,9 @@ All code referenced in these instructions is also used in the associated files i
     export ClientSecret=INSERT YOUR CLIENT SECRET HERE
     ```
 
+​       **clientId**: use the Client Id of the app registration you created earlier.
 
-​    **clientId**: use the Client Id of the app registration you created earlier.
-
-​    **clientSecret**: use the Key value of the app registration you created earlier.
+​       **clientSecret**: use the Key value of the app registration you created earlier.
 
 20. Type the following command to install bundle and run.
 
