@@ -354,6 +354,7 @@ All code referenced in these instructions is also used in the associated files i
        end
        
     end
+    ```
     This is AAD/MSGraph/ AADGraph Url constants. To see how this file works in the Demo app, refer to the file located [here](../app/models/constants.rb) in the Demo app.
 
 11. Open **app/models/unified_user.rb** folder, delete all code and add the following code into it .
