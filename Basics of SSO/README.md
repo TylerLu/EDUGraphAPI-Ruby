@@ -59,7 +59,7 @@ The starter project is a simple application with only SQL authentication configu
 
 Follow these instructions to add SSO functionality to the starter project application. You will need to configure your app in Azure, create files and copy and paste code from the instructions.
 
-All code referenced in these instructions is also used in the associated files in the [Demo App](../../)
+All code referenced in these instructions is also used in the associated files in the [Demo App](../../../)
 
 ## Register the application in Azure Active Directory
 
@@ -124,7 +124,7 @@ All code referenced in these instructions is also used in the associated files i
    gem 'omniauth-oauth2'
    ```
 
-3.  Open **db/schema.rb** , add the following code into **ActiveRecord** to create token cache table.
+3. Open **db/schema.rb** , add the following code into **ActiveRecord** to create token cache table.
 
    ```ruby
      create_table "token_caches", force: :cascade do |t|
@@ -138,7 +138,7 @@ All code referenced in these instructions is also used in the associated files i
 
    To see how this file works in the Demo app, refer to the file located [here](../db/schema.rb) in the Demo app.
 
-4.  Add new file named **token_cache.rb** into **app/models** folder, add the following code into it to create token cache model.
+4. Add new file named **token_cache.rb** into **app/models** folder, add the following code into it to create token cache model.
 
    ```ruby
    class TokenCache < ApplicationRecord
@@ -147,7 +147,7 @@ All code referenced in these instructions is also used in the associated files i
 
    To see how this file works in the Demo app, refer to the file located [here](../app/models/token_cache.rb) in the Demo app.
 
-5.  Add new file named **token_service.rb** into **app/services** folder, add the following code into it.
+5. Add new file named **token_service.rb** into **app/services** folder, add the following code into it.
 
    ```ruby
    class TokenService
@@ -220,7 +220,7 @@ All code referenced in these instructions is also used in the associated files i
 
    This code  is used to store access and refresh tokens. To see how this file works in the Demo app, refer to the file located [here](../app/services/token_service.rb) in the Demo app.
 
-6.  Open **config/settings.yml** file, add the following code to the bottom of file.
+6. Open **config/settings.yml** file, add the following code to the bottom of file.
 
    ```ruby
    AAD:
@@ -230,9 +230,9 @@ All code referenced in these instructions is also used in the associated files i
 
    This code  is used to configure ClientId/ClientSecret. To see how this file works in the Demo app, refer to the file located [here](../config/settings.yml) in the Demo app.
 
-7.  Open **lib** folder, add a new folder named **omniauth**, open **omniauth** folder, add a new folder named **strategies**.
+7. Open **lib** folder, add a new folder named **omniauth**, open **omniauth** folder, add a new folder named **strategies**.
 
-8.  Open **strategies** folder, add new file named **azure_oauth2.rb** into it,  add the following code into it.
+8. Open **strategies** folder, add new file named **azure_oauth2.rb** into it,  add the following code into it.
 
    ```ruby
    require 'omniauth/strategies/oauth2'
@@ -318,7 +318,7 @@ All code referenced in these instructions is also used in the associated files i
 
    This module is used to use OAuth2 authentication. To see how this file works in the Demo app, refer to the file located [here](../lib/omniauth/strategies/azure_oauth2.rb) in the Demo app.
 
-9.  Open **config/initializers** folder, add new file named **omniauth.rb** into it,  add the following code into it.
+9. Open **config/initializers** folder, add new file named **omniauth.rb** into it,  add the following code into it.
 
    ```ruby
    module OmniAuth
@@ -341,24 +341,24 @@ All code referenced in these instructions is also used in the associated files i
 
    This code is used to initialize OAuth2 authentication. To see how this file works in the Demo app, refer to the file located [here](../config/initializers/omniauth.rb) in the Demo app.
 
-10.  Add new file named **constants.rb** into **app/models** folder, add the following code into it .
+10. Add new file named **constants.rb** into **app/models** folder, add the following code into it .
 
-  ```ruby
-  module Constants
+    ```ruby
+    module Constants
 
-    AADInstance = "https://login.microsoftonline.com/"
+        AADInstance = "https://login.microsoftonline.com/"
 
-    module Resources
-      MSGraph = 'https://graph.microsoft.com' 
-      AADGraph = 'https://graph.windows.net'
+        module Resources
+        MSGraph = 'https://graph.microsoft.com' 
+        AADGraph = 'https://graph.windows.net'
+        end
+
     end
+    ```
 
-  end
-  ```
+    This is AAD/MSGraph/ AADGraph Url constants. To see how this file works in the Demo app, refer to the file located [here](../app/models/constants.rb) in the Demo app.
 
-  This is AAD/MSGraph/ AADGraph Url constants. To see how this file works in the Demo app, refer to the file located [here](../app/models/constants.rb) in the Demo app.
-
-11.  Open **app/models/unified_user.rb** folder, delete all code and add the following code into it .
+11. Open **app/models/unified_user.rb** folder, delete all code and add the following code into it .
 
     ```ruby
     class UnifiedUser
@@ -390,72 +390,72 @@ All code referenced in these instructions is also used in the associated files i
 
     This code is used to add local user and o365 user into UnifiedUser. To see how this file works in the Demo app, refer to the file located [here](../app/models/unified_user.rb) in the Demo app.
 
-12.  Open **app/controllers/application_controller.rb** file, add the following code into AccountController class.
+12. Open **app/controllers/application_controller.rb** file, add the following code into AccountController class.
 
     ```ruby
-       def login_o365
-         redirect_to azure_auth_path
-      end
+    def login_o365
+      redirect_to azure_auth_path
+    end
 
-      def azure_oauth2_callback
-        auth = request.env['omniauth.auth']
+    def azure_oauth2_callback
+      auth = request.env['omniauth.auth']
 
-        # cahce tokens
-        token_service.cache_tokens(auth.info.oid, Constants::Resources::AADGraph, 
-          auth.credentials.refresh_token, auth.credentials.token, auth.credentials.expires_at)
+      # cahce tokens
+      token_service.cache_tokens(auth.info.oid, Constants::Resources::AADGraph, 
+      auth.credentials.refresh_token, auth.credentials.token, auth.credentials.expires_at)
 
-        # o365 user
-        o365_user = O365User.new(auth.info.oid, auth.info.email, auth.info.first_name, auth.info.last_name,  auth.info.tid)
-        set_o365_user(o365_user)
+      # o365 user
+      o365_user = O365User.new(auth.info.oid, auth.info.email, auth.info.first_name, auth.info.last_name,  auth.info.tid)
+      set_o365_user(o365_user)
 
-        clear_session_expire_after()
-        self.azure_oauth2_logout_required = true
-        redirect_to account_index_path
-      end
+      clear_session_expire_after()
+      self.azure_oauth2_logout_required = true
+      redirect_to account_index_path
+    end
     ​```
     
     This code is used to login with O365 user and azure oauth2 callback. To see how this file works in the Demo app, refer to the file located [here](../app/controllers/application_controller.rb) in the Demo app.
 
-13.  Open **app/controllers/application_controller.rb** file,  find `logoff` method and use the following code to replace it..
+13. Open **app/controllers/application_controller.rb** file,  find `logoff` method and use the following code to replace it..
 
     ```ruby
-      def logoff
-        azure_oauth2_logout_required = self.azure_oauth2_logout_required 
+    def logoff
+      azure_oauth2_logout_required = self.azure_oauth2_logout_required 
 
-        session.clear
-        reset_session()
-        clear_session_expire_after()
+      session.clear
+      reset_session()
+      clear_session_expire_after()
 
-        if azure_oauth2_logout_required 
-          post_logout_redirect_uri = URI.escape("#{full_host}/account/login", Regexp.new("[^#{URI::PATTERN::UNRESERVED}]"))
-          logoff_url = "#{Constants::AADInstance}common/oauth2/logout?post_logout_redirect_uri=#{post_logout_redirect_uri}"
-          redirect_to logoff_url
-        else
-          redirect_to account_login_path 
-        end   
-      end
+      if azure_oauth2_logout_required 
+        post_logout_redirect_uri = URI.escape("#{full_host}/account/login", Regexp.new("[^#{URI::PATTERN::UNRESERVED}]"))
+        logoff_url = "#{Constants::AADInstance}common/oauth2/logout?post_logout_redirect_uri=#{post_logout_redirect_uri}"
+        redirect_to logoff_url
+      else
+        redirect_to account_login_path 
+      end   
+    end
     ```
 
     This code is used to support logoff for O365 user. To see how this file works in the Demo app, refer to the file located [here](../app/controllers/application_controller.rb) in the Demo app.
 
-14.  Open **app/views/account/login.html.erb** file, find <div class="row"> and append the following code into it.
+14. Open **app/views/account/login.html.erb** file, find <div class="row"> and append the following code into it.
 
     ```Html
-            <div class="col-md-5">
-                <section id="socialLoginForm">
-                    <h4 class="margin-btm-20">Use your school account</h4>
-                        <form action="/account/login_o365" method="post">
-                        <div id="socialLoginList">
-                            <p><button type="submit" class="btn btn-default btn-ms-login" id="OpenIdConnect" name="provider" value="OpenIdConnect" title="Log in using your Microsoft Work or school account"></button></p>
-                        </div>
-                        </form>
-                </section>
-            </div>
+    <div class="col-md-5">
+        <section id="socialLoginForm">
+            <h4 class="margin-btm-20">Use your school account</h4>
+            <form action="/account/login_o365" method="post">
+                <div id="socialLoginList">
+                    <p><button type="submit" class="btn btn-default btn-ms-login" id="OpenIdConnect" name="provider" value="OpenIdConnect" title="Log in using your Microsoft Work or school account"></button></p>
+                </div>
+            </form>
+        </section>
+    </div>
     ```
 
     This adds an O365 login button on the right of login page. To see how this file works in the Demo app, refer to the file located [here](../app/controllers/account_controller.rb) in the Demo app.
 
-15.  Open **config/routes.rb** file, add the  add the following code into it .
+15. Open **config/routes.rb** file, add the  add the following code into it .
 
     ```ruby
     #oauth2
@@ -465,7 +465,7 @@ All code referenced in these instructions is also used in the associated files i
 
     This code is used to configure router for oauth2 call back. To see how this file works in the Demo app, refer to the file located [here](../config/routes.rb) in the Demo app.
 
-16.  Open **config/routes.rb** file, add the  add the following code into it to support login o365 post. .
+16. Open **config/routes.rb** file, add the  add the following code into it to support login o365 post. .
 
     ```ruby
     post 'account/login_o365'
@@ -473,11 +473,11 @@ All code referenced in these instructions is also used in the associated files i
 
     To see how this file works in the Demo app, refer to the file located [here](../config/routes.rb) in the Demo app.
 
-17.  Delete the file named **Gemfile.lock** in the root folder of **basicsso**.
+17. Delete the file named **Gemfile.lock** in the root folder of **basicsso**.
 
-18.  Open a terminal, navigate to **basicsso** directory again. 
+18. Open a terminal, navigate to **basicsso** directory again. 
 
-19.  Type the following command to set ClientId and ClientSecret and run
+19. Type the following command to set ClientId and ClientSecret and run
 
     ```ruby
     export ClientId=INSERT YOUR CLIENT ID HERE
@@ -485,9 +485,9 @@ All code referenced in these instructions is also used in the associated files i
     ```
 
 
-​       **clientId**: use the Client Id of the app registration you created earlier.
+​    **clientId**: use the Client Id of the app registration you created earlier.
 
-​       **clientSecret**: use the Key value of the app registration you created earlier.
+​    **clientSecret**: use the Key value of the app registration you created earlier.
 
 20. Type the following command to install bundle and run.
 
@@ -498,7 +498,6 @@ All code referenced in these instructions is also used in the associated files i
     ```
 
 21. Open a browser window and navigate to [http://localhost:3000](http://localhost:3000/).
-
 
 
 22. Click the **Sign in with Office 365** button and then login to O365..
