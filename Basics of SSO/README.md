@@ -343,20 +343,20 @@ All code referenced in these instructions is also used in the associated files i
 
 10. Add new file named **constants.rb** into **app/models** folder, add the following code into it .
 
-    ```ruby
-    module Constants
+   ```ruby
+   module Constants
 
-        AADInstance = "https://login.microsoftonline.com/"
+       AADInstance = "https://login.microsoftonline.com/"
 
-        module Resources
-        MSGraph = 'https://graph.microsoft.com' 
-        AADGraph = 'https://graph.windows.net'
-        end
+       module Resources
+       MSGraph = 'https://graph.microsoft.com' 
+       AADGraph = 'https://graph.windows.net'
+       end
 
-    end
-    ```
+   end
+   ```
 
-    This is AAD/MSGraph/ AADGraph Url constants. To see how this file works in the Demo app, refer to the file located [here](../app/models/constants.rb) in the Demo app.
+   This is AAD/MSGraph/ AADGraph Url constants. To see how this file works in the Demo app, refer to the file located [here](../app/models/constants.rb) in the Demo app.
 
 11. Open **app/models/unified_user.rb** folder, delete all code and add the following code into it .
 
@@ -412,9 +412,10 @@ All code referenced in these instructions is also used in the associated files i
       self.azure_oauth2_logout_required = true
       redirect_to account_index_path
     end
-    ​```
-    
+    ```
+
     This code is used to login with O365 user and azure oauth2 callback. To see how this file works in the Demo app, refer to the file located [here](../app/controllers/application_controller.rb) in the Demo app.
+
 
 13. Open **app/controllers/application_controller.rb** file,  find `logoff` method and use the following code to replace it..
 
