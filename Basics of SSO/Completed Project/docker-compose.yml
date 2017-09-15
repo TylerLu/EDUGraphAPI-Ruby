@@ -1,0 +1,5 @@
+web:
+  build: .
+  ports:
+    - "44311:44311"
+  command: bundle exec puma -p 44311

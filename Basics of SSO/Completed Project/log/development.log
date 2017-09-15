@@ -1,0 +1,773 @@
+  [1m[36mActiveRecord::SchemaMigration Load (0.1ms)[0m  [1m[34mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+  [1m[35m (0.1ms)[0m  [1m[34mSELECT "ar_internal_metadata"."value" FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = ?[0m  [["key", "environment"]]
+  [1m[36mActiveRecord::SchemaMigration Load (0.0ms)[0m  [1m[34mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+  [1m[35m (0.1ms)[0m  [1m[34mSELECT "ar_internal_metadata"."value" FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = ?[0m  [["key", "environment"]]
+  [1m[36mActiveRecord::SchemaMigration Load (0.0ms)[0m  [1m[34mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+  [1m[35m (0.0ms)[0m  [1m[34mSELECT "ar_internal_metadata"."value" FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = ?[0m  [["key", "environment"]]
+  [1m[35m (0.9ms)[0m  [1m[35mDROP TABLE "sessions"[0m
+  [1m[35m (0.9ms)[0m  [1m[35mCREATE TABLE "sessions" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "session_id" varchar NOT NULL, "data" text, "created_at" datetime, "updated_at" datetime)[0m
+  [1m[35m (0.1ms)[0m  [1m[34mselect sqlite_version(*)[0m
+  [1m[35m (0.8ms)[0m  [1m[35mCREATE UNIQUE INDEX "index_sessions_on_session_id" ON "sessions" ("session_id")[0m
+  [1m[35m (0.1ms)[0m  [1m[34m            SELECT sql
+            FROM sqlite_master
+            WHERE name='index_sessions_on_session_id' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_sessions_on_session_id' AND type='index'
+[0m
+  [1m[35m (0.9ms)[0m  [1m[35mCREATE  INDEX "index_sessions_on_updated_at" ON "sessions" ("updated_at")[0m
+  [1m[35m (0.6ms)[0m  [1m[35mDROP TABLE "token_caches"[0m
+  [1m[35m (0.8ms)[0m  [1m[35mCREATE TABLE "token_caches" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "created_at" datetime NOT NULL, "updated_at" datetime NOT NULL, "o365_userId" varchar, "refresh_token" text, "access_tokens" text)[0m
+  [1m[35m (0.7ms)[0m  [1m[35mDROP TABLE "users"[0m
+  [1m[35m (0.6ms)[0m  [1m[35mCREATE TABLE "users" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "first_name" varchar(40) DEFAULT '', "last_name" varchar(40) DEFAULT '', "email" varchar(70), "password" varchar, "password_digest" varchar, "o365_user_id" varchar, "o365_email" varchar, "organization_id" integer, "remember_me" boolean, "created_at" datetime NOT NULL, "updated_at" datetime NOT NULL)[0m
+  [1m[35m (0.1ms)[0m  [1m[34mSELECT version FROM "schema_migrations"[0m
+  [1m[36mActiveRecord::InternalMetadata Load (0.1ms)[0m  [1m[34mSELECT  "ar_internal_metadata".* FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = ? LIMIT ?[0m  [["key", "environment"], ["LIMIT", 1]]
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mActiveRecord::InternalMetadata Load (0.0ms)[0m  [1m[34mSELECT  "ar_internal_metadata".* FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = ? LIMIT ?[0m  [["key", "environment"], ["LIMIT", 1]]
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.9ms)[0m  [1m[35mDROP TABLE "sessions"[0m
+  [1m[35m (0.7ms)[0m  [1m[35mCREATE TABLE "sessions" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "session_id" varchar NOT NULL, "data" text, "created_at" datetime, "updated_at" datetime)[0m
+  [1m[35m (0.0ms)[0m  [1m[34mselect sqlite_version(*)[0m
+  [1m[35m (0.7ms)[0m  [1m[35mCREATE UNIQUE INDEX "index_sessions_on_session_id" ON "sessions" ("session_id")[0m
+  [1m[35m (0.1ms)[0m  [1m[34m            SELECT sql
+            FROM sqlite_master
+            WHERE name='index_sessions_on_session_id' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_sessions_on_session_id' AND type='index'
+[0m
+  [1m[35m (0.8ms)[0m  [1m[35mCREATE  INDEX "index_sessions_on_updated_at" ON "sessions" ("updated_at")[0m
+  [1m[35m (0.7ms)[0m  [1m[35mDROP TABLE "token_caches"[0m
+  [1m[35m (0.7ms)[0m  [1m[35mCREATE TABLE "token_caches" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "created_at" datetime NOT NULL, "updated_at" datetime NOT NULL, "o365_userId" varchar, "refresh_token" text, "access_tokens" text)[0m
+  [1m[35m (0.7ms)[0m  [1m[35mDROP TABLE "users"[0m
+  [1m[35m (0.7ms)[0m  [1m[35mCREATE TABLE "users" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "first_name" varchar(40) DEFAULT '', "last_name" varchar(40) DEFAULT '', "email" varchar(70), "password" varchar, "password_digest" varchar, "o365_user_id" varchar, "o365_email" varchar, "organization_id" integer, "remember_me" boolean, "created_at" datetime NOT NULL, "updated_at" datetime NOT NULL)[0m
+  [1m[35m (0.1ms)[0m  [1m[34mSELECT version FROM "schema_migrations"[0m
+  [1m[36mActiveRecord::InternalMetadata Load (0.1ms)[0m  [1m[34mSELECT  "ar_internal_metadata".* FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = ? LIMIT ?[0m  [["key", "environment"], ["LIMIT", 1]]
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mActiveRecord::InternalMetadata Load (0.0ms)[0m  [1m[34mSELECT  "ar_internal_metadata".* FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = ? LIMIT ?[0m  [["key", "environment"], ["LIMIT", 1]]
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mActiveRecord::SchemaMigration Load (0.1ms)[0m  [1m[34mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+Started GET "/" for 127.0.0.1 at 2017-09-15 14:20:08 +0800
+Processing by AccountController#index as HTML
+Redirected to http://localhost:3000/account/login
+Completed 302 Found in 30ms (ActiveRecord: 3.1ms)
+
+
+  [1m[35m (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35m (0.1ms)[0m  [1m[36mcommit transaction[0m
+Started GET "/account/login" for 127.0.0.1 at 2017-09-15 14:20:08 +0800
+Processing by AccountController#login as HTML
+  Rendering account/login.html.erb within layouts/application
+  Rendered account/login.html.erb within layouts/application (344.6ms)
+Completed 200 OK in 436ms (Views: 433.7ms | ActiveRecord: 0.2ms)
+
+
+  [1m[35m (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.3ms)[0m  [1m[33mUPDATE "sessions" SET "data" = ?, "updated_at" = ? WHERE "sessions"."id" = ?[0m  [["data", "BAh7BkkiEF9jc3JmX3Rva2VuBjoGRUZJIjFFM20xYlFBbSs1Mk5pYmhvTUp2\nRDJNL2k2RFg5MmoxT2E5WHFGRE5meEtjPQY7AEY=\n"], ["updated_at", "2017-09-15 06:20:09.150583"], ["id", 1]]
+  [1m[35m (0.6ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mActiveRecord::SchemaMigration Load (0.1ms)[0m  [1m[34mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+  [1m[35m (0.1ms)[0m  [1m[34mSELECT "ar_internal_metadata"."value" FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = ?[0m  [["key", "environment"]]
+  [1m[36mActiveRecord::SchemaMigration Load (0.0ms)[0m  [1m[34mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+  [1m[35m (0.1ms)[0m  [1m[34mSELECT "ar_internal_metadata"."value" FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = ?[0m  [["key", "environment"]]
+  [1m[36mActiveRecord::SchemaMigration Load (0.0ms)[0m  [1m[34mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+  [1m[35m (0.1ms)[0m  [1m[34mSELECT "ar_internal_metadata"."value" FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = ?[0m  [["key", "environment"]]
+  [1m[35m (6.7ms)[0m  [1m[35mDROP TABLE "sessions"[0m
+  [1m[35m (1.0ms)[0m  [1m[35mCREATE TABLE "sessions" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "session_id" varchar NOT NULL, "data" text, "created_at" datetime, "updated_at" datetime)[0m
+  [1m[35m (0.1ms)[0m  [1m[34mselect sqlite_version(*)[0m
+  [1m[35m (1.0ms)[0m  [1m[35mCREATE UNIQUE INDEX "index_sessions_on_session_id" ON "sessions" ("session_id")[0m
+  [1m[35m (0.1ms)[0m  [1m[34m            SELECT sql
+            FROM sqlite_master
+            WHERE name='index_sessions_on_session_id' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_sessions_on_session_id' AND type='index'
+[0m
+  [1m[35m (1.4ms)[0m  [1m[35mCREATE  INDEX "index_sessions_on_updated_at" ON "sessions" ("updated_at")[0m
+  [1m[35m (0.7ms)[0m  [1m[35mDROP TABLE "token_caches"[0m
+  [1m[35m (0.8ms)[0m  [1m[35mCREATE TABLE "token_caches" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "created_at" datetime NOT NULL, "updated_at" datetime NOT NULL, "o365_userId" varchar, "refresh_token" text, "access_tokens" text)[0m
+  [1m[35m (0.8ms)[0m  [1m[35mDROP TABLE "users"[0m
+  [1m[35m (0.7ms)[0m  [1m[35mCREATE TABLE "users" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "first_name" varchar(40) DEFAULT '', "last_name" varchar(40) DEFAULT '', "email" varchar(70), "password" varchar, "password_digest" varchar, "o365_user_id" varchar, "o365_email" varchar, "organization_id" integer, "remember_me" boolean, "created_at" datetime NOT NULL, "updated_at" datetime NOT NULL)[0m
+  [1m[35m (0.1ms)[0m  [1m[34mSELECT version FROM "schema_migrations"[0m
+  [1m[36mActiveRecord::InternalMetadata Load (0.1ms)[0m  [1m[34mSELECT  "ar_internal_metadata".* FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = ? LIMIT ?[0m  [["key", "environment"], ["LIMIT", 1]]
+  [1m[35m (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mActiveRecord::InternalMetadata Load (0.1ms)[0m  [1m[34mSELECT  "ar_internal_metadata".* FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = ? LIMIT ?[0m  [["key", "environment"], ["LIMIT", 1]]
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35m (0.1ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.7ms)[0m  [1m[35mDROP TABLE "sessions"[0m
+  [1m[35m (0.7ms)[0m  [1m[35mCREATE TABLE "sessions" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "session_id" varchar NOT NULL, "data" text, "created_at" datetime, "updated_at" datetime)[0m
+  [1m[35m (0.0ms)[0m  [1m[34mselect sqlite_version(*)[0m
+  [1m[35m (0.7ms)[0m  [1m[35mCREATE UNIQUE INDEX "index_sessions_on_session_id" ON "sessions" ("session_id")[0m
+  [1m[35m (0.1ms)[0m  [1m[34m            SELECT sql
+            FROM sqlite_master
+            WHERE name='index_sessions_on_session_id' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_sessions_on_session_id' AND type='index'
+[0m
+  [1m[35m (1.4ms)[0m  [1m[35mCREATE  INDEX "index_sessions_on_updated_at" ON "sessions" ("updated_at")[0m
+  [1m[35m (0.8ms)[0m  [1m[35mDROP TABLE "token_caches"[0m
+  [1m[35m (0.7ms)[0m  [1m[35mCREATE TABLE "token_caches" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "created_at" datetime NOT NULL, "updated_at" datetime NOT NULL, "o365_userId" varchar, "refresh_token" text, "access_tokens" text)[0m
+  [1m[35m (0.8ms)[0m  [1m[35mDROP TABLE "users"[0m
+  [1m[35m (0.7ms)[0m  [1m[35mCREATE TABLE "users" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "first_name" varchar(40) DEFAULT '', "last_name" varchar(40) DEFAULT '', "email" varchar(70), "password" varchar, "password_digest" varchar, "o365_user_id" varchar, "o365_email" varchar, "organization_id" integer, "remember_me" boolean, "created_at" datetime NOT NULL, "updated_at" datetime NOT NULL)[0m
+  [1m[35m (0.1ms)[0m  [1m[34mSELECT version FROM "schema_migrations"[0m
+  [1m[36mActiveRecord::InternalMetadata Load (0.1ms)[0m  [1m[34mSELECT  "ar_internal_metadata".* FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = ? LIMIT ?[0m  [["key", "environment"], ["LIMIT", 1]]
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mActiveRecord::InternalMetadata Load (0.1ms)[0m  [1m[34mSELECT  "ar_internal_metadata".* FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = ? LIMIT ?[0m  [["key", "environment"], ["LIMIT", 1]]
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mActiveRecord::SchemaMigration Load (0.2ms)[0m  [1m[34mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+Started GET "/" for 127.0.0.1 at 2017-09-15 14:21:04 +0800
+Processing by AccountController#index as HTML
+Redirected to http://localhost:3000/account/login
+Completed 302 Found in 28ms (ActiveRecord: 4.5ms)
+
+
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mcommit transaction[0m
+Started GET "/account/login" for 127.0.0.1 at 2017-09-15 14:21:04 +0800
+Processing by AccountController#login as HTML
+  Rendering account/login.html.erb within layouts/application
+  Rendered account/login.html.erb within layouts/application (309.3ms)
+Completed 200 OK in 393ms (Views: 390.9ms | ActiveRecord: 0.1ms)
+
+
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.2ms)[0m  [1m[33mUPDATE "sessions" SET "data" = ?, "updated_at" = ? WHERE "sessions"."id" = ?[0m  [["data", "BAh7BkkiEF9jc3JmX3Rva2VuBjoGRUZJIjF0dmhPRjNtUjFJVFczQlhCZ0h1\nMEpuVTk1eS9qbzRPcmRkSTNNUkVsWm8wPQY7AEY=\n"], ["updated_at", "2017-09-15 06:21:04.581334"], ["id", 1]]
+  [1m[35m (0.8ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mActiveRecord::SchemaMigration Load (0.6ms)[0m  [1m[34mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+  [1m[35m (0.5ms)[0m  [1m[34mSELECT "ar_internal_metadata"."value" FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = ?[0m  [["key", "environment"]]
+  [1m[36mActiveRecord::SchemaMigration Load (0.0ms)[0m  [1m[34mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+  [1m[35m (0.0ms)[0m  [1m[34mSELECT "ar_internal_metadata"."value" FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = ?[0m  [["key", "environment"]]
+  [1m[36mActiveRecord::SchemaMigration Load (0.0ms)[0m  [1m[34mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+  [1m[35m (0.0ms)[0m  [1m[34mSELECT "ar_internal_metadata"."value" FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = ?[0m  [["key", "environment"]]
+  [1m[35m (3.0ms)[0m  [1m[35mDROP TABLE "sessions"[0m
+  [1m[35m (0.8ms)[0m  [1m[35mCREATE TABLE "sessions" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "session_id" varchar NOT NULL, "data" text, "created_at" datetime, "updated_at" datetime)[0m
+  [1m[35m (0.1ms)[0m  [1m[34mselect sqlite_version(*)[0m
+  [1m[35m (0.8ms)[0m  [1m[35mCREATE UNIQUE INDEX "index_sessions_on_session_id" ON "sessions" ("session_id")[0m
+  [1m[35m (0.1ms)[0m  [1m[34m            SELECT sql
+            FROM sqlite_master
+            WHERE name='index_sessions_on_session_id' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_sessions_on_session_id' AND type='index'
+[0m
+  [1m[35m (0.8ms)[0m  [1m[35mCREATE  INDEX "index_sessions_on_updated_at" ON "sessions" ("updated_at")[0m
+  [1m[35m (1.3ms)[0m  [1m[35mDROP TABLE "users"[0m
+  [1m[35m (1.0ms)[0m  [1m[35mCREATE TABLE "users" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "first_name" varchar(40) DEFAULT '', "last_name" varchar(40) DEFAULT '', "email" varchar(70), "password" varchar, "password_digest" varchar, "o365_user_id" varchar, "o365_email" varchar, "organization_id" integer, "remember_me" boolean, "created_at" datetime NOT NULL, "updated_at" datetime NOT NULL)[0m
+  [1m[35m (0.3ms)[0m  [1m[34mSELECT version FROM "schema_migrations"[0m
+  [1m[36mActiveRecord::InternalMetadata Load (0.2ms)[0m  [1m[34mSELECT  "ar_internal_metadata".* FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = ? LIMIT ?[0m  [["key", "environment"], ["LIMIT", 1]]
+  [1m[35m (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mActiveRecord::InternalMetadata Load (0.1ms)[0m  [1m[34mSELECT  "ar_internal_metadata".* FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = ? LIMIT ?[0m  [["key", "environment"], ["LIMIT", 1]]
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (3.1ms)[0m  [1m[35mDROP TABLE "sessions"[0m
+  [1m[35m (1.0ms)[0m  [1m[35mCREATE TABLE "sessions" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "session_id" varchar NOT NULL, "data" text, "created_at" datetime, "updated_at" datetime)[0m
+  [1m[35m (0.1ms)[0m  [1m[34mselect sqlite_version(*)[0m
+  [1m[35m (0.9ms)[0m  [1m[35mCREATE UNIQUE INDEX "index_sessions_on_session_id" ON "sessions" ("session_id")[0m
+  [1m[35m (0.1ms)[0m  [1m[34m            SELECT sql
+            FROM sqlite_master
+            WHERE name='index_sessions_on_session_id' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_sessions_on_session_id' AND type='index'
+[0m
+  [1m[35m (0.8ms)[0m  [1m[35mCREATE  INDEX "index_sessions_on_updated_at" ON "sessions" ("updated_at")[0m
+  [1m[35m (1.0ms)[0m  [1m[35mDROP TABLE "users"[0m
+  [1m[35m (0.7ms)[0m  [1m[35mCREATE TABLE "users" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "first_name" varchar(40) DEFAULT '', "last_name" varchar(40) DEFAULT '', "email" varchar(70), "password" varchar, "password_digest" varchar, "o365_user_id" varchar, "o365_email" varchar, "organization_id" integer, "remember_me" boolean, "created_at" datetime NOT NULL, "updated_at" datetime NOT NULL)[0m
+  [1m[35m (0.3ms)[0m  [1m[34mSELECT version FROM "schema_migrations"[0m
+  [1m[36mActiveRecord::InternalMetadata Load (1.1ms)[0m  [1m[34mSELECT  "ar_internal_metadata".* FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = ? LIMIT ?[0m  [["key", "environment"], ["LIMIT", 1]]
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mActiveRecord::InternalMetadata Load (0.0ms)[0m  [1m[34mSELECT  "ar_internal_metadata".* FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = ? LIMIT ?[0m  [["key", "environment"], ["LIMIT", 1]]
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mActiveRecord::SchemaMigration Load (0.1ms)[0m  [1m[34mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+Started GET "/" for 127.0.0.1 at 2017-09-15 14:57:59 +0800
+Processing by AccountController#index as HTML
+Redirected to http://localhost:3000/account/login
+Completed 302 Found in 35ms (ActiveRecord: 4.1ms)
+
+
+  [1m[35m (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mcommit transaction[0m
+Started GET "/account/login" for 127.0.0.1 at 2017-09-15 14:57:59 +0800
+Processing by AccountController#login as HTML
+  Rendering account/login.html.erb within layouts/application
+  Rendered account/login.html.erb within layouts/application (357.8ms)
+Completed 200 OK in 446ms (Views: 443.6ms | ActiveRecord: 0.2ms)
+
+
+  [1m[35m (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.4ms)[0m  [1m[33mUPDATE "sessions" SET "data" = ?, "updated_at" = ? WHERE "sessions"."id" = ?[0m  [["data", "BAh7BkkiEF9jc3JmX3Rva2VuBjoGRUZJIjFrdHF3NjFZenZSZTFsNHhRUjRH\nQXNnazVSOHpTQnFhM25XYUpaWHU3SHp3PQY7AEY=\n"], ["updated_at", "2017-09-15 06:58:00.212792"], ["id", 1]]
+  [1m[35m (0.6ms)[0m  [1m[36mcommit transaction[0m
+Started GET "/account/register" for 127.0.0.1 at 2017-09-15 15:06:29 +0800
+Processing by AccountController#register as HTML
+  Rendering account/register.html.erb within layouts/application
+  Rendered account/register.html.erb within layouts/application (0.6ms)
+Completed 200 OK in 40ms (Views: 35.8ms | ActiveRecord: 0.2ms)
+
+
+  [1m[35m (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mcommit transaction[0m
+Started POST "/account/register" for 127.0.0.1 at 2017-09-15 15:06:47 +0800
+Processing by AccountController#register_post as HTML
+  Parameters: {"Email"=>"cloris.sun1@canviz.com", "Password"=>"[FILTERED]", "ConfirmPassword"=>"[FILTERED]"}
+  [1m[36mUser Load (0.2ms)[0m  [1m[34mSELECT  "users".* FROM "users" WHERE "users"."email" = ? LIMIT ?[0m  [["email", "cloris.sun1@canviz.com"], ["LIMIT", 1]]
+  [1m[35m (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.3ms)[0m  [1m[32mINSERT INTO "users" ("email", "password_digest", "created_at", "updated_at") VALUES (?, ?, ?, ?)[0m  [["email", "cloris.sun1@canviz.com"], ["password_digest", "$2a$10$1zAJzOBRL0sMUMhQAkw7s.YoEeVBkgtMYFMZNOFK3N2qdF5BB1hVq"], ["created_at", "2017-09-15 07:06:47.435467"], ["updated_at", "2017-09-15 07:06:47.435467"]]
+  [1m[35m (3.1ms)[0m  [1m[36mcommit transaction[0m
+Redirected to http://localhost:3000/account/index
+Completed 302 Found in 99ms (ActiveRecord: 4.4ms)
+
+
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.2ms)[0m  [1m[33mUPDATE "sessions" SET "data" = ?, "updated_at" = ? WHERE "sessions"."id" = ?[0m  [["data", "BAh7B0kiEF9jc3JmX3Rva2VuBjoGRUZJIjFrdHF3NjFZenZSZTFsNHhRUjRH\nQXNnazVSOHpTQnFhM25XYUpaWHU3SHp3PQY7AEZJIhNfbG9jYWxfdXNlcl9p\nZAY7AFRpBg==\n"], ["updated_at", "2017-09-15 07:06:47.441749"], ["id", 1]]
+  [1m[35m (0.6ms)[0m  [1m[36mcommit transaction[0m
+Started GET "/account/index" for 127.0.0.1 at 2017-09-15 15:06:47 +0800
+Processing by AccountController#index as HTML
+  [1m[36mUser Load (0.1ms)[0m  [1m[34mSELECT  "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+Redirected to http://localhost:3000/schools
+Completed 302 Found in 3ms (ActiveRecord: 0.2ms)
+
+
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mcommit transaction[0m
+Started GET "/schools" for 127.0.0.1 at 2017-09-15 15:06:47 +0800
+Processing by SchoolsController#index as HTML
+  [1m[36mUser Load (0.1ms)[0m  [1m[34mSELECT  "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  Rendering schools/index.html.erb within layouts/application
+  Rendered common/_header_list.html.erb (0.3ms)
+  [1m[36mCACHE (0.0ms)[0m  [1m[34mSELECT  "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mCACHE (0.0ms)[0m  [1m[34mSELECT  "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  Rendered common/_user_login_info.html.erb (1.2ms)
+  Rendered schools/index.html.erb within layouts/application (4.4ms)
+Completed 200 OK in 32ms (Views: 28.8ms | ActiveRecord: 0.3ms)
+
+
+  [1m[35m (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mcommit transaction[0m
+Started GET "/schools" for 127.0.0.1 at 2017-09-15 15:06:54 +0800
+Processing by SchoolsController#index as HTML
+  [1m[36mUser Load (0.1ms)[0m  [1m[34mSELECT  "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  Rendering schools/index.html.erb within layouts/application
+  Rendered common/_header_list.html.erb (0.3ms)
+  [1m[36mCACHE (0.0ms)[0m  [1m[34mSELECT  "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mCACHE (0.0ms)[0m  [1m[34mSELECT  "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  Rendered common/_user_login_info.html.erb (1.3ms)
+  Rendered schools/index.html.erb within layouts/application (4.7ms)
+Completed 200 OK in 35ms (Views: 30.2ms | ActiveRecord: 0.3ms)
+
+
+  [1m[35m (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35m (0.1ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mActiveRecord::SchemaMigration Load (0.1ms)[0m  [1m[34mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+  [1m[35m (0.1ms)[0m  [1m[34mSELECT "ar_internal_metadata"."value" FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = ?[0m  [["key", "environment"]]
+  [1m[36mActiveRecord::SchemaMigration Load (0.0ms)[0m  [1m[34mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+  [1m[35m (0.7ms)[0m  [1m[34mSELECT "ar_internal_metadata"."value" FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = ?[0m  [["key", "environment"]]
+  [1m[36mActiveRecord::SchemaMigration Load (0.0ms)[0m  [1m[34mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+  [1m[35m (0.0ms)[0m  [1m[34mSELECT "ar_internal_metadata"."value" FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = ?[0m  [["key", "environment"]]
+  [1m[35m (0.9ms)[0m  [1m[35mDROP TABLE "sessions"[0m
+  [1m[35m (0.8ms)[0m  [1m[35mCREATE TABLE "sessions" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "session_id" varchar NOT NULL, "data" text, "created_at" datetime, "updated_at" datetime)[0m
+  [1m[35m (0.1ms)[0m  [1m[34mselect sqlite_version(*)[0m
+  [1m[35m (0.8ms)[0m  [1m[35mCREATE UNIQUE INDEX "index_sessions_on_session_id" ON "sessions" ("session_id")[0m
+  [1m[35m (0.1ms)[0m  [1m[34m            SELECT sql
+            FROM sqlite_master
+            WHERE name='index_sessions_on_session_id' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_sessions_on_session_id' AND type='index'
+[0m
+  [1m[35m (0.7ms)[0m  [1m[35mCREATE  INDEX "index_sessions_on_updated_at" ON "sessions" ("updated_at")[0m
+  [1m[35m (0.8ms)[0m  [1m[35mDROP TABLE "users"[0m
+  [1m[35m (0.9ms)[0m  [1m[35mCREATE TABLE "users" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "first_name" varchar(40) DEFAULT '', "last_name" varchar(40) DEFAULT '', "email" varchar(70), "password" varchar, "password_digest" varchar, "o365_user_id" varchar, "o365_email" varchar, "organization_id" integer, "remember_me" boolean, "created_at" datetime NOT NULL, "updated_at" datetime NOT NULL)[0m
+  [1m[35m (0.1ms)[0m  [1m[34mSELECT version FROM "schema_migrations"[0m
+  [1m[36mActiveRecord::InternalMetadata Load (0.1ms)[0m  [1m[34mSELECT  "ar_internal_metadata".* FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = ? LIMIT ?[0m  [["key", "environment"], ["LIMIT", 1]]
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mActiveRecord::InternalMetadata Load (0.1ms)[0m  [1m[34mSELECT  "ar_internal_metadata".* FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = ? LIMIT ?[0m  [["key", "environment"], ["LIMIT", 1]]
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35m (0.1ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.8ms)[0m  [1m[35mDROP TABLE "sessions"[0m
+  [1m[35m (0.7ms)[0m  [1m[35mCREATE TABLE "sessions" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "session_id" varchar NOT NULL, "data" text, "created_at" datetime, "updated_at" datetime)[0m
+  [1m[35m (0.0ms)[0m  [1m[34mselect sqlite_version(*)[0m
+  [1m[35m (0.7ms)[0m  [1m[35mCREATE UNIQUE INDEX "index_sessions_on_session_id" ON "sessions" ("session_id")[0m
+  [1m[35m (0.1ms)[0m  [1m[34m            SELECT sql
+            FROM sqlite_master
+            WHERE name='index_sessions_on_session_id' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_sessions_on_session_id' AND type='index'
+[0m
+  [1m[35m (0.7ms)[0m  [1m[35mCREATE  INDEX "index_sessions_on_updated_at" ON "sessions" ("updated_at")[0m
+  [1m[35m (0.6ms)[0m  [1m[35mDROP TABLE "users"[0m
+  [1m[35m (0.7ms)[0m  [1m[35mCREATE TABLE "users" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "first_name" varchar(40) DEFAULT '', "last_name" varchar(40) DEFAULT '', "email" varchar(70), "password" varchar, "password_digest" varchar, "o365_user_id" varchar, "o365_email" varchar, "organization_id" integer, "remember_me" boolean, "created_at" datetime NOT NULL, "updated_at" datetime NOT NULL)[0m
+  [1m[35m (0.3ms)[0m  [1m[34mSELECT version FROM "schema_migrations"[0m
+  [1m[36mActiveRecord::InternalMetadata Load (0.5ms)[0m  [1m[34mSELECT  "ar_internal_metadata".* FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = ? LIMIT ?[0m  [["key", "environment"], ["LIMIT", 1]]
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mActiveRecord::InternalMetadata Load (0.0ms)[0m  [1m[34mSELECT  "ar_internal_metadata".* FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = ? LIMIT ?[0m  [["key", "environment"], ["LIMIT", 1]]
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mActiveRecord::SchemaMigration Load (0.1ms)[0m  [1m[34mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+Started GET "/" for 127.0.0.1 at 2017-09-15 15:09:42 +0800
+Processing by AccountController#index as HTML
+Redirected to http://localhost:3000/account/login
+Completed 302 Found in 33ms (ActiveRecord: 5.1ms)
+
+
+  [1m[35m (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mcommit transaction[0m
+Started GET "/account/login" for 127.0.0.1 at 2017-09-15 15:09:42 +0800
+Processing by AccountController#login as HTML
+  Rendering account/login.html.erb within layouts/application
+  Rendered account/login.html.erb within layouts/application (416.6ms)
+Completed 200 OK in 502ms (Views: 499.6ms | ActiveRecord: 0.2ms)
+
+
+  [1m[35m (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.3ms)[0m  [1m[33mUPDATE "sessions" SET "data" = ?, "updated_at" = ? WHERE "sessions"."id" = ?[0m  [["data", "BAh7BkkiEF9jc3JmX3Rva2VuBjoGRUZJIjFVS1dSUmRFUG9vZVVQTERIRDl2\nOXZ6cXhqTmdhbVYwa2xBR3BBUm80STdBPQY7AEY=\n"], ["updated_at", "2017-09-15 07:09:42.752360"], ["id", 1]]
+  [1m[35m (0.6ms)[0m  [1m[36mcommit transaction[0m
+Started POST "/account/login_local" for 127.0.0.1 at 2017-09-15 15:41:08 +0800
+Processing by AccountController#login_local as HTML
+  Parameters: {"Email"=>"cloris.sun@canviz.com", "Password"=>"[FILTERED]"}
+  [1m[36mUser Load (0.1ms)[0m  [1m[34mSELECT  "users".* FROM "users" WHERE "users"."email" = ? LIMIT ?[0m  [["email", "cloris.sun@canviz.com"], ["LIMIT", 1]]
+Redirected to http://localhost:3000/account/login
+Completed 302 Found in 9ms (ActiveRecord: 0.5ms)
+
+
+  [1m[35m (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.3ms)[0m  [1m[33mUPDATE "sessions" SET "data" = ?, "updated_at" = ? WHERE "sessions"."id" = ?[0m  [["data", "BAh7B0kiEF9jc3JmX3Rva2VuBjoGRUZJIjFVS1dSUmRFUG9vZVVQTERIRDl2\nOXZ6cXhqTmdhbVYwa2xBR3BBUm80STdBPQY7AEZJIgpmbGFzaAY7AFR7B0ki\nDGRpc2NhcmQGOwBUWwBJIgxmbGFzaGVzBjsAVHsGSSIKYWxlcnQGOwBGSSIb\nSW52YWxpZCBsb2dpbiBhdHRlbXB0LgY7AFQ=\n"], ["updated_at", "2017-09-15 07:41:08.285613"], ["id", 1]]
+  [1m[35m (0.6ms)[0m  [1m[36mcommit transaction[0m
+Started GET "/account/login" for 127.0.0.1 at 2017-09-15 15:41:08 +0800
+Processing by AccountController#login as HTML
+  Rendering account/login.html.erb within layouts/application
+  Rendered account/login.html.erb within layouts/application (10.1ms)
+Completed 200 OK in 52ms (Views: 49.5ms | ActiveRecord: 0.2ms)
+
+
+  [1m[35m (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.3ms)[0m  [1m[33mUPDATE "sessions" SET "data" = ?, "updated_at" = ? WHERE "sessions"."id" = ?[0m  [["data", "BAh7BkkiEF9jc3JmX3Rva2VuBjoGRUZJIjFVS1dSUmRFUG9vZVVQTERIRDl2\nOXZ6cXhqTmdhbVYwa2xBR3BBUm80STdBPQY7AEY=\n"], ["updated_at", "2017-09-15 07:41:08.345916"], ["id", 1]]
+  [1m[35m (0.9ms)[0m  [1m[36mcommit transaction[0m
+Started GET "/account/register" for 127.0.0.1 at 2017-09-15 15:41:11 +0800
+Processing by AccountController#register as HTML
+  Rendering account/register.html.erb within layouts/application
+  Rendered account/register.html.erb within layouts/application (0.9ms)
+Completed 200 OK in 34ms (Views: 30.0ms | ActiveRecord: 0.2ms)
+
+
+  [1m[35m (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mcommit transaction[0m
+Started POST "/account/register" for 127.0.0.1 at 2017-09-15 15:41:32 +0800
+Processing by AccountController#register_post as HTML
+  Parameters: {"Email"=>"cloris.sun2@canviz.com", "Password"=>"[FILTERED]", "ConfirmPassword"=>"[FILTERED]"}
+  [1m[36mUser Load (0.1ms)[0m  [1m[34mSELECT  "users".* FROM "users" WHERE "users"."email" = ? LIMIT ?[0m  [["email", "cloris.sun2@canviz.com"], ["LIMIT", 1]]
+  [1m[35m (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.3ms)[0m  [1m[32mINSERT INTO "users" ("email", "password_digest", "created_at", "updated_at") VALUES (?, ?, ?, ?)[0m  [["email", "cloris.sun2@canviz.com"], ["password_digest", "$2a$10$g87G1Mmls/OWu1oIZK.49eJ94hx10hRegI5j0ozBDXkFmfz0OIKjW"], ["created_at", "2017-09-15 07:41:32.520644"], ["updated_at", "2017-09-15 07:41:32.520644"]]
+  [1m[35m (3.2ms)[0m  [1m[36mcommit transaction[0m
+Redirected to http://localhost:3000/account/index
+Completed 302 Found in 91ms (ActiveRecord: 4.0ms)
+
+
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.3ms)[0m  [1m[33mUPDATE "sessions" SET "data" = ?, "updated_at" = ? WHERE "sessions"."id" = ?[0m  [["data", "BAh7B0kiEF9jc3JmX3Rva2VuBjoGRUZJIjFVS1dSUmRFUG9vZVVQTERIRDl2\nOXZ6cXhqTmdhbVYwa2xBR3BBUm80STdBPQY7AEZJIhNfbG9jYWxfdXNlcl9p\nZAY7AFRpBg==\n"], ["updated_at", "2017-09-15 07:41:32.527334"], ["id", 1]]
+  [1m[35m (0.9ms)[0m  [1m[36mcommit transaction[0m
+Started GET "/account/index" for 127.0.0.1 at 2017-09-15 15:41:32 +0800
+Processing by AccountController#index as HTML
+  [1m[36mUser Load (0.1ms)[0m  [1m[34mSELECT  "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+Redirected to http://localhost:3000/schools
+Completed 302 Found in 3ms (ActiveRecord: 0.3ms)
+
+
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mcommit transaction[0m
+Started GET "/schools" for 127.0.0.1 at 2017-09-15 15:41:32 +0800
+Processing by SchoolsController#index as HTML
+  [1m[36mUser Load (0.1ms)[0m  [1m[34mSELECT  "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  Rendering schools/index.html.erb within layouts/application
+  Rendered common/_header_list.html.erb (0.2ms)
+  [1m[36mCACHE (0.0ms)[0m  [1m[34mSELECT  "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mCACHE (0.0ms)[0m  [1m[34mSELECT  "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  Rendered common/_user_login_info.html.erb (0.9ms)
+  Rendered schools/index.html.erb within layouts/application (3.7ms)
+Completed 200 OK in 25ms (Views: 22.1ms | ActiveRecord: 0.2ms)
+
+
+  [1m[35m (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mcommit transaction[0m
+Started POST "/account/logoff" for 127.0.0.1 at 2017-09-15 15:41:43 +0800
+Processing by AccountController#logoff as HTML
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.3ms)[0m  [1m[31mDELETE FROM "sessions" WHERE "sessions"."id" = ?[0m  [["id", 1]]
+  [1m[35m (6.8ms)[0m  [1m[36mcommit transaction[0m
+Redirected to http://localhost:3000/account/login
+Completed 302 Found in 14ms (ActiveRecord: 8.7ms)
+
+
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mcommit transaction[0m
+Started GET "/account/login" for 127.0.0.1 at 2017-09-15 15:41:43 +0800
+Processing by AccountController#login as HTML
+  Rendering account/login.html.erb within layouts/application
+  Rendered account/login.html.erb within layouts/application (3.0ms)
+Completed 200 OK in 25ms (Views: 22.9ms | ActiveRecord: 0.2ms)
+
+
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.3ms)[0m  [1m[33mUPDATE "sessions" SET "data" = ?, "updated_at" = ? WHERE "sessions"."id" = ?[0m  [["data", "BAh7BkkiEF9jc3JmX3Rva2VuBjoGRUZJIjE3SHJJREc3em13NjNVV1N1TE92\nTkQ3eXpaNVUxUGhUL1VRRXY2SjRSQ2NVPQY7AEY=\n"], ["updated_at", "2017-09-15 07:41:43.373374"], ["id", 2]]
+  [1m[35m (1.4ms)[0m  [1m[36mcommit transaction[0m
+Started GET "/account/login" for 127.0.0.1 at 2017-09-15 16:02:34 +0800
+Processing by AccountController#login as HTML
+  Rendering account/login.html.erb within layouts/application
+  Rendered account/login.html.erb within layouts/application (2.8ms)
+Completed 200 OK in 27ms (Views: 25.2ms | ActiveRecord: 1.1ms)
+
+
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.3ms)[0m  [1m[33mUPDATE "sessions" SET "data" = ?, "updated_at" = ? WHERE "sessions"."id" = ?[0m  [["data", "BAh7BkkiEF9jc3JmX3Rva2VuBjoGRUZJIjEvbmRzeVJIL1NNQ2lGM3EvUXB0\ndVpFR2Qrc0NzWVNpNy9UcW41RjREdGN3PQY7AEY=\n"], ["updated_at", "2017-09-15 08:02:34.144661"], ["id", 3]]
+  [1m[35m (0.5ms)[0m  [1m[36mcommit transaction[0m
+Started GET "/" for 127.0.0.1 at 2017-09-15 16:02:44 +0800
+Processing by AccountController#index as HTML
+Redirected to http://localhost:3000/account/login
+Completed 302 Found in 3ms (ActiveRecord: 0.4ms)
+
+
+  [1m[35m (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35m (0.1ms)[0m  [1m[36mcommit transaction[0m
+Started GET "/account/login" for 127.0.0.1 at 2017-09-15 16:02:44 +0800
+Processing by AccountController#login as HTML
+  Rendering account/login.html.erb within layouts/application
+  Rendered account/login.html.erb within layouts/application (3.6ms)
+Completed 200 OK in 30ms (Views: 27.9ms | ActiveRecord: 0.4ms)
+
+
+  [1m[35m (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35m (0.1ms)[0m  [1m[36mcommit transaction[0m
+Started GET "/account/login" for 127.0.0.1 at 2017-09-15 16:02:58 +0800
+Processing by AccountController#login as HTML
+  Rendering account/login.html.erb within layouts/application
+  Rendered account/login.html.erb within layouts/application (3.0ms)
+Completed 200 OK in 25ms (Views: 23.2ms | ActiveRecord: 0.3ms)
+
+
+  [1m[35m (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mcommit transaction[0m
+Started GET "/" for 127.0.0.1 at 2017-09-15 16:03:44 +0800
+Processing by AccountController#index as HTML
+Redirected to http://localhost:3000/account/login
+Completed 302 Found in 1ms (ActiveRecord: 0.0ms)
+
+
+Started GET "/account/login" for 127.0.0.1 at 2017-09-15 16:03:44 +0800
+Processing by AccountController#login as HTML
+  Rendering account/login.html.erb within layouts/application
+  Rendered account/login.html.erb within layouts/application (4.2ms)
+Completed 200 OK in 44ms (Views: 41.3ms | ActiveRecord: 1.6ms)
+
+
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.3ms)[0m  [1m[33mUPDATE "sessions" SET "data" = ?, "updated_at" = ? WHERE "sessions"."id" = ?[0m  [["data", "BAh7BkkiEF9jc3JmX3Rva2VuBjoGRUZJIjFKUVFKa1JrMWR4bU04MDVoUmlr\nYTBtUEZBdGRrdE53ZGg0U2FRTmtDSTU0PQY7AEY=\n"], ["updated_at", "2017-09-15 08:03:44.889444"], ["id", 4]]
+  [1m[35m (0.9ms)[0m  [1m[36mcommit transaction[0m
+Started POST "/account/login_local" for 127.0.0.1 at 2017-09-15 16:03:50 +0800
+Processing by AccountController#login_local as HTML
+  Parameters: {"Email"=>"cloris.sun@canviz.com", "Password"=>"[FILTERED]"}
+  [1m[36mUser Load (0.2ms)[0m  [1m[34mSELECT  "users".* FROM "users" WHERE "users"."email" = ? LIMIT ?[0m  [["email", "cloris.sun@canviz.com"], ["LIMIT", 1]]
+Redirected to http://localhost:3000/account/login
+Completed 302 Found in 3ms (ActiveRecord: 0.4ms)
+
+
+  [1m[35m (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.3ms)[0m  [1m[33mUPDATE "sessions" SET "data" = ?, "updated_at" = ? WHERE "sessions"."id" = ?[0m  [["data", "BAh7B0kiEF9jc3JmX3Rva2VuBjoGRUZJIjFKUVFKa1JrMWR4bU04MDVoUmlr\nYTBtUEZBdGRrdE53ZGg0U2FRTmtDSTU0PQY7AEZJIgpmbGFzaAY7AFR7B0ki\nDGRpc2NhcmQGOwBUWwBJIgxmbGFzaGVzBjsAVHsGSSIKYWxlcnQGOwBGSSIb\nSW52YWxpZCBsb2dpbiBhdHRlbXB0LgY7AFQ=\n"], ["updated_at", "2017-09-15 08:03:50.534159"], ["id", 4]]
+  [1m[35m (6.3ms)[0m  [1m[36mcommit transaction[0m
+Started GET "/account/login" for 127.0.0.1 at 2017-09-15 16:03:50 +0800
+Processing by AccountController#login as HTML
+  Rendering account/login.html.erb within layouts/application
+  Rendered account/login.html.erb within layouts/application (3.1ms)
+Completed 200 OK in 29ms (Views: 24.8ms | ActiveRecord: 0.2ms)
+
+
+  [1m[35m (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.7ms)[0m  [1m[33mUPDATE "sessions" SET "data" = ?, "updated_at" = ? WHERE "sessions"."id" = ?[0m  [["data", "BAh7BkkiEF9jc3JmX3Rva2VuBjoGRUZJIjFKUVFKa1JrMWR4bU04MDVoUmlr\nYTBtUEZBdGRrdE53ZGg0U2FRTmtDSTU0PQY7AEY=\n"], ["updated_at", "2017-09-15 08:03:50.576197"], ["id", 4]]
+  [1m[35m (0.9ms)[0m  [1m[36mcommit transaction[0m
+Started GET "/account/register" for 127.0.0.1 at 2017-09-15 16:03:53 +0800
+Processing by AccountController#register as HTML
+  Rendering account/register.html.erb within layouts/application
+  Rendered account/register.html.erb within layouts/application (0.5ms)
+Completed 200 OK in 23ms (Views: 19.8ms | ActiveRecord: 0.2ms)
+
+
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mcommit transaction[0m
+Started POST "/account/register" for 127.0.0.1 at 2017-09-15 16:04:04 +0800
+Processing by AccountController#register_post as HTML
+  Parameters: {"Email"=>"cloris.sun@canviz.com1", "Password"=>"[FILTERED]", "ConfirmPassword"=>"[FILTERED]"}
+  [1m[36mUser Load (0.2ms)[0m  [1m[34mSELECT  "users".* FROM "users" WHERE "users"."email" = ? LIMIT ?[0m  [["email", "cloris.sun@canviz.com1"], ["LIMIT", 1]]
+  [1m[35m (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.4ms)[0m  [1m[32mINSERT INTO "users" ("email", "password_digest", "created_at", "updated_at") VALUES (?, ?, ?, ?)[0m  [["email", "cloris.sun@canviz.com1"], ["password_digest", "$2a$10$oFsJm2SkaW.y1li3UKBrPu2FolAhfwzd4OJdeRdMHf1TJ7lrHSKji"], ["created_at", "2017-09-15 08:04:04.809894"], ["updated_at", "2017-09-15 08:04:04.809894"]]
+  [1m[35m (6.9ms)[0m  [1m[36mcommit transaction[0m
+Redirected to http://localhost:3000/account/index
+Completed 302 Found in 83ms (ActiveRecord: 7.7ms)
+
+
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.3ms)[0m  [1m[33mUPDATE "sessions" SET "data" = ?, "updated_at" = ? WHERE "sessions"."id" = ?[0m  [["data", "BAh7B0kiEF9jc3JmX3Rva2VuBjoGRUZJIjFKUVFKa1JrMWR4bU04MDVoUmlr\nYTBtUEZBdGRrdE53ZGg0U2FRTmtDSTU0PQY7AEZJIhNfbG9jYWxfdXNlcl9p\nZAY7AFRpBw==\n"], ["updated_at", "2017-09-15 08:04:04.821007"], ["id", 4]]
+  [1m[35m (0.7ms)[0m  [1m[36mcommit transaction[0m
+Started GET "/account/index" for 127.0.0.1 at 2017-09-15 16:04:04 +0800
+Processing by AccountController#index as HTML
+  [1m[36mUser Load (0.1ms)[0m  [1m[34mSELECT  "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 2], ["LIMIT", 1]]
+Redirected to http://localhost:3000/schools
+Completed 302 Found in 2ms (ActiveRecord: 0.3ms)
+
+
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mcommit transaction[0m
+Started GET "/schools" for 127.0.0.1 at 2017-09-15 16:04:04 +0800
+Processing by SchoolsController#index as HTML
+  [1m[36mUser Load (0.1ms)[0m  [1m[34mSELECT  "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 2], ["LIMIT", 1]]
+  Rendering schools/index.html.erb within layouts/application
+  Rendered common/_header_list.html.erb (0.4ms)
+  [1m[36mCACHE (0.0ms)[0m  [1m[34mSELECT  "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 2], ["LIMIT", 1]]
+  [1m[36mCACHE (0.0ms)[0m  [1m[34mSELECT  "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 2], ["LIMIT", 1]]
+  Rendered common/_user_login_info.html.erb (1.1ms)
+  Rendered schools/index.html.erb within layouts/application (4.2ms)
+Completed 200 OK in 30ms (Views: 26.0ms | ActiveRecord: 0.3ms)
+
+
+  [1m[35m (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mcommit transaction[0m
+Started POST "/account/logoff" for 127.0.0.1 at 2017-09-15 16:04:07 +0800
+Processing by AccountController#logoff as HTML
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.3ms)[0m  [1m[31mDELETE FROM "sessions" WHERE "sessions"."id" = ?[0m  [["id", 4]]
+  [1m[35m (4.1ms)[0m  [1m[36mcommit transaction[0m
+Redirected to http://localhost:3000/account/login
+Completed 302 Found in 11ms (ActiveRecord: 6.0ms)
+
+
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mcommit transaction[0m
+Started GET "/account/login" for 127.0.0.1 at 2017-09-15 16:04:07 +0800
+Processing by AccountController#login as HTML
+  Rendering account/login.html.erb within layouts/application
+  Rendered account/login.html.erb within layouts/application (3.9ms)
+Completed 200 OK in 25ms (Views: 22.5ms | ActiveRecord: 0.2ms)
+
+
+  [1m[35m (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.4ms)[0m  [1m[33mUPDATE "sessions" SET "data" = ?, "updated_at" = ? WHERE "sessions"."id" = ?[0m  [["data", "BAh7BkkiEF9jc3JmX3Rva2VuBjoGRUZJIjFkRUJVelVVVjV2ZVFFV2RjOVlX\nNGxOVEk3TGd4ZFdTQkdISUQzbUZQQndZPQY7AEY=\n"], ["updated_at", "2017-09-15 08:04:07.878749"], ["id", 5]]
+  [1m[35m (0.7ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mActiveRecord::SchemaMigration Load (0.1ms)[0m  [1m[34mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+  [1m[35m (0.1ms)[0m  [1m[34mSELECT "ar_internal_metadata"."value" FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = ?[0m  [["key", "environment"]]
+  [1m[36mActiveRecord::SchemaMigration Load (0.0ms)[0m  [1m[34mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+  [1m[35m (0.0ms)[0m  [1m[34mSELECT "ar_internal_metadata"."value" FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = ?[0m  [["key", "environment"]]
+  [1m[36mActiveRecord::SchemaMigration Load (0.0ms)[0m  [1m[34mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+  [1m[35m (0.0ms)[0m  [1m[34mSELECT "ar_internal_metadata"."value" FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = ?[0m  [["key", "environment"]]
+  [1m[35m (1.1ms)[0m  [1m[35mDROP TABLE "sessions"[0m
+  [1m[35m (0.8ms)[0m  [1m[35mCREATE TABLE "sessions" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "session_id" varchar NOT NULL, "data" text, "created_at" datetime, "updated_at" datetime)[0m
+  [1m[35m (0.0ms)[0m  [1m[34mselect sqlite_version(*)[0m
+  [1m[35m (0.6ms)[0m  [1m[35mCREATE UNIQUE INDEX "index_sessions_on_session_id" ON "sessions" ("session_id")[0m
+  [1m[35m (0.1ms)[0m  [1m[34m            SELECT sql
+            FROM sqlite_master
+            WHERE name='index_sessions_on_session_id' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_sessions_on_session_id' AND type='index'
+[0m
+  [1m[35m (0.6ms)[0m  [1m[35mCREATE  INDEX "index_sessions_on_updated_at" ON "sessions" ("updated_at")[0m
+  [1m[35m (0.6ms)[0m  [1m[35mDROP TABLE "users"[0m
+  [1m[35m (0.7ms)[0m  [1m[35mCREATE TABLE "users" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "first_name" varchar(40) DEFAULT '', "last_name" varchar(40) DEFAULT '', "email" varchar(70), "password" varchar, "password_digest" varchar, "o365_user_id" varchar, "o365_email" varchar, "organization_id" integer, "remember_me" boolean, "created_at" datetime NOT NULL, "updated_at" datetime NOT NULL)[0m
+  [1m[35m (0.1ms)[0m  [1m[34mSELECT version FROM "schema_migrations"[0m
+  [1m[36mActiveRecord::InternalMetadata Load (0.1ms)[0m  [1m[34mSELECT  "ar_internal_metadata".* FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = ? LIMIT ?[0m  [["key", "environment"], ["LIMIT", 1]]
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mActiveRecord::InternalMetadata Load (0.0ms)[0m  [1m[34mSELECT  "ar_internal_metadata".* FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = ? LIMIT ?[0m  [["key", "environment"], ["LIMIT", 1]]
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (1.7ms)[0m  [1m[35mDROP TABLE "sessions"[0m
+  [1m[35m (0.8ms)[0m  [1m[35mCREATE TABLE "sessions" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "session_id" varchar NOT NULL, "data" text, "created_at" datetime, "updated_at" datetime)[0m
+  [1m[35m (0.0ms)[0m  [1m[34mselect sqlite_version(*)[0m
+  [1m[35m (0.7ms)[0m  [1m[35mCREATE UNIQUE INDEX "index_sessions_on_session_id" ON "sessions" ("session_id")[0m
+  [1m[35m (0.1ms)[0m  [1m[34m            SELECT sql
+            FROM sqlite_master
+            WHERE name='index_sessions_on_session_id' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_sessions_on_session_id' AND type='index'
+[0m
+  [1m[35m (0.7ms)[0m  [1m[35mCREATE  INDEX "index_sessions_on_updated_at" ON "sessions" ("updated_at")[0m
+  [1m[35m (0.9ms)[0m  [1m[35mDROP TABLE "users"[0m
+  [1m[35m (0.7ms)[0m  [1m[35mCREATE TABLE "users" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "first_name" varchar(40) DEFAULT '', "last_name" varchar(40) DEFAULT '', "email" varchar(70), "password" varchar, "password_digest" varchar, "o365_user_id" varchar, "o365_email" varchar, "organization_id" integer, "remember_me" boolean, "created_at" datetime NOT NULL, "updated_at" datetime NOT NULL)[0m
+  [1m[35m (0.3ms)[0m  [1m[34mSELECT version FROM "schema_migrations"[0m
+  [1m[36mActiveRecord::InternalMetadata Load (0.6ms)[0m  [1m[34mSELECT  "ar_internal_metadata".* FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = ? LIMIT ?[0m  [["key", "environment"], ["LIMIT", 1]]
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mActiveRecord::InternalMetadata Load (0.0ms)[0m  [1m[34mSELECT  "ar_internal_metadata".* FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = ? LIMIT ?[0m  [["key", "environment"], ["LIMIT", 1]]
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mActiveRecord::SchemaMigration Load (0.2ms)[0m  [1m[34mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+Started GET "/" for 127.0.0.1 at 2017-09-15 16:28:08 +0800
+Processing by AccountController#index as HTML
+Redirected to http://localhost:3000/account/login
+Completed 302 Found in 27ms (ActiveRecord: 2.9ms)
+
+
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mcommit transaction[0m
+Started GET "/account/login" for 127.0.0.1 at 2017-09-15 16:28:08 +0800
+Processing by AccountController#login as HTML
+  Rendering account/login.html.erb within layouts/application
+  Rendered account/login.html.erb within layouts/application (344.2ms)
+Completed 200 OK in 446ms (Views: 444.2ms | ActiveRecord: 0.2ms)
+
+
+  [1m[35m (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.3ms)[0m  [1m[33mUPDATE "sessions" SET "data" = ?, "updated_at" = ? WHERE "sessions"."id" = ?[0m  [["data", "BAh7BkkiEF9jc3JmX3Rva2VuBjoGRUZJIjE4dTNUdE1Gb21oL2dzbUdURXZ5\nU083WEx1WHRRWnlZVlFmeVp3RVJjYWpZPQY7AEY=\n"], ["updated_at", "2017-09-15 08:28:08.883834"], ["id", 1]]
+  [1m[35m (0.7ms)[0m  [1m[36mcommit transaction[0m
+Started GET "/account/login" for 127.0.0.1 at 2017-09-15 16:28:43 +0800
+Processing by AccountController#login as HTML
+  Rendering account/login.html.erb within layouts/application
+  Rendered account/login.html.erb within layouts/application (4.8ms)
+Completed 200 OK in 55ms (Views: 52.4ms | ActiveRecord: 1.0ms)
+
+
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.2ms)[0m  [1m[33mUPDATE "sessions" SET "data" = ?, "updated_at" = ? WHERE "sessions"."id" = ?[0m  [["data", "BAh7BkkiEF9jc3JmX3Rva2VuBjoGRUZJIjFmRDQzWFo3QWlaZnRhaitUaUVk\naTFRYzIxR3NRRy96S1hZWXpKTmo3ZmxBPQY7AEY=\n"], ["updated_at", "2017-09-15 08:28:43.347217"], ["id", 2]]
+  [1m[35m (0.8ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mActiveRecord::SchemaMigration Load (0.4ms)[0m  [1m[34mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+  [1m[35m (0.4ms)[0m  [1m[34mSELECT "ar_internal_metadata"."value" FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = ?[0m  [["key", "environment"]]
+  [1m[36mActiveRecord::SchemaMigration Load (0.1ms)[0m  [1m[34mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+  [1m[35m (0.1ms)[0m  [1m[34mSELECT "ar_internal_metadata"."value" FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = ?[0m  [["key", "environment"]]
+  [1m[36mActiveRecord::SchemaMigration Load (0.1ms)[0m  [1m[34mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+  [1m[35m (0.1ms)[0m  [1m[34mSELECT "ar_internal_metadata"."value" FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = ?[0m  [["key", "environment"]]
+  [1m[35m (3.2ms)[0m  [1m[35mDROP TABLE "sessions"[0m
+  [1m[35m (1.2ms)[0m  [1m[35mCREATE TABLE "sessions" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "session_id" varchar NOT NULL, "data" text, "created_at" datetime, "updated_at" datetime)[0m
+  [1m[35m (0.1ms)[0m  [1m[34mselect sqlite_version(*)[0m
+  [1m[35m (1.9ms)[0m  [1m[35mCREATE UNIQUE INDEX "index_sessions_on_session_id" ON "sessions" ("session_id")[0m
+  [1m[35m (0.1ms)[0m  [1m[34m            SELECT sql
+            FROM sqlite_master
+            WHERE name='index_sessions_on_session_id' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_sessions_on_session_id' AND type='index'
+[0m
+  [1m[35m (0.8ms)[0m  [1m[35mCREATE  INDEX "index_sessions_on_updated_at" ON "sessions" ("updated_at")[0m
+  [1m[35m (1.1ms)[0m  [1m[35mDROP TABLE "users"[0m
+  [1m[35m (0.7ms)[0m  [1m[35mCREATE TABLE "users" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "first_name" varchar(40) DEFAULT '', "last_name" varchar(40) DEFAULT '', "email" varchar(70), "password" varchar, "password_digest" varchar, "o365_user_id" varchar, "o365_email" varchar, "organization_id" integer, "remember_me" boolean, "created_at" datetime NOT NULL, "updated_at" datetime NOT NULL)[0m
+  [1m[35m (0.8ms)[0m  [1m[35mDROP TABLE "token_caches"[0m
+  [1m[35m (0.8ms)[0m  [1m[35mCREATE TABLE "token_caches" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "created_at" datetime NOT NULL, "updated_at" datetime NOT NULL, "o365_userId" varchar, "refresh_token" text, "access_tokens" text)[0m
+  [1m[35m (0.1ms)[0m  [1m[34mSELECT version FROM "schema_migrations"[0m
+  [1m[36mActiveRecord::InternalMetadata Load (0.1ms)[0m  [1m[34mSELECT  "ar_internal_metadata".* FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = ? LIMIT ?[0m  [["key", "environment"], ["LIMIT", 1]]
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mActiveRecord::InternalMetadata Load (0.1ms)[0m  [1m[34mSELECT  "ar_internal_metadata".* FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = ? LIMIT ?[0m  [["key", "environment"], ["LIMIT", 1]]
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (1.9ms)[0m  [1m[35mDROP TABLE "sessions"[0m
+  [1m[35m (0.7ms)[0m  [1m[35mCREATE TABLE "sessions" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "session_id" varchar NOT NULL, "data" text, "created_at" datetime, "updated_at" datetime)[0m
+  [1m[35m (0.0ms)[0m  [1m[34mselect sqlite_version(*)[0m
+  [1m[35m (1.0ms)[0m  [1m[35mCREATE UNIQUE INDEX "index_sessions_on_session_id" ON "sessions" ("session_id")[0m
+  [1m[35m (0.1ms)[0m  [1m[34m            SELECT sql
+            FROM sqlite_master
+            WHERE name='index_sessions_on_session_id' AND type='index'
+            UNION ALL
+            SELECT sql
+            FROM sqlite_temp_master
+            WHERE name='index_sessions_on_session_id' AND type='index'
+[0m
+  [1m[35m (1.0ms)[0m  [1m[35mCREATE  INDEX "index_sessions_on_updated_at" ON "sessions" ("updated_at")[0m
+  [1m[35m (1.9ms)[0m  [1m[35mDROP TABLE "users"[0m
+  [1m[35m (0.8ms)[0m  [1m[35mCREATE TABLE "users" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "first_name" varchar(40) DEFAULT '', "last_name" varchar(40) DEFAULT '', "email" varchar(70), "password" varchar, "password_digest" varchar, "o365_user_id" varchar, "o365_email" varchar, "organization_id" integer, "remember_me" boolean, "created_at" datetime NOT NULL, "updated_at" datetime NOT NULL)[0m
+  [1m[35m (1.2ms)[0m  [1m[35mDROP TABLE "token_caches"[0m
+  [1m[35m (0.6ms)[0m  [1m[35mCREATE TABLE "token_caches" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "created_at" datetime NOT NULL, "updated_at" datetime NOT NULL, "o365_userId" varchar, "refresh_token" text, "access_tokens" text)[0m
+  [1m[35m (0.3ms)[0m  [1m[34mSELECT version FROM "schema_migrations"[0m
+  [1m[36mActiveRecord::InternalMetadata Load (0.5ms)[0m  [1m[34mSELECT  "ar_internal_metadata".* FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = ? LIMIT ?[0m  [["key", "environment"], ["LIMIT", 1]]
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mActiveRecord::InternalMetadata Load (0.1ms)[0m  [1m[34mSELECT  "ar_internal_metadata".* FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = ? LIMIT ?[0m  [["key", "environment"], ["LIMIT", 1]]
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mActiveRecord::SchemaMigration Load (0.1ms)[0m  [1m[34mSELECT "schema_migrations".* FROM "schema_migrations"[0m
+Started GET "/" for 127.0.0.1 at 2017-09-15 18:36:33 +0800
+Processing by AccountController#index as HTML
+Redirected to http://localhost:3000/account/login
+Completed 302 Found in 26ms (ActiveRecord: 3.0ms)
+
+
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mcommit transaction[0m
+Started GET "/account/login" for 127.0.0.1 at 2017-09-15 18:36:33 +0800
+Processing by AccountController#login as HTML
+  Rendering account/login.html.erb within layouts/application
+  Rendered account/login.html.erb within layouts/application (317.1ms)
+Completed 200 OK in 402ms (Views: 400.3ms | ActiveRecord: 0.1ms)
+
+
+  [1m[35m (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.3ms)[0m  [1m[33mUPDATE "sessions" SET "data" = ?, "updated_at" = ? WHERE "sessions"."id" = ?[0m  [["data", "BAh7BkkiEF9jc3JmX3Rva2VuBjoGRUZJIjFaNmVuZzRUVEJSYyttNlZKaWlD\nb1NXdzJKNGtJcDJ6MXptVVViQUNadlZnPQY7AEY=\n"], ["updated_at", "2017-09-15 10:36:34.151593"], ["id", 1]]
+  [1m[35m (0.6ms)[0m  [1m[36mcommit transaction[0m
+Started POST "/account/login_o365" for 127.0.0.1 at 2017-09-15 18:36:37 +0800
+Processing by AccountController#login_o365 as HTML
+  Parameters: {"provider"=>"OpenIdConnect"}
+Redirected to http://localhost:3000/auth/azure_oauth2
+Completed 302 Found in 4ms (ActiveRecord: 0.2ms)
+
+
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mcommit transaction[0m
+Started GET "/auth/azure_oauth2" for 127.0.0.1 at 2017-09-15 18:36:37 +0800
+  [1m[35m (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.3ms)[0m  [1m[33mUPDATE "sessions" SET "data" = ?, "updated_at" = ? WHERE "sessions"."id" = ?[0m  [["data", "BAh7CUkiEF9jc3JmX3Rva2VuBjoGRUZJIjFaNmVuZzRUVEJSYyttNlZKaWlD\nb1NXdzJKNGtJcDJ6MXptVVViQUNadlZnPQY7AEZJIhRvbW5pYXV0aC5wYXJh\nbXMGOwBUewBJIhRvbW5pYXV0aC5vcmlnaW4GOwBUIihodHRwOi8vbG9jYWxo\nb3N0OjMwMDAvYWNjb3VudC9sb2dpbkkiE29tbmlhdXRoLnN0YXRlBjsAVEki\nNTI4ZjczM2QyNTU2YjQzZTczNzA5YjkyYThiODk5YmE4OWNmYWNiYzc5ZWU3\nMGY4ZgY7AEY=\n"], ["updated_at", "2017-09-15 10:36:37.066488"], ["id", 1]]
+  [1m[35m (0.6ms)[0m  [1m[36mcommit transaction[0m
+Started GET "/auth/azure_oauth2/callback?code=AQABAAIAAAABlDrqfEFlSaui6xnRjX5E7NxVuMICAEHeFBnd_P78-InXIIXiNLgXGrqBR9bRdkSHxqcmQ-0wlJUJ9pqNOFkUXW_yUOCOZK7yXhJTNaqSbMcUlFvzSkgI5P2IQJoI2N6F4l5P-KXFmzMTxtFwALL7lQOnsJan8R0QbEElbFBtjFly8WKuiMBzvHli_-Eb7M3i2YayaBeyMhmNPaVBVgOc88IMSbOK0ROqwGFZwmHG4VX4MFYxTwm5xIhyhxUbjK7JiT8Ypd85Kps36oPmiD8GfN0roY8-xBgi5mitiYY5DigoadxgA3nmp2SBlZc1OjkoF4DfqWfhVKQOkrTLXds_3enSl5gWuAg5Efi1oGJEPdO2AQjcJzK4x3nybtdZXWhar6viVQQWNLKN78NapfD2od03DBW77tNE9QHpQPahfcu7fSNNzT5VLeoI0InSpqIVLIBFEIN6aAYlJy7PMfF3-dCsRA7QyhWSuwO_Q_NPptXlPRR-tZln85XPSqo0ChKxGeK6LqaWBIyFQ_BdHMh-zAmI06iaqkAthXt3GCiKjSAA&state=28f733d2556b43e73709b92a8b899ba89cfacbc79ee70f8f&session_state=ad4737ab-fd9d-48c6-a2b1-2fc7fcbc1634" for 127.0.0.1 at 2017-09-15 18:37:01 +0800
+Processing by AccountController#azure_oauth2_callback as HTML
+  Parameters: {"code"=>"AQABAAIAAAABlDrqfEFlSaui6xnRjX5E7NxVuMICAEHeFBnd_P78-InXIIXiNLgXGrqBR9bRdkSHxqcmQ-0wlJUJ9pqNOFkUXW_yUOCOZK7yXhJTNaqSbMcUlFvzSkgI5P2IQJoI2N6F4l5P-KXFmzMTxtFwALL7lQOnsJan8R0QbEElbFBtjFly8WKuiMBzvHli_-Eb7M3i2YayaBeyMhmNPaVBVgOc88IMSbOK0ROqwGFZwmHG4VX4MFYxTwm5xIhyhxUbjK7JiT8Ypd85Kps36oPmiD8GfN0roY8-xBgi5mitiYY5DigoadxgA3nmp2SBlZc1OjkoF4DfqWfhVKQOkrTLXds_3enSl5gWuAg5Efi1oGJEPdO2AQjcJzK4x3nybtdZXWhar6viVQQWNLKN78NapfD2od03DBW77tNE9QHpQPahfcu7fSNNzT5VLeoI0InSpqIVLIBFEIN6aAYlJy7PMfF3-dCsRA7QyhWSuwO_Q_NPptXlPRR-tZln85XPSqo0ChKxGeK6LqaWBIyFQ_BdHMh-zAmI06iaqkAthXt3GCiKjSAA", "state"=>"28f733d2556b43e73709b92a8b899ba89cfacbc79ee70f8f", "session_state"=>"ad4737ab-fd9d-48c6-a2b1-2fc7fcbc1634"}
+  [1m[36mTokenCache Load (0.1ms)[0m  [1m[34mSELECT  "token_caches".* FROM "token_caches" WHERE "token_caches"."o365_userId" = ? LIMIT ?[0m  [["o365_userId", "f0df000f-3855-45fa-ad51-38c751069431"], ["LIMIT", 1]]
+  [1m[35m (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.3ms)[0m  [1m[32mINSERT INTO "token_caches" ("created_at", "updated_at", "o365_userId") VALUES (?, ?, ?)[0m  [["created_at", "2017-09-15 10:37:03.297374"], ["updated_at", "2017-09-15 10:37:03.297374"], ["o365_userId", "f0df000f-3855-45fa-ad51-38c751069431"]]
+  [1m[35m (0.5ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.3ms)[0m  [1m[33mUPDATE "token_caches" SET "updated_at" = ?, "refresh_token" = ?, "access_tokens" = ? WHERE "token_caches"."id" = ?[0m  [["updated_at", "2017-09-15 10:37:03.301768"], ["refresh_token", "AQABAAAAAAABlDrqfEFlSaui6xnRjX5ER1mvMyV0CNl7iWQ2HcH4VyF9Db38GGa3kfFoQ-HTVrZGM7CYE_xfG8ZR8ft3sEFk2u8nKtq6j1-JTOBJ2q9hIValBgMeWXkOThaEhMwb1eBQlz6oHshoz3bIGx2SCVRfeRA2Bp7x6jXwknqsrDyB1pVoRpn_TCh-u7LzS-Am2ONCGHU-Aso_QbfA_FQgnvKJQsGeUGpDBSzEq-WsGu8pR-YTIDcTSCiTrOw1pWvFaI8R_GVjCJ3EkUhQ1td024mEvBu6M2DXgkqGs22k7KyC9MFY4sJLUJpxoBhzk6ji_n7B26Jzz5FA5737vxMA_4e5AXOg07ZFXZtcUJjSOW7J6WS3GITf8Cpu7xID4Wc0rJjxRePpockufuEoyNH9K1wK5NUoxiA0pI6F7t2Ln_6JDzPYBAlWi7L7nU7_BZPmiLkBgnzec8qKU74ydyVhmnBJuyBooeAQExTuGb_QutJ1-Ok_fnXnslhMNzD-DVA-vhZ2gLEXc0rexPd6NgEE12Z09ZpxBPEKclsaLYM8o-TSM47MygCgiC3lBK-dBqAwNvA6Hv9LIbAMz40BPoIUEmqDswCUL8qRcP1RqIS3rRo27HfMMhdhYxJ0AI90Yb_Cfc9XmknnS9mcGyvX3xyYf-heBT_TvS1FHiZ6m-qJB6bU0OLOmoyDamQAsCnzLiqQJTFt4nhqAwKL-Icd486XXyjNNnfChxP31a2GJ5Kftp4gOwJK-2CUQbLWQ4unSjdSxXMgAA"], ["access_tokens", "{\"https://graph.windows.net\":{\"expiresOn\":\"2017-09-15T11:37:02.000+00:00\",\"value\":\"eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6IkhIQnlLVS0wRHFBcU1aaDZaRlBkMlZXYU90ZyIsImtpZCI6IkhIQnlLVS0wRHFBcU1aaDZaRlBkMlZXYU90ZyJ9.eyJhdWQiOiJodHRwczovL2dyYXBoLndpbmRvd3MubmV0IiwiaXNzIjoiaHR0cHM6Ly9zdHMud2luZG93cy5uZXQvNjQ0NDZiNWMtNmQ4NS00ZDE2LTlmZjItOTRlZGRjMGMyNDM5LyIsImlhdCI6MTUwNTQ3MTUyMywibmJmIjoxNTA1NDcxNTIzLCJleHAiOjE1MDU0NzU0MjMsImFjciI6IjEiLCJhaW8iOiJBU1FBMi84RkFBQUF2VmdMeEVpczdJMUJEcFlSMGd3VE9ZUFJpbGVqNG5wRzhaKzhraFRxdnRvPSIsImFtciI6WyJwd2QiXSwiYXBwaWQiOiI3MDI4OGVkZC1iYTA2LTQxMzktYmVmYy0xMzE1ZjZiMGE3MjEiLCJhcHBpZGFjciI6IjEiLCJmYW1pbHlfbmFtZSI6IlRyaXZlZGkiLCJnaXZlbl9uYW1lIjoiQWRtaW4iLCJpcGFkZHIiOiIyMjEuMC4xMi4yNTQiLCJuYW1lIjoiQWRtaW4iLCJvaWQiOiJmMGRmMDAwZi0zODU1LTQ1ZmEtYWQ1MS0zOGM3NTEwNjk0MzEiLCJwdWlkIjoiMTAwMzAwMDA5QkE1Q0YzRiIsInNjcCI6IkRpcmVjdG9yeS5BY2Nlc3NBc1VzZXIuQWxsIERpcmVjdG9yeS5SZWFkLkFsbCBEaXJlY3RvcnkuUmVhZFdyaXRlLkFsbCBHcm91cC5SZWFkLkFsbCBvcGVuaWQgVXNlci5SZWFkIFVzZXIuUmVhZC5BbGwiLCJzdWIiOiJoa0tocTIxYmNMVW5uV2hQLVJBZHdEZ1k2MEd1ZWNFWnNjNUFOd0VkZmdBIiwidGVuYW50X3JlZ2lvbl9zY29wZSI6Ik5BIiwidGlkIjoiNjQ0NDZiNWMtNmQ4NS00ZDE2LTlmZjItOTRlZGRjMGMyNDM5IiwidW5pcXVlX25hbWUiOiJhZG1pbkBjYW52aXpFRFUub25taWNyb3NvZnQuY29tIiwidXBuIjoiYWRtaW5AY2Fudml6RURVLm9ubWljcm9zb2Z0LmNvbSIsInV0aSI6ImJtOFUycF9QZmsyNWxsRXp0OEluQUEiLCJ2ZXIiOiIxLjAifQ.Ia3rzrQhyZFu0jgX2FqD4LtIKRbWMyelJCURJSA3AuxmeUoTunT3nGNwKsCFn5rYDw0LRQaSp4Ja2YQUQZwe-QjrRvi-oJxzxrpWt1ZrsEELZ10r3rWif6spqKuE95ZvAoWCjggXhqpAtG2UkBqveDvVrThUEa_-Duxa9swNAYhd2f8wlVqnKaCUH_SRjE7PsIc6I-hIp9JL06esSYUfT2r-F7jc3UwHXEtC7E0IMay-jhXIHe5eh4WUiLdhts08o6A13tiw4tw76oNSiux2BkhJ9YDHghlHX97HISjAN4w7ulnSbG2ZBzg3ueO5SYiai4dIs01Me1vTUpnrxOZ8FA\"}}"], ["id", 1]]
+  [1m[35m (0.5ms)[0m  [1m[36mcommit transaction[0m
+Redirected to http://localhost:3000/account/index
+Completed 302 Found in 24ms (ActiveRecord: 2.2ms)
+
+
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35mSQL (0.3ms)[0m  [1m[33mUPDATE "sessions" SET "data" = ?, "updated_at" = ? WHERE "sessions"."id" = ?[0m  [["data", "BAh7CUkiEF9jc3JmX3Rva2VuBjoGRUZJIjFaNmVuZzRUVEJSYyttNlZKaWlD\nb1NXdzJKNGtJcDJ6MXptVVViQUNadlZnPQY7AEZJIhNvbW5pYXV0aC5zdGF0\nZQY7AFRJIjUyOGY3MzNkMjU1NmI0M2U3MzcwOWI5MmE4Yjg5OWJhODljZmFj\nYmM3OWVlNzBmOGYGOwBGSSIPX28zNjVfdXNlcgY7AFRvOg1PMzY1VXNlcgo6\nCEBpZEkiKWYwZGYwMDBmLTM4NTUtNDVmYS1hZDUxLTM4Yzc1MTA2OTQzMQY7\nAFQ6C0BlbWFpbEkiJGFkbWluQGNhbnZpekVEVS5vbm1pY3Jvc29mdC5jb20G\nOwBUOhBAZmlyc3RfbmFtZUkiCkFkbWluBjsAVDoPQGxhc3RfbmFtZUkiDFRy\naXZlZGkGOwBUOg9AdGVuYW50X2lkSSIpNjQ0NDZiNWMtNmQ4NS00ZDE2LTlm\nZjItOTRlZGRjMGMyNDM5BjsAVEkiGmF6dXJlX2xvZ291dF9yZXF1aXJlZAY7\nAFRU\n"], ["updated_at", "2017-09-15 10:37:03.307914"], ["id", 1]]
+  [1m[35m (0.8ms)[0m  [1m[36mcommit transaction[0m
+Started GET "/account/index" for 127.0.0.1 at 2017-09-15 18:37:03 +0800
+Processing by AccountController#index as HTML
+Redirected to http://localhost:3000/schools
+Completed 302 Found in 3ms (ActiveRecord: 0.3ms)
+
+
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[36mcommit transaction[0m
+Started GET "/schools" for 127.0.0.1 at 2017-09-15 18:37:03 +0800
+Processing by SchoolsController#index as HTML
+  Rendering schools/index.html.erb within layouts/application
+  Rendered common/_header_list.html.erb (0.3ms)
+  Rendered common/_user_login_info.html.erb (0.4ms)
+  Rendered schools/index.html.erb within layouts/application (4.2ms)
+Completed 200 OK in 30ms (Views: 26.6ms | ActiveRecord: 0.2ms)
+
+
+  [1m[35m (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35m (0.1ms)[0m  [1m[36mcommit transaction[0m

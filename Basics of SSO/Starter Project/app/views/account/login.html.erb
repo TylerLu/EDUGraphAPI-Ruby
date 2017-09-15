@@ -1,0 +1,53 @@
+<!-- Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT license. -->
+<!-- See LICENSE in the project root for license information. -->
+
+<%= content_for :title, 'Log in - EDUGraphAPI' %>
+
+<div class="loginbody">
+    <div class="row">
+        <div class="col-md-5">
+            <section id="loginForm">
+                <form action="/account/login_local" class="form-horizontal" method="post" role="form">        
+                <h4 class="margin-btm-20">Use your local account to log in</h4>
+                    <div class="validation-summary-errors text-danger">
+                        <ul>
+                            <% if flash[:alert] %>
+                            <li><%= flash[:alert] %></li>
+                            <% end %>
+                        </ul>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <input class="form-control logincontrol" data-val="true" data-val-email="The Email field is not a valid e-mail address." data-val-required="The Email field is required." id="Email" name="Email" placeholder="Email" type="text" value="<%= cookies[:user_local_account] %>" />
+                            <span class="field-validation-valid text-danger" data-valmsg-for="Email" data-valmsg-replace="true"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <input class="form-control logincontrol" data-val="true" data-val-required="The Password field is required." id="Password" name="Password" placeholder="Password" type="password" />
+                            <span class="field-validation-valid text-danger" data-valmsg-for="Password" data-valmsg-replace="true"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="margin-left-20 col-md-10">
+                            <div class="checkbox">
+                                <input data-val="true" data-val-required="The Remember me? field is required." id="RememberMe" name="RememberMe" type="checkbox" <%= 'checked' if cookies[:user_local_remember].present? %> />
+                                <label for="RememberMe">Remember me?</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class=" col-md-10">
+                            <input type="submit" value="Sign in" class="btn btn-default btn-local-login" />
+                        </div>
+                    </div>
+                    <p>
+                        <a href="/account/register">Register as a new user</a>
+                    </p>
+                </form>            
+            </section>
+        </div>
+    </div>
+</div>
+
+<%= stylesheet_link_tag 'login' %>

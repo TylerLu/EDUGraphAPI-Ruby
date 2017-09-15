@@ -5,10 +5,61 @@ In this sample we show you how to integrate Azure Active Directory(Azure AD) to 
 The code in the following sections is part of the full featured Ruby app and presented as a new project for clarity and separation of functionality.
 
 **Table of contents**
-* [Register the application in Azure Active Directory](#register-the-application-in-azure-active-directory)
 * [Prerequisites](#prerequisites)
-* [Build and debug locally](#build-and-debug-locally)
+* [Build and deploy the Starter Project](#build-and -deploy-the-starter-project)
+* [Add O365 Single Sign On to the starter project](#add-o365-single-sign-on-to-the-starter-project)
 
+
+
+
+## Prerequisites
+
+- [Visual Studio Code](https://code.visualstudio.com/Download).
+
+- The [Ruby](https://www.ruby-lang.org/en/downloads) language version 2.2.2 or newer.
+
+- The [RubyGems](https://rubygems.org/) packaging system, which is installed with Ruby by default. To learn more about RubyGems, please read the [RubyGems Guides](http://guides.rubygems.org/).
+
+- The [Rails](http://rubyonrails.org/) web application development framework, version 5.0.0 or above
+
+- A working installation of the [SQLite3 Database](https://www.sqlite.org/).
+
+  ​
+
+# Build and deploy the Starter Project
+
+The starter project is a simple application with only SQL authentication configured. By updating this project, you can see how to integrate O365 Single Sign On to an application with existing authentication.
+
+1. Open a terminal, navigate to **Starter Project** directory. Execute the command below:
+
+   ```command
+   bundle install
+   rails db:schema:load
+   rails db:seed
+   rails s
+   ```
+
+2. Open [http://localhost:3000](http://localhost:3000/) in a browser.
+
+3. Click the Register link to register as a user.
+
+   ![proj01](Images/proj03.png)
+
+4. Complete the form to add a user.
+
+   ![proj01](Images/proj01.png)
+
+5. Once registered, you should see a blank page.
+
+   ![proj01](Images/proj02.png)
+
+
+
+# Add O365 Single Sign On to the starter project
+
+Follow these instructions to add SSO functionality to the starter project application. You will need to configure your app in Azure, create files and copy and paste code from the instructions.
+
+All code referenced in these instructions is also used in the associated files in the [Demo App](../)
 
 ## Register the application in Azure Active Directory
 
@@ -60,393 +111,289 @@ The code in the following sections is part of the full featured Ruby app and pre
 
    Close the Settings window.
 
+## Add Single Sign On
 
+1.  Open the Starter Project in Visual Studio Code, if it isn't already open. 
 
-## Prerequisites
-
-- [Visual Studio Code](https://code.visualstudio.com/Download).
-- The [Ruby](https://www.ruby-lang.org/en/downloads) language version 2.2.2 or newer.
-- The [RubyGems](https://rubygems.org/) packaging system, which is installed with Ruby by default. To learn more about RubyGems, please read the [RubyGems Guides](http://guides.rubygems.org/).
-- The [Rails](http://rubyonrails.org/) web application development framework, version 5.0.0 or above
-- A working installation of the [SQLite3 Database](https://www.sqlite.org/).
-  ​
-
-## Build and debug locally
-
-1.  Open a terminal, navigate to a directory where you have rights to create files, and type 
-
-      `$ rails new basicsso`
-
-      ![](Images/new-project-01.png)                                      
-
-2. This will create a Rails application called **basicsso** in directory.
-
-3. Close terminal window, use vscode open **basicsso** folder.
-
-   ![](Images/new-project-02.png)
-
-4. Open **Gemfile** file, delete all code and  add the following code into it.
+2. Open **Gemfile** file, find `gem 'httparty'` , add the following packages under  `gem 'httparty'` .
 
    ```Ruby
-   source 'https://rubygems.org'
-   gem 'rails', '~> 5.0.0', '>= 5.0.0.1'
-   gem 'mysql2'
-   gem 'sqlite3'
-   gem 'puma', '~> 3.0'
-   gem 'sass-rails', '~> 5.0'
-   gem 'uglifier', '>= 1.3.0'
-   gem 'jquery-rails'
-   gem 'turbolinks', '~> 5'
-   gem 'jbuilder', '~> 2.5'
-   gem 'bcrypt', '~> 3.1.7'
    gem 'microsoft_graph'
    gem 'adal'
-   gem 'config'
-   gem 'httparty'
    gem 'openid_connect'
    gem 'omniauth-oauth2'
-   gem 'activerecord-session_store'
-   group :development, :test do
-     gem 'byebug', platform: :mri
-   end
-   group :development do
-     gem 'web-console'
-     gem 'listen', '~> 3.0.5'
-     gem 'spring'
-     gem 'spring-watcher-listen', '~> 2.0.0'
-   end
-   gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
    ```
 
-5.  Open **basicsso/app/assets/javascripts** folder, add new file named **site.js** into it.
-
-6. Open **site.js**  and  add the following code into it.
+3.  Open **db/schema.rb** , add the following code into **ActiveRecord** to create token cache table.
 
    ```ruby
-   $(document).ready(function () {
-       $("#userinfolink").click(function (evt) {
-           evt.stopPropagation ? evt.stopPropagation() : evt.cancelBubble = true;
-           $("#userinfoContainer").toggle();
-           $("#caret").toggleClass("transformcaret");
-       });
-       $(document).click(function () {
-           $("#userinfoContainer").hide();
-           $("#caret").removeClass("transformcaret");
-
-       });
-   });
+     create_table "token_caches", force: :cascade do |t|
+       t.datetime "created_at",                     null: false
+       t.datetime "updated_at",                     null: false
+       t.string   "o365_userId"
+       t.text     "refresh_token"
+       t.text     "access_tokens"
+     end
    ```
 
-7. Open **basicsso/app/assets/javascripts/application.js** file, delete all code and add the following code into it.
+   To see how this file works in the Demo app, refer to the file located [here](../db/schema.rb) in the Demo app.
+
+4.  Add new file named **token_cache.rb** into **app/models** folder, add the following code into it to create token cache model.
 
    ```ruby
-   //= require jquery
-   //= require jquery_ujs
-   //= require turbolinks
-   // require_tree .
+   class TokenCache < ApplicationRecord
+   end
    ```
 
-8. Open **basicsso/app/assets/stylesheets** folder, add the following files into it.
+   To see how this file works in the Demo app, refer to the file located [here](../app/models/token_cache.rb) in the Demo app.
 
-   - **bootstrap.css**
-   - **site.css**
+5.  Add new file named **token_service.rb** into **app/services** folder, add the following code into it.
 
-9. Download **[bootstrap](https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css)** style file, copy all content into **bootstrap.css** file that created above step and save.
+   ```ruby
+   class TokenService
+       
+     def initialize()
+     end
 
-10. Open **site.css** file, delete all code and add the following code into it.
+     def cache_tokens(o365_user_id, resource, refresh_token, access_token, jwt_exp)
+       cache = TokenCache.find_or_create_by(o365_userId: o365_user_id)
+       cache.refresh_token = refresh_token
+       access_tokens = cache.access_tokens ? JSON.parse(cache.access_tokens) : {}
+       access_tokens[resource] = { 
+         expiresOn: get_expires_on(jwt_exp), 
+         value: access_token 
+       }
+       cache.access_tokens = access_tokens.to_json();
+       cache.save();
+     end
 
-   ```css
-   html{height:100%;}
-   body {padding-top: 50px;padding-bottom: 20px;background-repeat: no-repeat;background-size: 100%     100%;height:100%;}
-   .body-content {padding-left: 15px;padding-right: 15px;height:100%;}
-   .containerbg{height:100%;}
-   .loginbody{margin:auto;padding:110px 15px 0 15px;max-width:1200px;}
-   .loginbody > .row{padding:0 20px 0 65px;}
-   #loginForm a{color:#4B67F8;font-size:16px;}
-   .navbar-inverse{background-color:#127605;border-color:#127605;}
-   .navbar-inverse .navbar-brand, 
-   .navbar-inverse .navbar-nav > li > a {color:white;}
-   .navbar-inverse .navbar-brand{font-size:14px}
-   .container>div.row{height:auto;background-color:#fff;}
-   .container.body-content{height:100%; background-color:#fff;}
-   .navbar-right a{color:white;text-decoration:none;}
-   .userinfo .caret{color:white;font-size:20px;}
-   .transformcaret{transform: rotate(180deg);}
-   .userinfo{height:50px;line-height:50px;}
-   .popupcontainer{display:none;}
-   .navbar-collapse{position:relative;}
-   .popuserinfo{position:absolute;top:40px;z-index:999;background-color:white;padding:15px 0;width:200px;border:1px solid #dedede;box-sizing: border-box;left:955px;}
-   .subitem{float:left;width:100%;}
-   .subitem a{color:black;text-decoration:none;width:100%;height:100%;display:block;padding:10px 0 10px 20px;}
-   .subitem:hover{background-color:#127605;color:white;}
-   .subitem a:hover{color:white;}
-   .container {width: 1170px;}
+     def get_access_token(o365_user_id, resource)
+       cache = TokenCache.find_by_o365_userId(o365_user_id)
+       if !cache
+         raise Exceptions::RefreshTokenError
+       end
+       # parse access_tokens
+       access_tokens = JSON.parse(cache.access_tokens)
+       access_token = access_tokens[resource]
+       if access_token
+         expires_on = DateTime.parse(access_token['expiresOn'])
+         utc_now = DateTime.now.new_offset(0)
+         if utc_now < expires_on - 5.0 / 60 / 24
+           return access_token['value']
+         end
+       end
+       # refresh token and cache
+       auth_result = refresh_token(cache.refresh_token, resource)
+       access_tokens[resource] = { 
+         expiresOn: get_expires_on(auth_result.expires_on), 
+         value: auth_result.access_token }
+       cache.access_tokens = access_tokens.to_json()
+       cache.refresh_token = auth_result.refresh_token
+       cache.save()
+       #
+       return auth_result.access_token;
+     end
+
+     def clear_token_cache
+       caches = TokenCache.all();
+       caches.each do |cache|
+         cache.destroy()
+       end
+     end
+
+     private def refresh_token(refresh_token, resource)
+   		authentication_context = ADAL::AuthenticationContext.new
+   		client_credential = ADAL::ClientCredential.new(Settings.AAD.ClientId, Settings.AAD.ClientSecret)
+       begin
+          authentication_context.acquire_token_with_refresh_token(refresh_token, client_credential, resource)
+       rescue
+         raise Exceptions::RefreshTokenError
+       end
+     end
+
+     private def get_expires_on(jwt_exp)
+       return DateTime.new(1970, 1, 1) + jwt_exp * 1.0 / (60 * 60 * 24)
+     end
+
+   end
    ```
 
-11. Open **application.css** file, delete all code and add the following code into it.
+   This code  is used to store access and refresh tokens. To see how this file works in the Demo app, refer to the file located [here](../app/services/token_service.rb) in the Demo app.
+
+6.  Open **config/settings.yml** file, add the following code to the bottom of file.
+
+   ```ruby
+   AAD:
+     ClientId: <%= ENV['ClientId'] %>
+     ClientSecret: <%= ENV['ClientSecret'] %>
+   ```
+
+   This code  is used to configure ClientId/ClientSecret. To see how this file works in the Demo app, refer to the file located [here](../config/settings.yml) in the Demo app.
+
+7.  Open **lib** folder, add a new folder named **omniauth**, open **omniauth** folder, add a new folder named **strategies**.
+
+8.  Open **strategies** folder, add new file named **azure_oauth2.rb** into it,  add the following code into it.
+
+   ```ruby
+   require 'omniauth/strategies/oauth2'
+   require 'jwt'
+
+   module OmniAuth
+     module Strategies
+
+       class AzureOAuth2 < OmniAuth::Strategies::OAuth2
+
+         BASE_AZURE_URL = 'https://login.microsoftonline.com'
+
+         option :name, 'azure_oauth2'
+         option :tenant_id, 'common'
+         option :resource, 'https://graph.windows.net'
+         option :callback_paths, []
+
+         args [:tenant_id]
+
+         def client
+           
+           options.client_id = options.client_id
+           options.client_secret = options.client_secret
+           options.tenant_id = options.tenant_id
+
+           options.callback_path = request.params['callback_path'] if request.params['callback_path']
+
+           options.authorize_params.prompt = request.params['prompt'] if request.params['prompt']
+           options.authorize_params.login_hint = request.params['login_hint'] if request.params['login_hint']   
+
+           options.client_options.authorize_url = "#{BASE_AZURE_URL}/#{options.tenant_id}/oauth2/authorize"
+           options.client_options.token_url = "#{BASE_AZURE_URL}/#{options.tenant_id}/oauth2/token"
+
+           options.token_params.resource = options.resource
+
+           super
+         end
+
+         uid {
+           raw_info['sub']
+         }
+
+         info do
+           {
+             name: raw_info['name'],
+             nickname: raw_info['unique_name'],
+             first_name: raw_info['given_name'],
+             last_name: raw_info['family_name'],
+             email: raw_info['email'] || raw_info['upn'],
+             oid: raw_info['oid'],
+             tid: raw_info['tid']
+           }
+         end
+
+         def callback_url
+           full_host + script_name + callback_path
+         end
+
+         def raw_info
+           # it's all here in JWT http://msdn.microsoft.com/en-us/library/azure/dn195587.aspx
+           @raw_info ||= ::JWT.decode(access_token.token, nil, false).first
+         end
+
+         def on_callback_path?
+           options[:callback_paths].include? current_path or super
+         end
+
+         protected
+
+         def build_access_token
+           options.callback_path = current_path
+           super
+         end
+
+         def ssl?
+           request.env['HTTP_X_ARR_SSL'] || super
+         end
+
+       end
+     end
+   end
+   ```
+
+   This module is used to use OAuth2 authentication. To see how this file works in the Demo app, refer to the file located [here](../lib/omniauth/strategies/azure_oauth2.rb) in the Demo app.
+
+9.  Open **config/initializers** folder, add new file named **omniauth.rb** into it,  add the following code into it.
+
+   ```ruby
+   module OmniAuth
+     module Strategies
+       autoload :AzureOAuth2, Rails.root.join('lib', 'omniauth', 'strategies', 'azure_oauth2') 
+     end
+   end
+
+   Rails.application.config.middleware.use OmniAuth::Builder do
+     provider :AzureOAuth2, {
+       client_id: Settings.AAD.ClientId, 
+       client_secret: Settings.AAD.ClientSecret, 
+       provider_ignores_state: true,
+       callback_paths: [ 
+         '/auth/azure_oauth2/callback'
+       ]
+     }
+   end
+   ```
+
+   This code is used to initialize OAuth2 authentication. To see how this file works in the Demo app, refer to the file located [here](../config/initializers/omniauth.rb) in the Demo app.
+
+10.  Add new file named **constants.rb** into **app/models** folder, add the following code into it .
+
+   ```ruby
+   module Constants
+
+     AADInstance = "https://login.microsoftonline.com/"
+
+     module Resources
+       MSGraph = 'https://graph.microsoft.com' 
+       AADGraph = 'https://graph.windows.net'
+     end
+
+   end
+   ```
+
+   This is AAD/MSGraph/ AADGraph Url constants. To see how this file works in the Demo app, refer to the file located [here](../app/models/constants.rb) in the Demo app.
+
+11.  Open **app/models/unified_user.rb** folder, delete all code and add the following code into it .
 
     ```ruby
-    /*
-     *
-     *= require bootstrap
-     *= require site
-     *= require_self
-     */
-    ```
+    class UnifiedUser
 
-12. Open **basicsso/app/helpers/application_helper.rb** file, delete all code and add the following code into it.
+      attr_accessor :local_user
+      attr_accessor :o365_user
 
-    ```ruby
-    require 'fileutils'
-
-    module ApplicationHelper
-
-      def full_host
-        if request.scheme && request.url.match(URI::ABS_URI)
-          uri = URI.parse(request.url.gsub(/\?.*$/, ''))
-          uri.path = ''
-          uri.scheme = 'https' if ssl?
-          uri.to_s
-          else ''
-        end
+      def initialize(local_user, o365_user)
+        self.local_user = local_user
+        self.o365_user = o365_user
       end
 
-      def ssl?
-        request.env['HTTP_X_ARR_SSL'] ||
-          request.env['HTTPS'] == 'on' ||
-          request.env['HTTP_X_FORWARDED_SSL'] == 'on' ||
-          request.env['HTTP_X_FORWARDED_SCHEME'] == 'https' ||
-          (request.env['HTTP_X_FORWARDED_PROTO'] && request.env['HTTP_X_FORWARDED_PROTO'].split(',')[0] == 'https') ||
-          request.env['rack.url_scheme'] == 'https'
+      def is_authenticated?
+        self.o365_user || self.local_user
       end
-
-    end
-    ```
-
-13. Open **basicsso/config** folder, add new file named **settings.yml**, add the following code into it.
-
-    ```ruby
-    AAD:
-      ClientId: <%= ENV['ClientId'] %>
-      ClientSecret: <%= ENV['ClientSecret'] %>
-    ```
-
-    ​
-
-14. Open **basicsso/config/application.rb** file,  delete all code and add the following code into it.
-
-    ```ruby
-    require_relative 'boot'
-    require 'rails/all'
-
-    Bundler.require(*Rails.groups)
-    module EDUGraphAPIRuby
-      class Application < Rails::Application
-        config.eager_load_paths += %W(#{config.root}/lib)
-      end
-    end
-    ```
-
-15. Open **basicsso/config/initializers** folder, add the following files into it.
-
-    - **omniauth.rb**
-    - **session_store.rb**
-
-16. Open **omniauth.rb** file,  add the following code into it.
-
-    ```ruby
-    module OmniAuth
-      module Strategies
-        autoload :AzureOAuth2, Rails.root.join('lib', 'omniauth', 'strategies', 'azure_oauth2') 
-      end
-    end
-
-    Rails.application.config.middleware.use OmniAuth::Builder do
-      provider :AzureOAuth2, {
-        client_id: Settings.AAD.ClientId, 
-        client_secret: Settings.AAD.ClientSecret, 
-        provider_ignores_state: true,
-        callback_paths: [ 
-          '/auth/azure_oauth2/callback'
-        ]
-      }
-    end
-    ```
-
-17. Open **session_store.rb** file,  add the following code into it.
-
-    ```ruby
-    Rails.application.config.session_store :active_record_store, key: '_EDUGraphAPI_ruby_session'
-    ```
-
-18. Open **basicsso/config/initializers/assets.rb** file,  delete all code and add the following code into it.
-
-    ```ruby
-    Rails.application.config.assets.version = '1.0'
-    Rails.application.config.assets.precompile += %w( 
-    site.js
-    )
-    ```
-
-19. Open **basicsso/lib** folder, add a new file named **exceptions.rb**, add the following code into it.
-
-    ```ruby
-    module Exceptions
-      class RefreshTokenError < StandardError; end
-    end
-    ```
-
-20. Open **basicsso/lib** folder, add a new folder named **omniauth**, open **omniauth** folder, add a new folder named **strategies**.
-
-21. Open **strategies** folder, add new file named **azure_oauth2.rb** into it,  add the following code into it.
-
-    ```ruby
-    require 'omniauth/strategies/oauth2'
-    require 'jwt'
-
-    module OmniAuth
-      module Strategies
-
-        class AzureOAuth2 < OmniAuth::Strategies::OAuth2
-
-          BASE_AZURE_URL = 'https://login.microsoftonline.com'
-
-          option :name, 'azure_oauth2'
-          option :tenant_id, 'common'
-          option :resource, 'https://graph.windows.net'
-          option :callback_paths, []
-
-          args [:tenant_id]
-
-          def client
-            
-            options.client_id = options.client_id
-            options.client_secret = options.client_secret
-            options.tenant_id = options.tenant_id
-
-            options.callback_path = request.params['callback_path'] if request.params['callback_path']
-
-            options.authorize_params.prompt = request.params['prompt'] if request.params['prompt']
-            options.authorize_params.login_hint = request.params['login_hint'] if request.params['login_hint']   
-
-            options.client_options.authorize_url = "#{BASE_AZURE_URL}/#{options.tenant_id}/oauth2/authorize"
-            options.client_options.token_url = "#{BASE_AZURE_URL}/#{options.tenant_id}/oauth2/token"
-
-            options.token_params.resource = options.resource
-
-            super
-          end
-
-          uid {
-            raw_info['sub']
-          }
-
-          info do
-            {
-              name: raw_info['name'],
-              nickname: raw_info['unique_name'],
-              first_name: raw_info['given_name'],
-              last_name: raw_info['family_name'],
-              email: raw_info['email'] || raw_info['upn'],
-              oid: raw_info['oid'],
-              tid: raw_info['tid']
-            }
-          end
-
-          def callback_url
-            full_host + script_name + callback_path
-          end
-
-          def raw_info
-            # it's all here in JWT http://msdn.microsoft.com/en-us/library/azure/dn195587.aspx
-            @raw_info ||= ::JWT.decode(access_token.token, nil, false).first
-          end
-
-          def on_callback_path?
-            options[:callback_paths].include? current_path or super
-          end
-
-          protected
-
-          def build_access_token
-            options.callback_path = current_path
-            super
-          end
-
-          def ssl?
-            request.env['HTTP_X_ARR_SSL'] || super
-          end
-
-        end
-      end
-    end
-    ```
-
-22. Open **app/controllers/application_controller.rb** file, delete all code and  add the following code into it.
-
-    ```typescript
-    class ApplicationController < ActionController::Base
-
-      before_action :convert_ssl_header
-      around_action :handle_refresh_token_error
-
-      include ApplicationHelper
-      helper_method :current_user
-
-      def current_user
-        session['_o365_user']
-      end
-
-      def set_o365_user(o365_user)
-        session['_o365_user'] = o365_user
-      end
-
-      def token_service
-        @token_service ||= TokenService.new
-      end
-
-      def set_session_expire_after(days)
-        session.options[:expire_after] = 60 * 60 * 24 * days
-      end
-
-      def clear_session_expire_after
-        session.options[:expire_after] = nil 
-      end
-
-      def handle_refresh_token_error
-        begin
-          yield
-        rescue Exceptions::RefreshTokenError => exception
-          redirect_to link_login_o365_required_path
-        end
-      end
-
-      def azure_oauth2_logout_required
-        session['azure_logout_required']
-      end
-
-      def azure_oauth2_logout_required=(value)
-        session['azure_logout_required'] = value
-      end
-
-      def convert_ssl_header
-        if request.headers['HTTP_X_ARR_SSL']
-          request.headers['HTTP_X_FORWARDED_SCHEME'] = 'https'
-        end
-      end
-
-    end
-    ```
-
-23. Add new file named **account_controller.rb** into **app/controllers/** folder,  add the following code into it.
-
-    ```typescript
-    class AccountController < ApplicationController
       
-      def index
+      def display_name
+        user = self.o365_user || self.local_user
+        if user
+          if user.first_name.blank? || user.last_name.blank?
+            return user.email
+          else
+            return "#{user.first_name} #{user.last_name}"
+          end
+        end
       end
+    end
+    ```
 
-      def login_o365
+    This code is used to add local user and o365 user into UnifiedUser. To see how this file works in the Demo app, refer to the file located [here](../app/models/unified_user.rb) in the Demo app.
+
+12.  Open **app/controllers/application_controller.rb** file, add the following code into AccountController class.
+
+    ```ruby
+       def login_o365
          redirect_to azure_auth_path
       end
 
@@ -455,13 +402,25 @@ The code in the following sections is part of the full featured Ruby app and pre
 
         # cahce tokens
         token_service.cache_tokens(auth.info.oid, Constants::Resources::AADGraph, 
-        auth.credentials.refresh_token, auth.credentials.token, auth.credentials.expires_at)
-        set_o365_user(auth.info.email)
+          auth.credentials.refresh_token, auth.credentials.token, auth.credentials.expires_at)
 
+        # o365 user
+        o365_user = O365User.new(auth.info.oid, auth.info.email, auth.info.first_name, auth.info.last_name,  auth.info.tid)
+        set_o365_user(o365_user)
+
+
+        clear_session_expire_after()
         self.azure_oauth2_logout_required = true
         redirect_to account_index_path
       end
-       def logoff
+    ```
+
+    This code is used to login with O365 user and azure oauth2 callback. To see how this file works in the Demo app, refer to the file located [here](../app/controllers/application_controller.rb) in the Demo app.
+
+13.  Open **app/controllers/application_controller.rb** file,  find `logoff` method and use the following code to replace it..
+
+    ```ruby
+      def logoff
         azure_oauth2_logout_required = self.azure_oauth2_logout_required 
 
         session.clear
@@ -469,283 +428,87 @@ The code in the following sections is part of the full featured Ruby app and pre
         clear_session_expire_after()
 
         if azure_oauth2_logout_required 
-          post_logout_redirect_uri = URI.escape("#{full_host}/account/index", Regexp.new("[^#{URI::PATTERN::UNRESERVED}]"))
+          post_logout_redirect_uri = URI.escape("#{full_host}/account/login", Regexp.new("[^#{URI::PATTERN::UNRESERVED}]"))
           logoff_url = "#{Constants::AADInstance}common/oauth2/logout?post_logout_redirect_uri=#{post_logout_redirect_uri}"
           redirect_to logoff_url
         else
           redirect_to account_login_path 
         end   
       end
-
-    end
     ```
 
-24. Open **app/views/layouts/application.html.erb** file, delete all code and  add the following code into it.
-    ```html
-        <!DOCTYPE html>
-        <html>
-          <head>
-            <title><%= content_for?(:title) ? yield(:title) : 'EDUGraphAPI' %></title>
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <%= csrf_meta_tags %>
-            <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
-            <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
-          </head>
-          <body>
-          	<div class="navbar navbar-inverse navbar-fixed-top">
-                <div class="container">
-                    <div class="navbar-header">
-                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                            <span class="icon-bar"></span>
-                            <span class="icon-bar"></span>
-                            <span class="icon-bar"></span>
-                        </button>
-                        <a class="navbar-brand" href="/">Basic SSO</a>
-                    </div>
-                    <div class="navbar-collapse collapse">
-                        <%= yield :user_login_info %>
-                    </div>
-                </div>
-            </div>
-            <div class="containerbg">
-                <div class="container body-content">
-                    <%= yield %>
-                    <%= javascript_include_tag 'site' %>
-                    <footer></footer>
-                </div>
-            </div>
-            </div>
-          </body>
-        </html>
-    ```
+    This code is used to support logoff for O365 user. To see how this file works in the Demo app, refer to the file located [here](../app/controllers/application_controller.rb) in the Demo app.
 
-25. Add new folder named **account** into **app/views** folder,  
+14.  Open **app/views/account/login.html.erb** file, find <div class="row"> and append the following code into it.
 
-26. Add new file named **index.html.erb** into **app/views/account** folder, add the following code into it.
-
-    ```html
-    <%= content_for :title, 'Log in - Basic SSO' %>
-    <% if current_user %>
-        <% content_for :user_login_info do %>
-            <form action="/account/logoff" class="navbar-right" id="logoutForm" method="post">
-                <div class="userinfo">
-                <a href="javascript:void(0);" id="userinfolink"> Hello <%= current_user %>
-                    <span class="caret" id="caret"></span>
-                </a>
-                </div>
-                <div class="popupcontainer" id="userinfoContainer">
-                <div class="popuserinfo">
-                    <div class="subitem">
-                        <a href="javascript:document.getElementById('logoutForm').submit()">Log off</a>
-                    </div>
-                </div>
-                </div>
-            </form>
-        <% end %>
-    <% end %>
-
-    <div class="loginbody">
-        <div class="row">
+    ```Html
             <div class="col-md-5">
                 <section id="socialLoginForm">
-                <% if current_user %>
-                    <h1>Hello World!</h1>
-                <% else %>
-                    <form action="/account/login_o365" method="post">
+                    <h4 class="margin-btm-20">Use your school account</h4>
+                        <form action="/account/login_o365" method="post">
                         <div id="socialLoginList">
-                            <p><button type="submit" class="btn btn-default btn-ms-login" id="OpenIdConnect" name="provider" value="OpenIdConnect">Sign In With Office 365</button></p>
+                            <p><button type="submit" class="btn btn-default btn-ms-login" id="OpenIdConnect" name="provider" value="OpenIdConnect" title="Log in using your Microsoft Work or school account"></button></p>
                         </div>
-                    </form>
-                <% end %>
+                        </form>
                 </section>
             </div>
-        </div>
-    </div>
     ```
 
-27. Add new file named **schema.rb** into **db** folder, add the following code into it to create token cache table.
+    This adds an O365 login button on the right of login page. To see how this file works in the Demo app, refer to the file located [here](../app/controllers/account_controller.rb) in the Demo app.
 
-    ```Ruby
-    ActiveRecord::Schema.define(version: 20170501145528) do
-      create_table "sessions", force: :cascade do |t|
-        t.string   "session_id", null: false
-        t.text     "data"
-        t.datetime "created_at"
-        t.datetime "updated_at"
-        t.index ["session_id"], name: "index_sessions_on_session_id", unique: true
-        t.index ["updated_at"], name: "index_sessions_on_updated_at"
-      end
-
-      create_table "token_caches", force: :cascade do |t|
-        t.datetime "created_at",                     null: false
-        t.datetime "updated_at",                     null: false
-        t.string   "o365_userId"
-        t.text     "refresh_token"
-        t.text     "access_tokens"
-      end
-
-    end
-    ```
-
-28. Add new file named **token_cache.rb** into **app/models** folder, add the following code into it to create token cache model.
-
-    ```Ruby
-    class TokenCache < ApplicationRecord
-    end
-    ```
-
-29. Add new file named **constants.rb** into **app/models** folder, add the following code into it .
+15.  Open **config/routes.rb** file, add the  add the following code into it .
 
     ```ruby
-    module Constants
-
-      AADInstance = "https://login.microsoftonline.com/"
-
-      module Resources
-        MSGraph = 'https://graph.microsoft.com' 
-        AADGraph = 'https://graph.windows.net'
-      end
-
-    end
+    #oauth2
+    get 'auth/azure_oauth2', as: :azure_auth
+    match 'auth/azure_oauth2/callback', to: 'account#azure_oauth2_callback', via: [:get, :post]
     ```
 
-30. Add new folder named **services** into **app** folder.
+    This code is used to configure router for oauth2 call back. To see how this file works in the Demo app, refer to the file located [here](../config/routes.rb) in the Demo app.
 
-31. Add new file named **token_service.rb** into **app/services** folder, add the following code into it.
+16.  Open **config/routes.rb** file, add the  add the following code into it to support login o365 post. .
 
     ```ruby
-    class TokenService
-        
-      def initialize()
-      end
-
-      def cache_tokens(o365_user_id, resource, refresh_token, access_token, jwt_exp)
-        cache = TokenCache.find_or_create_by(o365_userId: o365_user_id)
-        cache.refresh_token = refresh_token
-        access_tokens = cache.access_tokens ? JSON.parse(cache.access_tokens) : {}
-        access_tokens[resource] = { 
-          expiresOn: get_expires_on(jwt_exp), 
-          value: access_token 
-        }
-        cache.access_tokens = access_tokens.to_json();
-        cache.save();
-      end
-
-      def get_access_token(o365_user_id, resource)
-        cache = TokenCache.find_by_o365_userId(o365_user_id)
-        if !cache
-          raise Exceptions::RefreshTokenError
-        end
-        # parse access_tokens
-        access_tokens = JSON.parse(cache.access_tokens)
-        access_token = access_tokens[resource]
-        if access_token
-          expires_on = DateTime.parse(access_token['expiresOn'])
-          utc_now = DateTime.now.new_offset(0)
-          if utc_now < expires_on - 5.0 / 60 / 24
-            return access_token['value']
-          end
-        end
-        # refresh token and cache
-        auth_result = refresh_token(cache.refresh_token, resource)
-        access_tokens[resource] = { 
-          expiresOn: get_expires_on(auth_result.expires_on), 
-          value: auth_result.access_token }
-        cache.access_tokens = access_tokens.to_json()
-        cache.refresh_token = auth_result.refresh_token
-        cache.save()
-        #
-        return auth_result.access_token;
-      end
-
-      def clear_token_cache
-        caches = TokenCache.all();
-        caches.each do |cache|
-          cache.destroy()
-        end
-      end
-
-      private def refresh_token(refresh_token, resource)
-    		authentication_context = ADAL::AuthenticationContext.new
-    		client_credential = ADAL::ClientCredential.new(Settings.AAD.ClientId, Settings.AAD.ClientSecret)
-        begin
-           authentication_context.acquire_token_with_refresh_token(refresh_token, client_credential, resource)
-        rescue
-          raise Exceptions::RefreshTokenError
-        end
-      end
-
-      private def get_expires_on(jwt_exp)
-        return DateTime.new(1970, 1, 1) + jwt_exp * 1.0 / (60 * 60 * 24)
-      end
-
-    end
+    post 'account/login_o365'
     ```
 
-32. Open **config/routes.rb** file, delete all code and add the following code into it .
+    To see how this file works in the Demo app, refer to the file located [here](../config/routes.rb) in the Demo app.
+
+17.  Delete the file named **Gemfile.lock** in the root folder of **basicsso**.
+
+18.  Open a terminal, navigate to **basicsso** directory again. 
+
+19.  Type the following command to set ClientId and ClientSecret and run
 
     ```ruby
-    Rails.application.routes.draw do
-      root to: 'account#index'
-
-      # oauth2
-      get 'auth/azure_oauth2', as: :azure_auth
-      match 'auth/azure_oauth2/callback', to: 'account#azure_oauth2_callback', via: [:get, :post]
-
-      # account
-      get 'account/index'
-      get 'account/login'
-      post 'account/login_o365'
-      match 'account/logoff', via: [:get, :post]
-
-    end
-    ```
-
-33. Delete the file named **Gemfile.lock** in the root folder of **basicsso**.
-
-34. Open a terminal, navigate to **basicsso** directory again. 
-
-35. Type the following command to set ClientId and ClientSecret and run
-
-    ```rails
     export ClientId=INSERT YOUR CLIENT ID HERE
-
     export ClientSecret=INSERT YOUR CLIENT SECRET HERE
     ```
 
-      **clientId**: use the Client Id of the app registration you created earlier.
 
-      **clientSecret**: use the Key value of the app registration you created earlier.
+​       **clientId**: use the Client Id of the app registration you created earlier.
 
-36. Type the following command to install bundle and run.
+​       **clientSecret**: use the Key value of the app registration you created earlier.
 
-    ```rails
+20. Type the following command to install bundle and run.
+
+    ```command
     bundle install
-    ```
-
-
-37. Type the following command to create table and run.
-
-    ```rails
     rails db:schema:load
-    ```
-
-
-38. Type the following command to run server.
-
-    ```rails
     rails s
     ```
 
-39. Open a browser window and navigate to [http://localhost:3000](http://localhost:3000/).
+37. Open a browser window and navigate to [http://localhost:3000](http://localhost:3000/).
 
-40. Press F5, click **Sign In with Office 365** button to sign in.
 
-    ![](Images/new-project-04.png)
 
-41. Hello world page is presented after login successfully. 
+38. Click the **Sign in with Office 365** button and then login to O365..
 
-    ![](Images/web-app-helloworld.png)
+    ![proj04](Images/proj04.png)
+
+39. After login with O365 user it will redirect to a basic page.
+
+    ![proj05](Images/proj05.png)
 
 
 **Copyright (c) 2017 Microsoft. All rights reserved.**

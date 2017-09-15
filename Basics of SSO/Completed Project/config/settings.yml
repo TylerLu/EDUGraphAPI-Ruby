@@ -1,0 +1,12 @@
+SourceCodeRepositoryUrl: <%= ENV['SourceCodeRepositoryUrl'] ? ENV['SourceCodeRepositoryUrl'].chomp('/') : 'https://github.com/OfficeDev/O365-EDU-Ruby-Samples'  %>
+
+
+db:
+  host: <%= ENV['DB_HOST'] %>
+  username: <%= ENV['DB_USERNAME'] %>
+  password: <%= ENV['DB_PASSWORD'] %>
+  database: <%= ENV['DB_DATABASE'] %>
+
+AAD:
+  ClientId: <%= ENV['ClientId'] %>
+  ClientSecret: <%= ENV['ClientSecret'] %>

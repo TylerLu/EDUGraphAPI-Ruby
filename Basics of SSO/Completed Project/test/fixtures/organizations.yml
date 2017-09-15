@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  tenant_id: MyString
+  name: MyString
+  is_admin_consented: MyString
+
+two:
+  tenant_id: MyString
+  name: MyString
+  is_admin_consented: MyString

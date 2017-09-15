@@ -1,0 +1,12 @@
+<!-- Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT license. -->
+<!-- See LICENSE in the project root for license information. -->
+
+<%= content_for :title, 'ALL SCHOOLS - EDUGraphAPI' %>
+
+<% content_for :header_list do %>
+  <%= render 'common/header_list', school: @school %>
+<% end %>
+
+<% content_for :user_login_info do %>
+  <%= render 'common/user_login_info' %>
+<% end %>

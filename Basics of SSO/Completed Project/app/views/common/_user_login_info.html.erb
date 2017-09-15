@@ -1,0 +1,24 @@
+<!-- Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT license. -->
+<!-- See LICENSE in the project root for license information. -->
+
+<% if current_user.is_authenticated? %>
+<form action="/account/logoff" class="navbar-right" id="logoutForm" method="post">
+    <div class="userinfo">
+    <a href="javascript:void(0);" id="userinfolink"> Hello <%= current_user.display_name %>
+        <span class="caret" id="caret"></span>
+    </a>
+    </div>
+    <div class="popupcontainer" id="userinfoContainer">
+    <div class="popuserinfo">
+        <div class="subitem">
+            <a href="javascript:document.getElementById('logoutForm').submit()">Log off</a>
+        </div>
+    </div>
+    </div>
+</form>
+<% else %>
+  <ul class="nav navbar-nav navbar-right">
+      <li><a href="/account/register" id="registerLink">Register</a></li>
+      <li><a href="/account/login" id="loginLink">Log in</a></li>
+  </ul>
+<% end %>
