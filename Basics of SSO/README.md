@@ -387,7 +387,7 @@ All code referenced in these instructions is also used in the associated files i
     end
     ```
 
-    This code is used to add local user and o365 user into UnifiedUser. To see how this file works in the Demo app, refer to the file located [here](../app/models/unified_user.rb) in the Demo app.
+    This code is used to add local user and O365 user into UnifiedUser. To see how this file works in the Demo app, refer to the file located [here](../app/models/unified_user.rb) in the Demo app.
 
 12. Open **app/controllers/application_controller.rb** file, add the following code into AccountController class.
 
@@ -403,7 +403,7 @@ All code referenced in these instructions is also used in the associated files i
       token_service.cache_tokens(auth.info.oid, Constants::Resources::AADGraph, 
       auth.credentials.refresh_token, auth.credentials.token, auth.credentials.expires_at)
 
-      # o365 user
+      # O365 user
       o365_user = O365User.new(auth.info.oid, auth.info.email, auth.info.first_name, auth.info.last_name,  auth.info.tid)
       set_o365_user(o365_user)
 
@@ -465,7 +465,7 @@ All code referenced in these instructions is also used in the associated files i
 
     This code is used to configure router for oauth2 call back. To see how this file works in the Demo app, refer to the file located [here](../config/routes.rb) in the Demo app.
 
-16. Open **config/routes.rb** file, add the  add the following code into it to support login o365 post. .
+16. Open **config/routes.rb** file, add the  add the following code into it to support login O365 post. .
 
     ```ruby
     post 'account/login_o365'
