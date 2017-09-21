@@ -6,7 +6,7 @@ The code in the following sections is part of the full featured Ruby app and pre
 
 **Table of contents**
 * [Prerequisites](#prerequisites)
-* [Build and deploy the Starter Project](#build-and -deploy-the-starter-project)
+* [Build and deploy the Starter Project](#build-and-deploy-the-starter-project)
 * [Add O365 Single Sign On to the starter project](#add-o365-single-sign-on-to-the-starter-project)
 
 
