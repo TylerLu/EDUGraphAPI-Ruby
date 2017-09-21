@@ -708,7 +708,7 @@ class DemoHelperService
               },
               {
                 'title': 'add_user_to_section_owners',
-                'description': 'Add a user to the calss\'s owners.'
+                'description': 'Add a user to the class\'s owners.'
               }
             ]
           }
