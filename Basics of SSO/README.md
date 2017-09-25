@@ -117,16 +117,16 @@ All code referenced in these instructions is also used in the associated files i
 
 2. Open **Gemfile** file, find `gem 'httparty'` , add the following packages under  `gem 'httparty'` .
 
-   ```Ruby
-   gem 'microsoft_graph'
-   gem 'adal'
-   gem 'openid_connect'
-   gem 'omniauth-oauth2'
+    ```Ruby
+    gem 'microsoft_graph'
+    gem 'adal'
+    gem 'openid_connect'
+    gem 'omniauth-oauth2'
    ```
 
 3. Open **db/schema.rb** , add the following code into **ActiveRecord** to create token cache table.
 
-   ```ruby
+    ```ruby
      create_table "token_caches", force: :cascade do |t|
        t.datetime "created_at",                     null: false
        t.datetime "updated_at",                     null: false
@@ -222,11 +222,11 @@ All code referenced in these instructions is also used in the associated files i
 
 6. Open **config/settings.yml** file, add the following code to the bottom of file.
 
-   ```ruby
-   AAD:
-     ClientId: <%= ENV['ClientId'] %>
-     ClientSecret: <%= ENV['ClientSecret'] %>
-   ```
+    ```ruby
+    AAD:
+      ClientId: <%= ENV['ClientId'] %>
+      ClientSecret: <%= ENV['ClientSecret'] %>
+    ```
 
    This code  is used to configure ClientId/ClientSecret. To see how this file works in the Demo app, refer to the file located [here](../config/settings.yml) in the Demo app.
 
@@ -234,7 +234,7 @@ All code referenced in these instructions is also used in the associated files i
 
 8. Open **strategies** folder, add new file named **azure_oauth2.rb** into it,  add the following code into it.
 
-   ```ruby
+    ```ruby
    require 'omniauth/strategies/oauth2'
    require 'jwt'
 
@@ -343,19 +343,16 @@ All code referenced in these instructions is also used in the associated files i
 
 10. Add new file named **constants.rb** into **app/models** folder, add the following code into it.
 
-   ```ruby
-   module Constants
-      
-     AADInstance = "https://login.microsoftonline.com/"
-      
+    ```ruby
+    module Constants  
+      AADInstance = "https://login.microsoftonline.com/"
       module Resources
          MSGraph = 'https://graph.microsoft.com' 
          AADGraph = 'https://graph.windows.net'
       end
-      
-   end
-   ```
-   This is AAD/MSGraph/ AADGraph Url constants. To see how this file works in the Demo app, refer to the file located [here](../app/models/constants.rb) in the Demo app.
+    end
+    ```
+    This is AAD/MSGraph/ AADGraph Url constants. To see how this file works in the Demo app, refer to the file located [here](../app/models/constants.rb) in the Demo app.
 
 11. Open **app/models/unified_user.rb** folder, delete all code and add the following code into it.
 
