@@ -343,19 +343,19 @@ All code referenced in these instructions is also used in the associated files i
 
 10. Add new file named **constants.rb** into **app/models** folder, add the following code into it.
 
-    ```ruby
-    module Constants
-       
-      AADInstance = "https://login.microsoftonline.com/"
-       
-       module Resources
-          MSGraph = 'https://graph.microsoft.com' 
-          AADGraph = 'https://graph.windows.net'
-       end
-       
-    end
-    ```
-    This is AAD/MSGraph/ AADGraph Url constants. To see how this file works in the Demo app, refer to the file located [here](../app/models/constants.rb) in the Demo app.
+   ```ruby
+   module Constants
+      
+     AADInstance = "https://login.microsoftonline.com/"
+      
+      module Resources
+         MSGraph = 'https://graph.microsoft.com' 
+         AADGraph = 'https://graph.windows.net'
+      end
+      
+   end
+   ```
+   This is AAD/MSGraph/ AADGraph Url constants. To see how this file works in the Demo app, refer to the file located [here](../app/models/constants.rb) in the Demo app.
 
 11. Open **app/models/unified_user.rb** folder, delete all code and add the following code into it.
 
@@ -389,7 +389,81 @@ All code referenced in these instructions is also used in the associated files i
 
     This code is used to add local user and O365 user into UnifiedUser. To see how this file works in the Demo app, refer to the file located [here](../app/models/unified_user.rb) in the Demo app.
 
-12. Open **app/controllers/application_controller.rb** file, add the following code into AccountController class.
+12. Open **app/controllers/application_controller.rb** file, delete all code and add the following code into it.
+
+    ```ruby
+     class ApplicationController < ActionController::Base
+
+      before_action :convert_ssl_header
+      around_action :handle_refresh_token_error
+
+      include ApplicationHelper
+      helper_method :current_user
+
+      def current_user
+        o365_user = session['_o365_user']
+        local_user = session['_local_user_id'] ? User.find_by_id(session['_local_user_id']) : nil
+        UnifiedUser.new(local_user, o365_user)
+      end
+
+      def set_local_user(local_user)
+        session['_local_user_id'] = local_user.id
+      end
+
+      def clear_local_user()
+        session.delete(:_local_user_id)
+      end 
+
+      def set_o365_user(o365_user)
+        session['_o365_user'] = o365_user
+      end
+
+      def token_service
+        @token_service ||= TokenService.new
+      end
+
+      def set_session_expire_after(days)
+        session.options[:expire_after] = 60 * 60 * 24 * days
+      end
+
+      def clear_session_expire_after
+        session.options[:expire_after] = nil 
+      end
+
+      def handle_refresh_token_error
+        begin
+          yield
+        rescue Exceptions::RefreshTokenError => exception
+          redirect_to link_login_o365_required_path
+        end
+      end
+
+      def require_login
+        if !current_user.is_authenticated?
+          redirect_to account_login_path
+        end
+      end
+
+      def azure_oauth2_logout_required
+        session['azure_logout_required']
+      end
+
+      def azure_oauth2_logout_required=(value)
+        session['azure_logout_required'] = value
+      end
+
+      def convert_ssl_header
+        if request.headers['HTTP_X_ARR_SSL']
+          request.headers['HTTP_X_FORWARDED_SCHEME'] = 'https'
+        end
+      end
+
+    end
+    ```
+
+    This code is used to login with O365 user and azure oauth2 callback. To see how this file works in the Demo app, refer to the file located [here](../app/controllers/application_controller.rb) in the Demo app.
+
+13. Open **app/controllers/account_controller.rb** file, add the following code into AccountController class.
 
     ```ruby
     def login_o365
@@ -413,10 +487,10 @@ All code referenced in these instructions is also used in the associated files i
     end
     ```
 
-    This code is used to login with O365 user and azure oauth2 callback. To see how this file works in the Demo app, refer to the file located [here](../app/controllers/application_controller.rb) in the Demo app.
+    This code is used to login with O365 user and azure oauth2 callback. To see how this file works in the Demo app, refer to the file located [here](../app/controllers/account_controller.rb) in the Demo app.
 
 
-13. Open **app/controllers/application_controller.rb** file,  find `logoff` method and use the following code to replace it.
+13. Open **app/controllers/account_controller.rb** file,  find `logoff` method and use the following code to replace it.
 
     ```ruby
     def logoff
@@ -436,9 +510,9 @@ All code referenced in these instructions is also used in the associated files i
     end
     ```
 
-    This code is used to support logoff for O365 user. To see how this file works in the Demo app, refer to the file located [here](../app/controllers/application_controller.rb) in the Demo app.
+    This code is used to support logoff for O365 user. To see how this file works in the Demo app, refer to the file located [here](../app/controllers/account_controller.rb) in the Demo app.
 
-14. Open **app/views/account/login.html.erb** file, find <div class="row"> and append the following code into it.
+14. Open **app/views/account/login.html.erb** file, find `<div class="row">` and append the following code into it.
 
     ```Html
     <div class="col-md-5">
