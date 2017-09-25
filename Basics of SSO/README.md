@@ -343,15 +343,15 @@ All code referenced in these instructions is also used in the associated files i
 
 10. Add new file named **constants.rb** into **app/models** folder, add the following code into it.
 
-   ```ruby
-   module Constants  
+     ```ruby
+    module Constants
      AADInstance = "https://login.microsoftonline.com/"
      module Resources
         MSGraph = 'https://graph.microsoft.com' 
         AADGraph = 'https://graph.windows.net'
      end
-   end
-   ```
+    end
+    ```
    This is AAD/MSGraph/ AADGraph Url constants. To see how this file works in the Demo app, refer to the file located [here](../app/models/constants.rb) in the Demo app.
 
 11. Open **app/models/unified_user.rb** folder, delete all code and add the following code into it.
@@ -487,7 +487,7 @@ All code referenced in these instructions is also used in the associated files i
     This code is used to login with O365 user and azure oauth2 callback. To see how this file works in the Demo app, refer to the file located [here](../app/controllers/account_controller.rb) in the Demo app.
 
 
-13. Open **app/controllers/account_controller.rb** file,  find `logoff` method and use the following code to replace it.
+14. Open **app/controllers/account_controller.rb** file,  find `logoff` method and use the following code to replace it.
 
     ```ruby
     def logoff
@@ -509,7 +509,7 @@ All code referenced in these instructions is also used in the associated files i
 
     This code is used to support logoff for O365 user. To see how this file works in the Demo app, refer to the file located [here](../app/controllers/account_controller.rb) in the Demo app.
 
-14. Open **app/views/account/login.html.erb** file, find `<div class="row">` and append the following code into it.
+15. Open **app/views/account/login.html.erb** file, find `<div class="row">` and append the following code into it.
 
     ```Html
     <div class="col-md-5">
@@ -526,7 +526,7 @@ All code referenced in these instructions is also used in the associated files i
 
     This adds an O365 login button on the right of login page. To see how this file works in the Demo app, refer to the file located [here](../app/views/account/login.html.erb) in the Demo app.
 
-15. Open **config/routes.rb** file, add the  add the following code into it.
+16. Open **config/routes.rb** file, add the  add the following code into it.
 
     ```ruby
     #oauth2
@@ -536,7 +536,7 @@ All code referenced in these instructions is also used in the associated files i
 
     This code is used to configure router for oauth2 call back. To see how this file works in the Demo app, refer to the file located [here](../config/routes.rb) in the Demo app.
 
-16. Open **config/routes.rb** file, add the  add the following code into it to support login O365 post.
+17. Open **config/routes.rb** file, add the  add the following code into it to support login O365 post.
 
     ```ruby
     post 'account/login_o365'
@@ -544,22 +544,20 @@ All code referenced in these instructions is also used in the associated files i
 
     To see how this file works in the Demo app, refer to the file located [here](../config/routes.rb) in the Demo app.
 
-17. Delete the file named **Gemfile.lock** in the root folder of **basicsso**.
+18. Delete the file named **Gemfile.lock** in the root folder of **basicsso**.
 
-18. Open a terminal, navigate to **basicsso** directory again. 
+19. Open a terminal, navigate to **basicsso** directory again.
 
-19. Type the following command to set ClientId and ClientSecret and run.
+20. Type the following command to set ClientId and ClientSecret and run.
 
     ```ruby
     export ClientId=INSERT YOUR CLIENT ID HERE
     export ClientSecret=INSERT YOUR CLIENT SECRET HERE
     ```
+    ​**clientId**: use the Client Id of the app registration you created earlier.
+    ​​**clientSecret**: use the Key value of the app registration you created earlier.
 
-​       **clientId**: use the Client Id of the app registration you created earlier.
-
-​       **clientSecret**: use the Key value of the app registration you created earlier.
-
-20. Type the following command to install bundle and run.
+21. Type the following command to install bundle and run.
 
     ```command
     bundle install
@@ -567,14 +565,14 @@ All code referenced in these instructions is also used in the associated files i
     rails s
     ```
 
-21. Open a browser window and navigate to [http://localhost:3000](http://localhost:3000/).
+22. Open a browser window and navigate to [http://localhost:3000](http://localhost:3000/).
 
 
-22. Click the **Sign in with Office 365** button and then login to O365.
+23. Click the **Sign in with Office 365** button and then login to O365.
 
     ![proj04](Images/proj04.png)
 
-23. After login with O365 user it will redirect to a basic page.
+24. After login with O365 user it will redirect to a basic page.
 
     ![proj05](Images/proj05.png)
 
