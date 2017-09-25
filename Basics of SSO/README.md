@@ -71,7 +71,7 @@ All code referenced in these instructions is also used in the associated files i
 
 4. Input a **Name**, and select **Web app / API** as **Application Type**.
 
-   Input **Sign-on URL**: https://localhost:44377/
+   Input **Sign-on URL**: https://localhost:3000/
 
    ![](Images/aad-create-app-02.png)
 
@@ -122,7 +122,7 @@ All code referenced in these instructions is also used in the associated files i
     gem 'adal'
     gem 'openid_connect'
     gem 'omniauth-oauth2'
-   ```
+    ```
 
 3. Open **db/schema.rb** , add the following code into **ActiveRecord** to create token cache table.
 
@@ -235,11 +235,11 @@ All code referenced in these instructions is also used in the associated files i
 8. Open **strategies** folder, add new file named **azure_oauth2.rb** into it,  add the following code into it.
 
     ```ruby
-   require 'omniauth/strategies/oauth2'
-   require 'jwt'
+       require 'omniauth/strategies/oauth2'
+       require 'jwt'
 
-   module OmniAuth
-     module Strategies
+       module OmniAuth
+       module Strategies
 
        class AzureOAuth2 < OmniAuth::Strategies::OAuth2
 
@@ -249,32 +249,32 @@ All code referenced in these instructions is also used in the associated files i
          option :tenant_id, 'common'
          option :resource, 'https://graph.windows.net'
          option :callback_paths, []
-
+    
          args [:tenant_id]
-
+    
          def client
            
            options.client_id = options.client_id
            options.client_secret = options.client_secret
            options.tenant_id = options.tenant_id
-
+    
            options.callback_path = request.params['callback_path'] if request.params['callback_path']
-
+    
            options.authorize_params.prompt = request.params['prompt'] if request.params['prompt']
            options.authorize_params.login_hint = request.params['login_hint'] if request.params['login_hint']   
-
+    
            options.client_options.authorize_url = "#{BASE_AZURE_URL}/#{options.tenant_id}/oauth2/authorize"
            options.client_options.token_url = "#{BASE_AZURE_URL}/#{options.tenant_id}/oauth2/token"
-
+    
            options.token_params.resource = options.resource
-
+    
            super
          end
-
+    
          uid {
            raw_info['sub']
          }
-
+    
          info do
            {
              name: raw_info['name'],
@@ -286,31 +286,31 @@ All code referenced in these instructions is also used in the associated files i
              tid: raw_info['tid']
            }
          end
-
+    
          def callback_url
            full_host + script_name + callback_path
          end
-
+    
          def raw_info
            # it's all here in JWT http://msdn.microsoft.com/en-us/library/azure/dn195587.aspx
            @raw_info ||= ::JWT.decode(access_token.token, nil, false).first
          end
-
+    
          def on_callback_path?
            options[:callback_paths].include? current_path or super
          end
-
+    
          protected
-
+    
          def build_access_token
            options.callback_path = current_path
            super
          end
-
+    
          def ssl?
            request.env['HTTP_X_ARR_SSL'] || super
          end
-
+    
        end
      end
    end
@@ -343,16 +343,16 @@ All code referenced in these instructions is also used in the associated files i
 
 10. Add new file named **constants.rb** into **app/models** folder, add the following code into it.
 
-    ```ruby
-    module Constants  
-      AADInstance = "https://login.microsoftonline.com/"
-      module Resources
-         MSGraph = 'https://graph.microsoft.com' 
-         AADGraph = 'https://graph.windows.net'
-      end
-    end
-    ```
-    This is AAD/MSGraph/ AADGraph Url constants. To see how this file works in the Demo app, refer to the file located [here](../app/models/constants.rb) in the Demo app.
+   ```ruby
+   module Constants  
+     AADInstance = "https://login.microsoftonline.com/"
+     module Resources
+        MSGraph = 'https://graph.microsoft.com' 
+        AADGraph = 'https://graph.windows.net'
+     end
+   end
+   ```
+   This is AAD/MSGraph/ AADGraph Url constants. To see how this file works in the Demo app, refer to the file located [here](../app/models/constants.rb) in the Demo app.
 
 11. Open **app/models/unified_user.rb** folder, delete all code and add the following code into it.
 
@@ -524,7 +524,7 @@ All code referenced in these instructions is also used in the associated files i
     </div>
     ```
 
-    This adds an O365 login button on the right of login page. To see how this file works in the Demo app, refer to the file located [here](../app/controllers/account_controller.rb) in the Demo app.
+    This adds an O365 login button on the right of login page. To see how this file works in the Demo app, refer to the file located [here](../app/views/account/login.html.erb) in the Demo app.
 
 15. Open **config/routes.rb** file, add the  add the following code into it.
 
