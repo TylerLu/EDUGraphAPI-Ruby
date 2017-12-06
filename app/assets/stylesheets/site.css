@@ -1,8 +1,7 @@
-/*   
+﻿/*   
  *   * Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT license.  
  *   * See LICENSE in the project root for license information.  
  */
- 
 @font-face {
   font-family: 'Helvetica Neue LT Std Light';
   src: url("../fonts/HelveticaNeueLTStd-Light.eot"); /* IE9 Compat Modes */
@@ -177,10 +176,11 @@ textarea {
 .infocontainer:nth-child(2) .infobody{font-size:12px;}
 .myschool{padding: 12px 0 12px 0;float:left;}
 .myschool .schoolenrolled{float:right; font-size:14px;padding-right:15px;}
-.myschool .greenicon{width:12px;height:12px;float:right;margin:5px 6px 0 0;background-color:#277F79;}
+.myschool .greenicon{width:12px;height:12px;float:right;margin:5px 6px 0 0;background-color:#4e9f42;}
 .sectionschoolname{font-size:24px;color:#666565;padding-left: 0;}
 .tophero{background-color:#f8f8f8;padding-left:0px;}
 .schooladdress{width:auto;float:left;}
+.schoolmap{float:left;}
 .toptiles{
     padding: 10px 0 15px 0;
     border: 1px solid #117605;
@@ -203,7 +203,7 @@ textarea {
 .table-green .table-green-header th{text-transform:uppercase; padding:10px 0 10px 6px; border-top:0; border-bottom:1px solid white;}
 .table-green .tr-content td{padding-top:10px;padding-bottom:10px; vertical-align: inherit; border-bottom:1px solid white;}
 .table-green > tbody > tr > td{border-top:1px solid white;}
-.table-green .td-green, .table-green .td-green a{font-family:'Helvetica Neue LT Std Bold'; background-color:#277F79; color:white;}
+.table-green .td-green, .table-green .td-green a{font-family:'Helvetica Neue LT Std Bold'; background-color:#4e9f42; color:white;}
 .table-green  a.btnlink{
     color:black;text-transform: uppercase;
     font-family:'Helvetica Neue LT Std Bold';
@@ -216,12 +216,12 @@ textarea {
 }
 .table-green .td-green a.btnlink{background-color:white !important; background-image:none;color:black;text-transform:uppercase;}
 .table-student .tr-content td img{max-width:40px;height:auto;margin-right:6px;}
-.table-student .tr-content td:nth-child(1){width:25%;}
+.table-student .tr-content td:nth-child(1){width:35%;}
 .schools .table-schools tr td:nth-child(1){width:20%;}
 .schools .table-schools tr td:nth-child(2){width:15%;}
 .schools .table-schools tr td:nth-child(3){width:16%;}
 .schools .table-schools tr td:nth-child(4){width:23%;}
-.schools .table-schools tr td:nth-child(5){width:26%;}
+.schools .table-schools tr td:nth-child(5){width:15%;text-align:center;}
 .schools .table-schools .table-green-header th {font-family: 'Helvetica Neue LT Std Bold';}
 
 .ignore{display:none;}
@@ -262,7 +262,10 @@ textarea {
 .sections .seemore span.disabled, .sections .seemore span.nomore{cursor:default; color:#c2c2c2}
 
 /*section detail*/
-.b-title{font-size:24px;color:#666565;}
+.b-title {
+    font-size: 24px;
+    color: #666565;
+}
 .class-details .b-title{font-family:'Helvetica Neue LT Std Th'}
 .coursedetail {position: relative;}
 .coursedetail .col-md-6{padding:12px 0 6px 0;}
@@ -310,13 +313,15 @@ textarea {
 #addateacher{
     display:block;
 }
+
 .students .col-md-6:nth-child(1){padding-left:0;padding-right:8px;}
 .students .col-md-6:nth-child(2){padding-left:8px;padding-right:0;}
 .students .b-title{padding-left:6px;}
 
 .students{margin-top:20px;}
-.students > ul > li{width:22%;margin-right:20px;text-align: center;}
+.students > ul > li{width:18%;margin-right:10px;text-align: center;}
 .students > ul > li:first-child{margin-left:20px;}
+.students > ul > li.active{width:19%;}
 .students > ul > li>a{font-family:'Helvetica Neue LT Std Th'; color:#ABABAB; height:56px; font-size:18px; text-transform:uppercase; background-color:#fff; border-radius:0 0 0 0; padding-top:15px;}
 .students > ul > li.active > a,.students > ul > li.active > a:hover,.students > ul > li.active > a:focus {font-family:'Helvetica Neue LT Std Bold'; background-color:#127605; color:white;}
 .students .table-green .table-green-header{border-bottom:1px solid #127605;background-color:#127605;}
@@ -347,7 +352,43 @@ textarea {
 .students #studoc.table-green tbody tr.tr-content.selected td.border-holder, .students #stuconv.table-green tbody tr.tr-content.selected td.border-holder{background-color:#127605}
 .students #documents .see-more, .students #conversations .see-more{float:right; margin-right:16px; padding:2px 10px; background:-prefix-linear-zgradient(top, #137A05, #28BB14); background:linear-gradient(to bottom, #137A05, #28BB14);}
 .students #documents .see-more a, .students #conversations .see-more a{color:#ffffff; font-size:12px; font-family:'Helvetica Neue LT Std Bold'; text-decoration:none}
-
+.students #assignments >div {width: 100%;float: left;}
+.students #assignmentslist th.header{width:23%;}
+.students .addassignment a{    color: white;
+    background-color: #127605;
+    height: 40px;
+    width: 120px;
+    float: right;
+    margin: 12px;
+    line-height: 40px;
+    font-weight: normal;
+    text-align: center;}
+.students .hideform{display:none;padding:20px;}
+.students button.ui-dialog-titlebar-close, .ui-dialog .ui-dialog-titlebar-close{    
+    background-image: url(/Images/ui-icons_777777_256x240.png) !important;
+    background-position: -96px -128px !important;
+    background-color: white !important;
+    border-bottom-right-radius: 3px !important;
+    border-bottom-left-radius: 3px !important;
+    border-top-right-radius: 3px !important;
+    border-top-left-radius: 3px !important;}
+#new-assignment-form label{width:100px !important;}
+#selectedFiles > div{    text-align: left;
+    float: left;
+    width: 100%;
+    padding-left: 100px;}
+#uploaders{    width: 400px;display:inline-block;}
+#new-assignment-form  fieldset > *{margin:6px 0 6px 0;}
+#assignment-submissions-form button{float:left;}
+#assignment-submissions-form tbody td{text-align:left;}
+#assignment-submissions-form .files, #assignments .resource-list li, #assignments .handin-list li {padding-left:20px;background-color:#f5f5f5;}
+ #assignments .resource-list li, #assignments .handin-list li {padding-left:15px;}
+  .modal-dialog {
+    margin: 200px auto !important;
+  }
+  .uploadcontainer{    display: flex;
+    margin-top: 12px !important;}
+  .uploadcontainer #uploaders{padding-left:5px;}
 /*User info popup window*/
 .navbar-right a{color:white;text-decoration:none;}
 .userinfo .caret{color:white;font-size:20px;}
@@ -371,6 +412,7 @@ textarea {
 .mygroups div{float:left;margin-left:6px;}
 .margin-btm-12{margin-bottom:12px;}
 .margin-top-12{margin-top:12px;}
+.margin-left-12{margin-left:12px;}
 
 #skipLinkAccount{width:90px;}
 .tab-content div.tab-pane{border:2px solid #127605;background-color:white;position:relative;}
@@ -383,7 +425,7 @@ textarea {
 #seatingchart .greenicon{width:14px;height:14px;background:#237e17;float:left;margin:3px 6px 0 0;}
 .assignseat{margin:12px 0;}
 #lstproducts{padding-left:0;}
-#lstproducts img, .deskicon img, #studentsTable img, .userinfo img, .aboutme img, .schoolteachers img {
+#lstproducts img, .deskicon img, #studentsTable img, .userinfo img, .aboutme img, .schoolteachers img{
 border-radius: 30px;
 -webkit-border-radius: 30px;
 -moz-border-radius: 30px;
@@ -445,43 +487,41 @@ max-width: 140px;
     color: white;
     border: 1px solid white;
 }
-
-
-
-/*Teachers & Students page*/
-.teacher-student .tophero{border-bottom:5px solid #127605;}
-.teacher-student .usericon{margin-top:10px;}
-.teacher-student .usericon div{float:left;}
-.teacher-student .usericon .stuicon{width:12px; height:12px; margin:5px 6px 0 0; background-color:#444444;}
-.teacher-student .usericon .teacicon{width:12px; height:12px; margin:5px 6px 0 12px; background-color:#4DA143;}
-.teacher-student .tiles-root-container{background-color:white; padding:12px 17.14px;}
-.teacher-student .tiles-secondary-container .content{padding-left:7px;}
-.teacher-student .tiles-root-container .element{margin:12px 13px 12px 0; float:left; width:175px; height:175px; border-radius:12px; background-color:gray;}
-.teacher-student .tiles-root-container .element .userimg{height:100px;text-align:center;position:relative;}
-.teacher-student .tiles-root-container .element .username{height:70px;color:white; text-align:center;padding-top:12px;}
-.teacher-student .tiles-root-container .element img{
-    border-radius: 60px;
-    -webkit-border-radius: 60px;
-    -moz-border-radius: 60px;
-    border: 1px solid #e4e4e4;
-    max-height: 100%;
-    max-width: 100%;
-    width: auto;
-    height: auto;
-    position: absolute;
-    top: 12px;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    margin: auto;
+/*assignment detail*/
+.assignment-detail-modal .row {
+    padding: 0px 15px;
+    text-align: right;
 }
-.teacher-student .tiles-root-container .student-bg{background-color:#444444}
-.teacher-student .tiles-root-container .teacher-bg{background-color:#4DA143;}
-.teacher-student .tiles-root-container .tiles-secondary-container{display:none}
-.teacher-student .studentsinmyclasses-container #studentsinmyclasses.tiles-secondary-container,.teacher-student .users-container #users.tiles-secondary-container, .teacher-student .students-container #students.tiles-secondary-container, .teacher-student .teachers-container #teachers.tiles-secondary-container{display:block}
+.assignment-detail-modal .row > .resources-title, .assignment-detail-modal .row > button, .assignment-detail-modal .row > .handin-title{
+    display: inline-block;
+}
+.assignment-detail-modal .row > button{
+    right: 0px;
+}
+.assignment-detail-modal .row > .resources-title,
+.assignment-detail-modal .row > .handin-title{
+    text-align: left;
+    padding-left: 0;
+}
+.assignment-detail-modal ul{
+    list-style: none;
+    margin: 10px -15px 10px -15px;
+    padding: 0;
+    border-bottom: 1px solid #e5e5e5;
+}
+.assignment-detail-modal ul>li
+{
+    border-top: 1px solid #e5e5e5;
+    padding: 5px 15px;
+}
+.assignment-detail-modal .modal-footer{
+    border-top:none;
+}
+
+
 
 /* Demo Helper Control */
-.demo-helper-control .collapse { display: block; }
+.demo-helper-control .collapse{display:block;}
 .demo-helper-control {
     position: absolute;
     right: 0;
