@@ -54,52 +54,12 @@ module Education
       })
     end
 
-    def get_members(school_id, skip_token = nil, top = 12)
-      get_paged_objects(Education::User, "administrativeUnits/#{school_id}/members", {
-        '$top': top,
-        '$skiptoken': skip_token
-      })
-    end
-
-    def get_teachers(school_id, skip_token = nil, top = 12)
-      get_paged_objects(Education::User, "users", {
-        '$top': top,
-        '$filter': "extension_fe2174665583431c953114ff7268b7b3_Education_SyncSource_SchoolId eq '#{school_id}' and extension_fe2174665583431c953114ff7268b7b3_Education_ObjectType eq 'Teacher'",
-        '$skiptoken': skip_token
-      })
-    end
-
     def get_allteachers(school_id)
       get_objects(Education::User, "users", {
         '$filter': "extension_fe2174665583431c953114ff7268b7b3_Education_SyncSource_SchoolId eq '#{school_id}' and extension_fe2174665583431c953114ff7268b7b3_Education_ObjectType eq 'Teacher'"
       })
     end
-
-    def get_students(school_id, skip_token = nil, top = 12)
-      get_paged_objects(Education::User, "users", {
-        '$top': top,
-        '$filter': "extension_fe2174665583431c953114ff7268b7b3_Education_SyncSource_SchoolId eq '#{school_id}' and extension_fe2174665583431c953114ff7268b7b3_Education_ObjectType eq 'Student'",
-        '$skiptoken': skip_token
-      })
-    end
     
-    def get_studentsInMyClasses(school_id)
-      studentsInMyClasses = Array.new
-      mysections = get_my_sections(school_id)
-      mysections.each do |section|
-        
-        if section.school_id == school_id
-          result = section.members.select do |user|
-            user.education_object_type == 'Student' && studentsInMyClasses.select{|student| student.object_id == user.object_id}.length == 0
-          end
-          if result
-            studentsInMyClasses.concat(result)
-           end
-        end
-      end
-      return studentsInMyClasses
-    end
-
     def add_user_to_section_members(class_id, user_id) 
         data = { "@odata.id": "#{Constants::Resources::MSGraph}/v1.0/users/#{user_id}"}
        request('post', "#{Constants::Resources::MSGraph}/v1.0/groups/#{class_id}/members/$ref", {}, data.to_json)

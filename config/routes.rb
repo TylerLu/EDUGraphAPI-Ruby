@@ -59,11 +59,6 @@ Rails.application.routes.draw do
         post :add_coteacher
       end
     end
-
-  	member do
-  	  get :users
-      get :users_next
-  	end
   end
 
 end

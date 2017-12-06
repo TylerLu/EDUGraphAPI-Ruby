@@ -385,12 +385,7 @@ end
 **Get users**
 
 ```typescript
-def get_members(school_id, skip_token = nil, top = 12)
-  get_paged_objects(Education::User, "administrativeUnits/#{school_id}/members", {
-    '$top': top,
-    '$skiptoken': skip_token
-  })
-end
+
 ```
 Below are some screenshots of the sample app that show the education data.
 

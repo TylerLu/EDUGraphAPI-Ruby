@@ -7,7 +7,6 @@
 
 <% if (defined? school) && school  %>
  	<li><a href="/schools/<%= school.object_id %>/classes">Classes</a></li>
-	<li><a href="/schools/<%= school.object_id %>/users">Teachers & Students</a></li>
 <% end %>
 
 <% if current_user.is_admin? %>

@@ -522,66 +522,6 @@ class DemoHelperService
           }
         ]
       },
-      {
-        'title': 'Get all members information',
-        'tab': 'filterall',
-        'files': [
-          {
-            'url': '/lib/education/education_service.rb',
-            'methods': [
-              {
-                'title': 'get_members',
-                'description': 'Get users within a school.'
-              }
-            ]
-          }
-        ]
-      },
-      {
-        'title': 'Get all students information',
-        'tab': 'filterstudnet',
-        'files': [
-          {
-            'url': '/lib/education/education_service.rb',
-            'methods': [
-              {
-                'title': 'get_students',
-                'description': 'Get students within a school.'
-              }
-            ]
-          }
-        ]
-      },
-      {
-        'title': 'Get all teachers information',
-        'tab': 'filterteacher',
-        'files': [
-          {
-            'url': '/lib/education/education_service.rb',
-            'methods': [
-              {
-                'title': 'get_teachers',
-                'description': 'Get teachers within a school.'
-              }
-            ]
-          }
-        ]
-      },
-      {
-        'title': 'Get all students in my classes',
-        'tab': 'filterstudentsinmyclasses',
-        'files': [
-          {
-            'url': '/lib/education/education_service.rb',
-            'methods': [
-              {
-                'title': 'get_studentsInMyClasses',
-                'description': 'Get all my classes with students.'
-              }
-            ]
-          }
-        ]
-      }
     ]
   },
   {
