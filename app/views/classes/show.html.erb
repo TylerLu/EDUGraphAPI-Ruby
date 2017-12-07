@@ -26,12 +26,6 @@
         </div>
         <div class="container coursedetail">
             <div class="col-md-6">
-                <span>Course Name:</span> <%= @class.course_name %>
-                <br />
-                <span>Description:</span> <%= @class.course_description %>
-                <br />
-                <span>Period:</span> <%= @class.period %>
-                <br />
                 <span>Term Name:</span> <%= @class.term_name %>
                 <br />
                 <span>Start/Finish Date:</span>
@@ -89,7 +83,6 @@
                         <thead>
                             <tr class="table-green-header">
                                 <th class="tdleft">student name</th>
-                                <th>grade</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -99,7 +92,6 @@
                                         <img src="/images/header-default.jpg" realheader="/users/<%= student.object_id %>/photo" /> 
                                         <%= student.display_name %> 
                                     </td>
-                                    <td><%= student.grade %></td>
                                 </tr>
                             <% end %>    
                         </tbody>
