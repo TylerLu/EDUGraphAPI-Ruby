@@ -78,10 +78,8 @@
                         </div>
                         <% end %>
                         <div class="detail">
-                            <h5>Course Id:</h5>
+                            <h5>Class Number:</h5>
                             <h6><%= c.course_id %></h6>
-                            <h5>Description:</h5>
-                            <h6><%= c.course_description %></h6>
                             <h5>Teachers:</h5>
                             <h6></h6>
                             <h5>Term Name:</h5>
@@ -92,8 +90,6 @@
                                 <span> - </span>
                                 <span id="termdate"><%= Date.strptime(c.term_end_date, '%m/%d/%Y').to_s rescue '' %></span>
                             </h6>
-                            <h5>Period:</h5>
-                            <h6><%= c.period %></h6>
                         </div>
                     </div>
                     <% end %>      
@@ -125,10 +121,8 @@
                                 </div>
                             </a>
                             <div class="detail">
-                                <h5>Course Id:</h5>
+                                <h5>Class Number:</h5>
                                 <h6><%= c.course_id %></h6>
-                                <h5>Description:</h5>
-                                <h6><%= c.course_description %></h6>
                                 <h5>Teachers:</h5>
                                 <% c.teachers.each do |t| %>
                                     <h6><%= t.display_name %></h6>
@@ -141,8 +135,6 @@
                                     <span> - </span>
                                     <span id="termdate"><%= Date.strptime(c.term_end_date, '%m/%d/%Y').to_s %></span>
                                 </h6>
-                                <h5>Period:</h5>
-                                <h6><%= c.period %></h6>
                             </div>
                         </div>
                         <% end %>

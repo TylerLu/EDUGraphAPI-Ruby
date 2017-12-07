@@ -78,9 +78,10 @@ $(document).ready(function () {
                         else {
                             html += '<div class="tile"><h5>' +value['display_name']+ '</h5><h2>' + value['combined_course_number'] + '</h2></div>';
                         }
-                        html += '<div class="detail"><h5>Course Id:</h5><h6>' +value['course_id']+ '</h6><h5>Description:</h5><h6>'+ value['course_description'] +'</h6>' + 
-                            '<h5>Teachers:</h5><h5>Term Name:</h5><h6>' + value['teacher_name'] + '</h6><h5>Start/Finish Date:</h5><h6><span id="termdate">'+ value['term_start_time'] +'</span><span> - </span>' + 
-                            '<span id="termdate">'+value['term_end_time']+'</span></h6><h5>Period:</h5><h6>' + value['period'] + '</h6></div>';
+                        html += '<div class="detail"><h5>Class Number:</h5><h6>' +value['course_id'] +'</h6>' + 
+                            '<h5>Teachers:</h5><h5>Term Name:</h5><h6>' + value['teacher_name'] + '</h6>' +
+                            '<h5>Start/Finish Date:</h5><h6><span id="termdate">'+ value['term_start_time'] +'</span><span> - </span>' + 
+                            '<span id="termdate">'+value['term_end_time']+'</span></h6></div>';
                         html += '</div>';
                     })
                     _ = $(html);
