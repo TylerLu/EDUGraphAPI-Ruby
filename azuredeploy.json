@@ -57,13 +57,6 @@
       "metadata": {
         "description": ""
       }
-    },
-    "bingMapKey": {
-      "type": "string",
-      "defaultValue": "",
-      "metadata": {
-        "description": ""
-      }
     }
   },
   "variables": {
@@ -132,7 +125,6 @@
             "DB_USERNAME": "[listConnectionString(resourceId('SuccessBricks.ClearDB/databases/', variables('databaseName')), '2014-04-01').properties.username]",
             "DB_PASSWORD": "[listConnectionString(resourceId('SuccessBricks.ClearDB/databases/', variables('databaseName')), '2014-04-01').properties.password]",
             "DB_DATABASE": "[split(listConnectionString(resourceId('SuccessBricks.ClearDB/databases/', variables('databaseName')), '2014-04-01').properties.connectionUrl, '/')[3]]",
-            "BingMapKey": "[parameters('bingMapKey')]",
             "SourceCodeRepositoryUrl": "[parameters('SourceCodeRepositoryUrl')]",
             "command": "deploy.sh"
           }
