@@ -65,30 +65,30 @@
                     <% @classes.value.each_with_index do |c, index| %>
                     <div class="tile-container <%= 'hidden_course' if index > 11 %>" id="course_<%= index %>">
                         <% if c.custom_data[:is_my] %>
-                        <a class="mysectionlink" href="/schools/<%= @school.object_id %>/classes/<%= c.object_id %>">
+                        <a class="mysectionlink" href="/schools/<%= @school.id %>/classes/<%= c.id %>">
                             <div class="tile">
                                 <h5><%= c.display_name %></h5>
-                                <h2><%= c.combined_course_number %></h2>
+                                <h2><%= c.code %></h2>
                             </div>
                         </a>
                         <% else %>
                         <div class="tile">
                             <h5><%= c.display_name %></h5>                         
-                            <h2><%= c.combined_course_number %></h2>
+                            <h2><%= c.code %></h2>
                         </div>
                         <% end %>
                         <div class="detail">
                             <h5>Class Number:</h5>
-                            <h6><%= c.course_id %></h6>
+                            <h6><%= c.code %></h6>
                             <h5>Teachers:</h5>
                             <h6></h6>
                             <h5>Term Name:</h5>
-                            <h6><%= c.term_name %></h6>
+                            <h6><%= c.term.display_name %></h6>
                             <h5>Start/Finish Date:</h5>
                             <h6>
-                                <span id="termdate"><%= Date.strptime(c.term_start_date, '%m/%d/%Y').to_s rescue '' %></span>
+                                <span id="termdate"><%= c.term.start_date.to_s %></span>
                                 <span> - </span>
-                                <span id="termdate"><%= Date.strptime(c.term_end_date, '%m/%d/%Y').to_s rescue '' %></span>
+                                <span id="termdate"><%= c.term.end_date.to_s %></span>
                             </h6>
                         </div>
                     </div>
@@ -96,7 +96,7 @@
                 </div>
                 <% if @classes.next_link %>
                 <!-- <div class="seemore" id="see-more" data-index=12 data-count=''> -->
-                <div class="seemore" id="see-more" data-school-object-id="<%= @school.object_id %>" data-school-id="<%= @school.school_id %>" data-skip-token="<%= @classes.next_link.skip_token %>" data-school-number="<%= @school.number %>">
+                <div class="seemore" id="see-more" data-school-object-id="<%= @school.id %>" data-school-id="<%= @school.school_id %>" data-skip-token="<%= @classes.next_link.skip_token %>" data-school-number="<%= @school.number %>">
                     <span>See More</span>
                 </div>
                 <% end %>
@@ -114,26 +114,26 @@
                     <% else %>
                         <% @my_classes.each_with_index do |c, index| %>
                         <div class="tile-container <%= 'hidden_course' if index > 11 %>" id="my_course_<%= index %>">
-                            <a class="mysectionlink" href="/schools/<%= @school.object_id %>/classes/<%= c.object_id %>">
+                            <a class="mysectionlink" href="/schools/<%= @school.id %>/classes/<%= c.id %>">
                                 <div class="tile">
                                     <h5><%= c.display_name %></h5>
-                                    <h2><%= c.combined_course_number %></h2>
+                                    <h2><%= c.code %></h2>
                                 </div>
                             </a>
                             <div class="detail">
                                 <h5>Class Number:</h5>
-                                <h6><%= c.course_id %></h6>
+                                <h6><%= c.code %></h6>
                                 <h5>Teachers:</h5>
                                 <% c.teachers.each do |t| %>
                                     <h6><%= t.display_name %></h6>
                                 <% end %>
                                 <h5>Term Name:</h5>
-                                <h6><%= c.term_name %></h6>
+                                <h6><%= c.term.display_name %></h6>
                                 <h5>Start/Finish Date:</h5>
                                 <h6>
-                                    <span id="termdate"><%= Date.strptime(c.term_start_date, '%m/%d/%Y').to_s %></span>
+                                    <span id="termdate"><%= c.term.start_date.to_s %></span>
                                     <span> - </span>
-                                    <span id="termdate"><%= Date.strptime(c.term_end_date, '%m/%d/%Y').to_s %></span>
+                                    <span id="termdate"><%= c.term.end_date.to_s %></span>
                                 </h6>
                             </div>
                         </div>

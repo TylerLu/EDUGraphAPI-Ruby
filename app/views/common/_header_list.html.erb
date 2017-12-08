@@ -6,7 +6,7 @@
 </li>
 
 <% if (defined? school) && school  %>
- 	<li><a href="/schools/<%= school.object_id %>/classes">Classes</a></li>
+ 	<li><a href="/schools/<%= school.id %>/classes">Classes</a></li>
 <% end %>
 
 <% if current_user.is_admin? %>

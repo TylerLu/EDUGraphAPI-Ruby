@@ -66,13 +66,13 @@ $(document).ready(function () {
                 type: 'GET',
                 url: '/schools/' + school_object_id + '/classes/more',
                 dataType: 'json',
-                data: { skip_token: skip_token, edu_school_id: school_id },
+                data: { skip_token: skip_token },
                 success: function(res) {
                     var html = '';
                     $.each(res['values'], function(index, value) {
                         html += '<div class="tile-container">';
                         if(value['is_my_course'] == true) {
-                            html += '<a class="mysectionlink" href="/schools/'+ school_object_id +'/classes/'+ value['object_id'] +'">' + 
+                            html += '<a class="mysectionlink" href="/schools/'+ school_object_id +'/classes/'+ value['id'] +'">' + 
                             '<div class="tile"><h5>' +value['display_name']+ '</h5><h2>' + value['combined_course_number'] + '</h2></div></a>';
                         }
                         else {

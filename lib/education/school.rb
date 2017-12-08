@@ -2,6 +2,7 @@
 # See LICENSE in the project root for license information. 
 
 require_relative 'object_base.rb'
+require_relative 'physical_address.rb'
 
 module Education
 
@@ -11,44 +12,39 @@ module Education
       super(prop_hash)
     end
 
-    def school_id
-      get_education_extension_value('SyncSource_SchoolId')
+    def school_id      
+      get_value('externalId')
     end
   
-    def number
-      get_education_extension_value('SchoolNumber') 
-    end
-
     def display_name
       get_value('displayName')
     end
 
     def principal_name
-      get_education_extension_value('SchoolPrincipalName')
+      get_value('principalName')
     end
 
     def lowest_grade
-      get_education_extension_value('LowestGrade')
+      get_value('highestGrade')
     end
 
     def highest_grade
-      get_education_extension_value('HighestGrade')
+      get_value('lowestGrade')
     end
 
-    def zip
-      get_education_extension_value('Zip')
+    def number
+      get_value('schoolNumber')
+    end
+
+    def school_id
+      get_value('SyncSource_SchoolId')
     end
 
     def address
-      get_education_extension_value('Address')
-    end
-
-    def city
-      get_education_extension_value('City')
-    end
-
-    def state
-      get_education_extension_value('StateId')
+      if @address.nil?
+        @address = PhysicalAddress.new(get_value('address'))
+      end
+      @address
     end
 
   end

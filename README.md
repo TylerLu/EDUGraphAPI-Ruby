@@ -360,16 +360,16 @@ end
 ~~~
 
 ~~~typescript
-def get_school(object_id)
-  get_object(Education::School, "administrativeUnits/#{object_id}")
+def get_school(id)
+  get_object(Education::School, "administrativeUnits/#{id}")
 end
 ~~~
 
 **Get classes**
 
 ~~~typescript
-def get_sections(school_id, skip_token = nil, top = 12)
-  get_paged_objects(Education::Section, 'groups', {
+def get_classes(school_id, skip_token = nil, top = 12)
+  get_paged_objects(Education::Class, 'groups', {
     '$top': 12,
     '$filter': "extension_fe2174665583431c953114ff7268b7b3_Education_ObjectType eq 'Section' and extension_fe2174665583431c953114ff7268b7b3_Education_SyncSource_SchoolId eq '#{school_id}'",
     '$skiptoken': skip_token
@@ -378,8 +378,8 @@ end
 ~~~
 
 ```typescript
-def get_section(section_id)
-  get_object(Education::Section, "groups/#{section_id}")
+def get_section(class_id)
+  get_object(Education::Class, "groups/#{class_id}")
 end
 ```
 **Get users**

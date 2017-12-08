@@ -11,24 +11,24 @@ class ClassesController < ApplicationController
     education_service = Education::EducationService.new(current_user.tenant_id, ms_access_token)
 
     @school = education_service.get_school(params[:school_id])
-    @my_classes = education_service.get_my_sections(@school.school_id)
-    @classes = education_service.get_sections(@school.school_id)
+    @my_classes = education_service.get_my_classes(@school.id)
+    @classes = education_service.get_classes(@school.id)
     @classes.value.each do |c| 
-      c.custom_data[:is_my] = @my_classes.any?{ |mc| mc.object_id == c.object_id}
+      c.custom_data[:is_my] = @my_classes.any?{ |mc| mc.id == c.id}
     end
   end
 
   def more
-    edu_school_id = params[:edu_school_id]
+    school_id = params[:school_id]
     skip_token = params[:skip_token]
 
     ms_access_token = token_service.get_access_token(current_user.o365_user_id, Constants::Resources::MSGraph)
     education_service = Education::EducationService.new(current_user.tenant_id, ms_access_token)
     
-    @my_classes = education_service.get_my_sections(edu_school_id)  
-    @classes = education_service.get_sections(edu_school_id, skip_token)
+    @my_classes = education_service.get_my_classes(school_id)  
+    @classes = education_service.get_classes(school_id, skip_token)
     @classes.value.each do |c| 
-      c.custom_data[:is_my] = @my_classes.any?{ |mc| mc.object_id == c.object_id}
+      c.custom_data[:is_my] = @my_classes.any?{ |mc| mc.id == c.id}
     end
 
     render json: {
@@ -36,16 +36,11 @@ class ClassesController < ApplicationController
       values: @classes.value.map do |c|
         {
           is_my: c.custom_data[:is_my],
-          object_id: c.object_id,
           display_name: c.display_name,
-          course_name: c.course_name,
-          course_id: c.course_id,
-          course_description: c.course_description,
-          combined_course_number: c.combined_course_number,
-          teacher_name: c.term_name,
-          term_start_time: Date.strptime(c.term_start_date, '%m/%d/%Y'),
-          term_end_time: Date.strptime(c.term_end_date, '%m/%d/%Y'),
-          period: c.period,
+          code: c.code,
+          description: c.description,
+          term_start_time: c.term.start_date.to_s,
+          term_end_time: c.term.end_date.to_s
         }
       end
     }
@@ -60,25 +55,26 @@ class ClassesController < ApplicationController
     class_object_id = params[:id];
     @school = education_service.get_school(params[:school_id])
     @class = education_service.get_section(class_object_id)
-    @class.members = education_service.get_section_members(class_object_id)
+    @class.members = education_service.get_class_members(class_object_id)
 
     @conversations = ms_graph_servcie.get_conversations(class_object_id)
     @documents = ms_graph_servcie.get_documents(class_object_id)
+    @documents_web_url = ms_graph_servcie.get_documents_web_url(class_object_id)
     user_service = UserService.new    
     seating_position_hash = user_service.get_seating_position_hash(class_object_id)
-    favorite_color_hash = user_service.get_favorite_color_hash(@class.members.map{ |m| m.object_id })
+    favorite_color_hash = user_service.get_favorite_color_hash(@class.members.map{ |m| m.id })
     
     @class.members.each do |m|
-      m.custom_data[:position] = seating_position_hash[m.object_id]
-      m.custom_data[:favorite_color] = favorite_color_hash[m.object_id]
+      m.custom_data[:position] = seating_position_hash[m.id]
+      m.custom_data[:favorite_color] = favorite_color_hash[m.id]
       if m.is_teacher?
-        @teacher_favorite_color = favorite_color_hash[m.object_id]
+        @teacher_favorite_color = favorite_color_hash[m.id]
       end
     end
 
-    school_teachers = education_service.get_allteachers(@school.school_id);
+    school_teachers = education_service.get_allteachers(@school.id);
     @schoolTeachers = school_teachers.select do |teacher|
-      @class.teachers.select{|classteacher| classteacher.object_id == teacher.object_id}.length == 0
+      @class.teachers.select{|classteacher| classteacher.id == teacher.id}.length == 0
     end
 
   end

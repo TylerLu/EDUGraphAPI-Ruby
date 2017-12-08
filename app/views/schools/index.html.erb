@@ -46,22 +46,22 @@
               <th></th>
           </tr>
 					<% @schools.each do |school| %>
-          <tr class="tr-content <%= 'td-green' if school.school_id == @me.school_id %>">
+          <tr class="tr-content <%= 'td-green' if @me.is_in_school(school) %>">
               <td><%= school.display_name %></td>
               <td><%= school.principal_name || '-' %></td>
               <td><%= school.lowest_grade %> - <%= school.highest_grade %></td>
               <td>
                   <div class="schooladdress">
                     <% if school.address.present? %>
-                      <%= school.address %><br />
-											<%= school.city %>, <%= school.state %> <%= school.zip %>
+                      <%= school.address.street %><br />
+											<%= school.address.city %>, <%= school.address.state %> <%= school.address.postal_code %>
                     <% else %>
                       -
                     <% end %>
                   </div>
               </td>
               <td>
-                  <a class="btnlink" href="/schools/<%= school.object_id %>/classes">Classes</a>
+                  <a class="btnlink" href="/schools/<%= school.id %>/classes">Classes</a>
               </td>
           </tr>
           <% end %> 

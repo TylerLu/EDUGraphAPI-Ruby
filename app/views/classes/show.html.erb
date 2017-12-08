@@ -16,22 +16,22 @@
         <div class="container">
             <div class="col-md-6 secondnav">
                 <a href="/schools"> All Schools</a>
-                > <a href='/schools/<%= @school.object_id %>/classes'><%= @school.display_name %></a>
-                > <%= @class.course_name %>
+                > <a href='/schools/<%= @school.id %>/classes'><%= @school.display_name %></a>
+                > <%= @class.display_name %>
             </div>
         </div>
         <div class="container">
             <div class="a-heading ">Class Details</div>
-            <div class="b-title"><%= @class.course_number %> | <%= @class.display_name %></div>
+            <div class="b-title"><%= @class.code %> | <%= @class.display_name %></div>
         </div>
         <div class="container coursedetail">
             <div class="col-md-6">
-                <span>Term Name:</span> <%= @class.term_name %>
+                <span>Term Name:</span> <%= @class.term.display_name %>
                 <br />
                 <span>Start/Finish Date:</span>
-                <span id="termdate"><%= @class.term_start_date %></span>
+                <span id="termdate"><%= @class.term.start_date.to_s %></span>
                 <span id="termdate-separator"> - </span>
-                <span id="termdate"><%= @class.term_end_date %></span>
+                <span id="termdate"><%= @class.term.end_date.to_s %></span>
             </div>
             <div class="col-md-6">
                 <span>Teacher:</span> 
@@ -57,8 +57,8 @@
                             <ul>
                                 <% @schoolTeachers.each do |teacher| %>
                                     <li>
-                                        <a data-userid="<%= teacher.object_id %>" data-url="<%= "/schools/#{@school.object_id}/classes/#{@class.object_id}/add_coteacher" %>" href="javascript:void(0)" class="addcoteacher">
-                                        <img src="/images/header-default.jpg" realheader="/users/<%= teacher.object_id %>/photo" /> <%= teacher.display_name %>
+                                        <a data-userid="<%= teacher.id %>" data-url="<%= "/schools/#{@school.id}/classes/#{@class.id}/add_coteacher" %>" href="javascript:void(0)" class="addcoteacher">
+                                        <img src="/images/header-default.jpg" realheader="/users/<%= teacher.id %>/photo" /> <%= teacher.display_name %>
                                         </a>
                                     </li>
                                 <% end %>
@@ -89,7 +89,7 @@
                             <% @class.students.each do |student| %>
                                 <tr class="tr-content">
                                     <td>
-                                        <img src="/images/header-default.jpg" realheader="/users/<%= student.object_id %>/photo" /> 
+                                        <img src="/images/header-default.jpg" realheader="/users/<%= student.id %>/photo" /> 
                                         <%= student.display_name %> 
                                     </td>
                                 </tr>
@@ -127,7 +127,7 @@
                             <% end %>
                         </tbody>
                     </table>
-                <span class="see-more"><a href="https://canvizedu.sharepoint.com/sites/<%= @class.anchor_id %>/Shared%20Documents" target="_blank">See All</a></span>
+                <span class="see-more"><a href="<%= @documents_web_url %>" target="_blank">See All</a></span>
                 <br style="clear:both" />
             </div>
             <div id="conversations" class="tab-pane fade">
@@ -138,14 +138,14 @@
                                     <td class="border-holder"></td>
                                     <td class="space-holder left"></td>
                                     <td>
-                                        <a target="_blank" href="https://outlook.office.com/owa/?path=/group/<%= @class.mail %>/mail&exsvurl=1&ispopout=0&ConvID=<%= conversation.id %>"><%= conversation.topic %></a>
+                                        <a target="_blank" href="https://outlook.office.com/owa/?path=/group/<%= @class.mail_nickname %>/mail&exsvurl=1&ispopout=0&ConvID=<%= conversation.id %>"><%= conversation.topic %></a>
                                     </td>
                                     <td class="space-holder right"></td>
                                 </tr>
                             <% end %>
                         </tbody>
                     </table>
-                <span class="see-more"><a target="_blank" href="https://outlook.office.com/owa/?path=/group/<%= @class.mail %>/mail&amp;exsvurl=1&amp;ispopout=0">See All</a></span>
+                <span class="see-more"><a target="_blank" href="https://outlook.office.com/owa/?path=/group/<%= @class.mail_nickname %>/mail&amp;exsvurl=1&amp;ispopout=0">See All</a></span>
                 <br style="clear:both" />
             </div>
 
@@ -156,8 +156,8 @@
                         <div class="tip"> To assign seats for each student, drag and drop student profile icons below onto the seating map to the right.</div>
                     <ul id="lstproducts">
                         <% @class.students.each do |student| %>
-                        <li id="<%= student.object_id %>">
-                            <img src="/images/header-default.jpg" realheader="/users/<%= student.object_id %>/photo" />
+                        <li id="<%= student.id %>">
+                            <img src="/images/header-default.jpg" realheader="/users/<%= student.id %>/photo" />
                             <span class="disname"> <%= student.display_name %> </span>
                             <span class="seated <%= 'hideitem' unless student.custom_data[:position] %>">seated ✓</span>
                         </li>
@@ -165,10 +165,10 @@
                     </ul>
                     <div id="hidtiles" class="hideitem">
                         <% @class.students.select{|s| !s.custom_data[:position]  }.each do |student| %>
-                        <div class="deskcontainer unsaved" style="<%= 'background-color: ' + student.custom_data[:favorite_color] if student.custom_data[:favorite_color] %>" position="0" userid="<%= student.object_id %>">
+                        <div class="deskcontainer unsaved" style="<%= 'background-color: ' + student.custom_data[:favorite_color] if student.custom_data[:favorite_color] %>" position="0" userid="<%= student.id %>">
                             <div class="deskclose"><img src="/Images/close.png"></div>
                             <div class="deskicon">
-                                <img src="/images/header-default.jpg" realheader="/users/<%= student.object_id %>/photo" />
+                                <img src="/images/header-default.jpg" realheader="/users/<%= student.id %>/photo" />
                             </div>
                             <div class="stuname"><%= student.display_name %></div>
                         </div>
@@ -182,10 +182,10 @@
                             <% (1..36).each do |index| %>
                                 <% if student = @class.students.detect {|s| s.custom_data[:position] == index } %>
                                 <div class="desktile" position="<%= index %>">
-                                    <div class="deskcontainer white" style="<%= 'background-color: ' + student.custom_data[:favorite_color] if student.custom_data[:favorite_color] %>" position="<%= index %>" userid="<%= student.object_id %>">
+                                    <div class="deskcontainer white" style="<%= 'background-color: ' + student.custom_data[:favorite_color] if student.custom_data[:favorite_color] %>" position="<%= index %>" userid="<%= student.id %>">
                                         <div class="deskclose" style="display: none;"><img src="/Images/close.png"></div>
                                         <div class="deskicon">
-                                            <img src="/Images/header-default.jpg" realheader="/users/<%= student.object_id%>/photo">
+                                            <img src="/Images/header-default.jpg" realheader="/users/<%= student.id%>/photo">
                                         </div>
                                     <div class="stuname"><%= student.display_name %></div>
                                     </div>
@@ -199,7 +199,7 @@
                 </div>
                 <div id="dvedit" class="dvedit">
                         <img id="imgedit" src="/Images/edit.png" style="">
-                        <img id="imgsave" data-url="<%= "/schools/#{@school.object_id}/classes/#{@class.object_id}/save_seating_positions" %>" src="/Images/save.png" style="display: none;">
+                        <img id="imgsave" data-url="<%= "/schools/#{@school.id}/classes/#{@class.id}/save_seating_positions" %>" src="/Images/save.png" style="display: none;">
                         <img id="imgcancel" src="/Images/cancel.png" style="display: none;">
                 </div>
                 <br style="clear:both">
@@ -210,8 +210,8 @@
                         <div class="assignseat tip"><div class="greenicon" style="background-color:#2F19FF"></div>Your assigned seat </div>
                     <ul id="lstproducts">
                         <% @class.students.each do |student| %>
-                        <li id="<%= student.object_id %>">
-                            <img src="/images/header-default.jpg" realheader="/users/<%= student.object_id %>/photo" />
+                        <li id="<%= student.id %>">
+                            <img src="/images/header-default.jpg" realheader="/users/<%= student.id %>/photo" />
                             <span class="disname"> <%= student.display_name %> </span>
                             <span class="seated <%= 'hideitem' unless student.custom_data[:position] %>">seated ✓</span> 
                         </li>
@@ -225,10 +225,10 @@
                             <% (1..36).each do |index| %>
                                 <% if student = @class.students.detect {|s| s.custom_data[:position] == index } %>
                                 <div class="desktile" position="<%= index %>">
-                                    <div class="deskcontainer white" style="<%= 'background-color: ' + student.custom_data[:favorite_color] if student.custom_data[:favorite_color] %>" position="<%= index %>" userid="<%= student.object_id %>">
+                                    <div class="deskcontainer white" style="<%= 'background-color: ' + student.custom_data[:favorite_color] if student.custom_data[:favorite_color] %>" position="<%= index %>" userid="<%= student.id %>">
                                         <div class="deskclose"><img src="/Images/close.png"></div>
                                         <div class="deskicon">
-                                            <img src="/Images/header.png" realheader="/users/<%= student.object_id %>/photo">
+                                            <img src="/Images/header.png" realheader="/users/<%= student.id %>/photo">
                                         </div>
                                     <div class="stuname"><%= student.display_name %></div>
                                     </div>
@@ -248,6 +248,6 @@
         </div>
     </div>
 </div>
-<input type="hidden" name="hidSectionid" id="hidSectionid" value="<%= @class.object_id %>" />
+<input type="hidden" name="hidSectionid" id="hidSectionid" value="<%= @class.id %>" />
 
 <%= javascript_include_tag "jquery.tablesorter.min", "classdetail" %>

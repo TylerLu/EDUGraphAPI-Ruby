@@ -2,6 +2,10 @@
 # See LICENSE in the project root for license information. 
 
 require_relative 'object_base.rb'
+require_relative 'teacher.rb'
+require_relative 'student.rb'
+require_relative 'school.rb'
+require_relative 'class.rb'
 
 module Education
 
@@ -16,27 +20,51 @@ module Education
     end
 
     def grade
-      get_education_extension_value('Grade')
+      get_value('Grade')
+    end
+
+    def primary_role
+      get_value('primaryRole')
+    end
+
+    def teacher
+      @teacher ||= get_value('teacher') ?  Teacher.new(get_value('teacher')) : nil
+    end
+
+    def student
+      @student ||= get_value('student') ? Student.new(get_value('student')) : nil
     end
 
     def is_teacher?
-      education_object_type == 'Teacher'
+      primary_role == 'teacher'
     end
 
-    def school_id
-      get_education_extension_value('SyncSource_SchoolId')
+    def schools
+      @schools ||= get_value('schools').map{ |i| School.new(i) }
     end
 
-    def student_id
-      get_education_extension_value('SyncSource_StudentId')
+    def classes
+      @schools ||= get_value('classes').map{ |i| Class.new(i) }
     end
+
+    def is_in_school(school)
+      schools.any? { |s| s.id == school.id }
+    end
+
+    #def school_id
+    #  get_value('SyncSource_SchoolId')
+    #end
+
+    #def student_id
+    #  get_value('SyncSource_StudentId')
+    #end
     
-    def teacher_id
-      get_education_extension_value('SyncSource_TeacherId')
-    end
+    #def teacher_id
+    #  get_value('SyncSource_TeacherId')
+    #end
 
     def education_user_id
-      student_id ? student_id : teacher_id 
+      teacher.nil? ? student.external_id : teacher.external_id
     end
 
   end

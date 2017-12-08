@@ -6,7 +6,7 @@ require_relative 'paged_collection.rb'
 require_relative 'next_link.rb'
 require_relative 'user.rb'
 require_relative 'school.rb'
-require_relative 'section.rb'
+require_relative 'class.rb'
 
 module Education
 
@@ -18,40 +18,42 @@ module Education
     end
 
     def get_me
-      get_object(Education::User, 'me')
+      get_object(Education::User, 'education/me', {
+        '$expand': 'schools,classes'
+      })
     end
 
     def get_all_schools
-      get_objects(Education::School, 'administrativeUnits')
+      get_objects(Education::School, 'education/schools')
     end
 
-    def get_school(object_id)
-      get_object(Education::School, "administrativeUnits/#{object_id}")
+    def get_school(id)
+      get_object(Education::School, "education/schools/#{id}")
     end
     
-    def get_my_sections(school_id)
-      sections = get_objects(Education::Section, "me/memberOf")
-      my_sections = sections.select{|s| s.education_object_type == 'Section' && s.school_id == school_id}  
-      my_sections.each do |s|
-        s.members = get_section_members(s.object_id)
+    def get_classes(school_id, skip_token = nil, top = 12)
+      get_paged_objects(Education::Class, "education/schools/#{school_id}/classes", {
+        '$top': 12,
+        '$skiptoken': skip_token
+      })
+    end
+
+    def get_my_classes(school_id)
+      classes = get_objects(Education::Class, "education/me/classes", {
+        '$expand': 'schools'
+      })      
+      my_classes = classes.select{|c| c.schools.any? { |s| s.id == school_id }}  
+      my_classes.each do |c|
+        c.members = get_class_members(c.id)
       end  
     end
 
-    def get_section(section_id)
-      get_object(Education::Section, "groups/#{section_id}")
+    def get_section(class_id)
+      get_object(Education::Class, "education/classes/#{class_id}")
     end
     
-    def get_section_members(section_id)
-      get_objects(Education::User, "groups/#{section_id}/members")
-    end
-
-
-    def get_sections(school_id, skip_token = nil, top = 12)
-      get_paged_objects(Education::Section, 'groups', {
-        '$top': 12,
-        '$filter': "extension_fe2174665583431c953114ff7268b7b3_Education_ObjectType eq 'Section' and extension_fe2174665583431c953114ff7268b7b3_Education_SyncSource_SchoolId eq '#{school_id}'",
-        '$skiptoken': skip_token
-      })
+    def get_class_members(class_id)
+      get_objects(Education::User, "education/classes/#{class_id}/members")
     end
 
     def get_allteachers(school_id)
@@ -61,8 +63,8 @@ module Education
     end
     
     def add_user_to_section_members(class_id, user_id) 
-        data = { "@odata.id": "#{Constants::Resources::MSGraph}/v1.0/users/#{user_id}"}
-       request('post', "#{Constants::Resources::MSGraph}/v1.0/groups/#{class_id}/members/$ref", {}, data.to_json)
+      data = { "@odata.id": "#{Constants::Resources::MSGraph}/v1.0/users/#{user_id}"}
+      request('post', "#{Constants::Resources::MSGraph}/v1.0/groups/#{class_id}/members/$ref", {}, data.to_json)
     end
 
     def add_user_to_section_owners(class_id, user_id) 

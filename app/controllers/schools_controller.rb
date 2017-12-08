@@ -12,7 +12,7 @@ class SchoolsController < ApplicationController
       
     @me = education_service.get_me
     @schools = education_service.get_all_schools
-      .sort_by { |s| ((s.school_id == @me.school_id) ? 'A' : 'Z') + s.display_name }
+      .sort_by { |s| (@me.is_in_school(s) ? 'A' : 'Z') + s.display_name }
   end
 
 end

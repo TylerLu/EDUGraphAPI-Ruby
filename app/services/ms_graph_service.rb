@@ -50,12 +50,16 @@ class MSGraphService
     roles
   end  
 
-  def get_conversations(section_id)
-    @graph.groups.find(section_id).conversations rescue []
+  def get_conversations(class_id)
+    @graph.groups.find(class_id).conversations rescue []
   end
 
-  def get_documents(section_id)
-    @graph.groups.find(section_id).drive.root.children rescue []
+  def get_documents(class_id)
+    @graph.groups.find(class_id).drive.root.children rescue []
+  end
+
+  def get_documents_web_url(class_id)
+    @graph.groups.find(class_id).drive.root.web_url
   end
   
 end

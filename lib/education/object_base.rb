@@ -18,17 +18,8 @@ class ObjectBase
     prop_hash[property_name] = value
   end
 
-  def get_education_extension_value(property_name)
-    extension_property_name = 'extension_fe2174665583431c953114ff7268b7b3_Education_' + property_name
-    prop_hash[extension_property_name]
-  end
-
-  def object_id
+  def id
     get_value('id')
-  end
-
-  def education_object_type
-    get_education_extension_value('ObjectType')
   end
 
   def custom_data

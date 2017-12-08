@@ -15,7 +15,7 @@ class ManageController < ApplicationController
 			education_service = Education::EducationService.new(current_user.tenant_id, token)
 			me = education_service.get_me()
 			if me.school_id
-				@sections = education_service.get_my_sections(me.school_id)
+				@sections = education_service.get_my_classes(me.school_id)
 		  end
 		end
   end

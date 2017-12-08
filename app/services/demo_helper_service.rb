@@ -429,7 +429,7 @@ class DemoHelperService
                   'description': 'Get current user information.'
                 },
                 {
-                  'title': 'get_my_sections',
+                  'title': 'get_my_classes',
                   'description': 'Get current user\'s classes.'
                 }
               ]
@@ -573,7 +573,7 @@ class DemoHelperService
             'url': '/lib/education/education_service.rb',
             'methods': [
               {
-                'title': 'get_my_sections',
+                'title': 'get_my_classes',
                 'description': 'Get my classes within a school.'
               }
             ]
@@ -588,7 +588,7 @@ class DemoHelperService
             'url': '/lib/education/education_service.rb',
             'methods': [
               {
-                'title': 'get_sections',
+                'title': 'get_classes',
                 'description': 'Get classes within a school.'
               }
             ]
@@ -662,7 +662,7 @@ class DemoHelperService
             'url': '/lib/education/education_service.rb',
             'methods': [
               {
-                'title': 'get_section_members',
+                'title': 'get_class_members',
                 'description': 'Get students within a class.'
               }
             ]
