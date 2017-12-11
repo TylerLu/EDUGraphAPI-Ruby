@@ -71,15 +71,19 @@ $(document).ready(function () {
                     var html = '';
                     $.each(res['values'], function(index, value) {
                         html += '<div class="tile-container">';
-                        if(value['is_my_course'] == true) {
+                        if(value['is_my'] == true) {
                             html += '<a class="mysectionlink" href="/schools/'+ school_object_id +'/classes/'+ value['id'] +'">' + 
-                            '<div class="tile"><h5>' +value['display_name']+ '</h5><h2>' + value['combined_course_number'] + '</h2></div></a>';
+                            '<div class="tile"><h5>' +value['display_name']+ '</h5><h2>' + value['code'] + '</h2></div></a>';
                         }
                         else {
-                            html += '<div class="tile"><h5>' +value['display_name']+ '</h5><h2>' + value['combined_course_number'] + '</h2></div>';
+                            html += '<div class="tile"><h5>' +value['display_name']+ '</h5><h2>' + value['code'] + '</h2></div>';
                         }
-                        html += '<div class="detail"><h5>Class Number:</h5><h6>' +value['course_id'] +'</h6>' + 
-                            '<h5>Teachers:</h5><h5>Term Name:</h5><h6>' + value['teacher_name'] + '</h6>' +
+                        var teachers = '';
+                        $.each(value['teachers'], function(index, member){
+                            teachers += '<h6>' + member['display_name'] + '</h6>';
+                        })
+                        html += '<div class="detail"><h5>Class Number:</h5><h6>' +value['code'] +'</h6>' + 
+                            '<h5>Teachers:</h5>'+ teachers +'<h5>Term Name:</h5><h6>' + value['term_name'] + '</h6>' +
                             '<h5>Start/Finish Date:</h5><h6><span id="termdate">'+ value['term_start_time'] +'</span><span> - </span>' + 
                             '<span id="termdate">'+value['term_end_time']+'</span></h6></div>';
                         html += '</div>';
@@ -87,8 +91,15 @@ $(document).ready(function () {
                     _ = $(html);
                     _.appendTo($('#class_content')).hide().fadeIn("slow");
                     bindShowDetail(_);
-                    element.data('skip-token', res['skip_token']);
-                    element.find('span').removeClass('disabled');
+
+                    var skip_token = res['skip_token'];
+                    if(skip_token) {
+                        element.data('skip-token', skip_token);
+                        element.find('span').removeClass('disabled');
+                    }
+                    else {
+                        element.hide();
+                    }
                 }
             })
         }

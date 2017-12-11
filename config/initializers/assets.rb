@@ -11,7 +11,7 @@ Rails.application.config.assets.version = '1.0'
 Rails.application.config.assets.precompile += %w( 
 login.css bootstrap.js
 jqueryval.js site.js
-moment.min.js sections.js
+moment.min.js classes.js
 users.js classdetail.js
 schools.js jquery.tablesorter.min.js
 )

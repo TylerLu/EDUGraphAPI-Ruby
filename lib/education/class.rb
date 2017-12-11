@@ -42,11 +42,11 @@ module Education
     end
 
     def members
-      return self.get_value('members')
+      @members ||= get_value('members').map { |m| User.new(m) }
     end
 
     def members=(value)
-      self.set_value('members', value)
+      @members = value
     end
 
     def teachers

@@ -81,7 +81,9 @@
                             <h5>Class Number:</h5>
                             <h6><%= c.code %></h6>
                             <h5>Teachers:</h5>
-                            <h6></h6>
+                            <% c.teachers.each do |t| %>
+                                <h6><%= t.display_name %></h6>
+                            <% end %>
                             <h5>Term Name:</h5>
                             <h6><%= c.term.display_name %></h6>
                             <h5>Start/Finish Date:</h5>
@@ -150,4 +152,4 @@
     </div>
 </div>
 
-<%= javascript_include_tag 'sections' %>
+<%= javascript_include_tag 'classes' %>

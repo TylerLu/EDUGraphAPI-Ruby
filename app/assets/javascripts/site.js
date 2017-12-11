@@ -29,7 +29,6 @@ $(document).ready(function () {
 });
 
 function showDemoHelper(tabName) {
-    console.log("cloris "+ tabName)
     $("ul.functions > li").hide();
     $("ul.functions > li").each(function () {
         var text = $(this).find(".tab").text();

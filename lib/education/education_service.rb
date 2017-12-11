@@ -31,10 +31,11 @@ module Education
       get_object(Education::School, "education/schools/#{id}")
     end
     
-    def get_classes(school_id, skip_token = nil, top = 12)
+    def get_classes(school_id, top = 12, skip_token = nil)
       get_paged_objects(Education::Class, "education/schools/#{school_id}/classes", {
-        '$top': 12,
-        '$skiptoken': skip_token
+        '$top': top,
+        '$skiptoken': skip_token,
+        '$expand': 'members'
       })
     end
 

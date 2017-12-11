@@ -12,7 +12,7 @@ class ClassesController < ApplicationController
 
     @school = education_service.get_school(params[:school_id])
     @my_classes = education_service.get_my_classes(@school.id)
-    @classes = education_service.get_classes(@school.id)
+    @classes = education_service.get_classes(@school.id, 12)
     @classes.value.each do |c| 
       c.custom_data[:is_my] = @my_classes.any?{ |mc| mc.id == c.id}
     end
@@ -26,19 +26,21 @@ class ClassesController < ApplicationController
     education_service = Education::EducationService.new(current_user.tenant_id, ms_access_token)
     
     @my_classes = education_service.get_my_classes(school_id)  
-    @classes = education_service.get_classes(school_id, skip_token)
+    @classes = education_service.get_classes(school_id, 12, skip_token)
     @classes.value.each do |c| 
       c.custom_data[:is_my] = @my_classes.any?{ |mc| mc.id == c.id}
     end
 
     render json: {
-      skip_token: @classes.next_link.skip_token,
+      skip_token: @classes.next_link ? @classes.next_link.skip_token: nil,
       values: @classes.value.map do |c|
         {
           is_my: c.custom_data[:is_my],
           display_name: c.display_name,
           code: c.code,
+          teachers: c.teachers.map{ |t| { display_name: t.display_name } },
           description: c.description,
+          term_name: c.term.display_name,
           term_start_time: c.term.start_date.to_s,
           term_end_time: c.term.end_date.to_s
         }

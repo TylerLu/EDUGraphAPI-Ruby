@@ -93,7 +93,6 @@ function initDemoHelper(){
     }
     showDemoHelper(tabname);
     $('.nav-tabs li').click(function (e) {
-        console.log("cloris test")
         tabname = $(this).find("a").attr("href");
         showDemoHelper(tabname);
     });
