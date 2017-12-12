@@ -42,13 +42,13 @@
 	   </form>
     </div>
     <% end %>
-    <% if @sections %>
+    <% if @classes %>
     <div class="margin-btm-12 ">
         <b>Classes:</b>
         <br />
         <div>
-            <% @sections.each do | section | %>
-				<%= section.display_name %> <br />
+            <% @classes.each do | c | %>
+				<%= c.display_name %> <br />
             <% end %>
         </div>
     </div>

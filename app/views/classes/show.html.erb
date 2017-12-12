@@ -98,6 +98,7 @@
                     </table>
             </div>
             <div id="documents" class="tab-pane fade">
+                <% if @documents.count > 0 %>
                     <table id="studoc" class="table  table-green table-student tablesorter">
                         <thead>
                             <tr class="table-green-header">
@@ -127,7 +128,10 @@
                             <% end %>
                         </tbody>
                     </table>
-                <span class="see-more"><a href="<%= @documents_web_url %>" target="_blank">See All</a></span>
+                <% else %>
+                    <div class="nodata"> There is no data available for this page at this time.</div>
+                <% end %>
+                <span class="see-more"><a href="<%= @documents_web_url %>" target="_blank">See More</a></span>
                 <br style="clear:both" />
             </div>
             <div id="conversations" class="tab-pane fade">
@@ -145,7 +149,7 @@
                             <% end %>
                         </tbody>
                     </table>
-                <span class="see-more"><a target="_blank" href="https://outlook.office.com/owa/?path=/group/<%= @class.mail_nickname %>/mail&amp;exsvurl=1&amp;ispopout=0">See All</a></span>
+                <span class="see-more"><a target="_blank" href="https://outlook.office.com/owa/?path=/group/<%= @class.mail_nickname %>/mail&amp;exsvurl=1&amp;ispopout=0">See More</a></span>
                 <br style="clear:both" />
             </div>
 

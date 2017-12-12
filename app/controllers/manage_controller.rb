@@ -13,10 +13,7 @@ class ManageController < ApplicationController
 		if current_user.o365_user
 			token = token_service.get_access_token(current_user.o365_user_id, Constants::Resources::MSGraph)
 			education_service = Education::EducationService.new(current_user.tenant_id, token)
-			me = education_service.get_me()
-			if me.school_id
-				@sections = education_service.get_my_classes(me.school_id)
-		  end
+			@classes = education_service.get_my_classes()
 		end
   end
 

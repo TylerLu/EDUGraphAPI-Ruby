@@ -18,37 +18,37 @@ $(document).ready(function () {
         });
     };
 
-    function hasSection(section, sections) {
-        if (!(sections instanceof Array)) {
+    function hasClass(c, classes) {
+        if (!(classes instanceof Array)) {
             return false;
         }
         var result = false;
-        $.each(sections, function (i, s) {
-            if (section.Email == s.Email) {
+        $.each(classes, function (i, s) {
+            if (c.Email == s.Email) {
                 return result = true;
             }
         });
         return result;
     }
 
-    bindShowDetail($(".section-tiles .tile-container"));
+    bindShowDetail($(".class-tiles .tile-container"));
     
     //demo help tab 
     var tabname = '';
-    if ($(".sections .filterlink-container .selected").length > 0) {
-        tabname = $(".sections .filterlink-container .selected").attr("id");
+    if ($(".classes .filterlink-container .selected").length > 0) {
+        tabname = $(".classes .filterlink-container .selected").attr("id");
     }
     showDemoHelper(tabname);
 
 
-    $(".sections .filterlink-container .filterlink").click(function () {
+    $(".classes .filterlink-container .filterlink").click(function () {
         tabname = $(this).attr("id");
         showDemoHelper(tabname);
 
         var element = $(this);
         element.addClass("selected").siblings("a").removeClass("selected");
         var filterType = element.data("type");
-        var tilesContainer = $(".sections .tiles-root-container");
+        var tilesContainer = $(".classes .tiles-root-container");
         tilesContainer.removeClass(tilesContainer.attr("class").replace("tiles-root-container", "")).addClass(filterType + "-container");
     });
 

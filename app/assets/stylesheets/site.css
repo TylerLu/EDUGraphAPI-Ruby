@@ -154,7 +154,7 @@ textarea {
 .pagination span{font-size:12px; color:#444344; background-color:transparent; margin:0 10px; font-family:'Helvetica Neue LT Std Bold'; cursor:pointer}
 .pagination .disabled, .pagination .current{color:#c2c2c2; background-color:transparent; cursor:default}
 
-/*Schools and sections */
+/*Schools and classes */
 .displayname{text-align:right;padding:12px 30px 12px 12px;}
 .secondnav{padding:20px 0 12px 0;}
 .a-heading{font-family:'Helvetica Neue LT Std Th'; font-size:48px; color:#666565; padding-left:0; text-transform:uppercase;}
@@ -231,37 +231,37 @@ textarea {
 .schools .toptiles{float:right;padding-left: 15px;}
 .hr-green{border: 0;height: 10px;margin-top: 10px;}
 
-/*sections*/
-.sections .tophero{border-bottom:5px solid #127605;}
-.sections .tophero .usericon{margin-top:10px;}
-.sections .tophero .usericon div{float:left;}
-.sections .tophero .usericon .icon{width:12px; height:12px; margin:5px 6px 0 0; background:-prefix-linear-zgradient(top, #434345, #BBBBBB); background:linear-gradient(to bottom, #434345, #BBBBBB);}
-.sections .tophero .usericon .icon.my-class{margin-left:12px; background:-prefix-linear-zgradient(top, #4E9F42, #B8E2B2); background:linear-gradient(to bottom, #4E9F42, #B8E2B2);}
+/*classes*/
+.classes .tophero{border-bottom:5px solid #127605;}
+.classes .tophero .usericon{margin-top:10px;}
+.classes .tophero .usericon div{float:left;}
+.classes .tophero .usericon .icon{width:12px; height:12px; margin:5px 6px 0 0; background:-prefix-linear-zgradient(top, #434345, #BBBBBB); background:linear-gradient(to bottom, #434345, #BBBBBB);}
+.classes .tophero .usericon .icon.my-class{margin-left:12px; background:-prefix-linear-zgradient(top, #4E9F42, #B8E2B2); background:linear-gradient(to bottom, #4E9F42, #B8E2B2);}
 
-.section-tiles{padding:0 17.14px; background-color:white}
-.section-tiles .tile-container{margin-right:14px;float: left;margin-bottom: 5px;margin-top: 12px;position:relative;}
-.section-tiles .tile{display:inline-block;width:175px;height:175px;box-sizing:border-box;border:1px solid #C2C2C2;border-radius:5px;-moz-border-radius:5px;background: -prefix-linear-zgradient(top, #434345, #BBBBBB); background: linear-gradient(to bottom, #434345, #BBBBBB); color:#fff;}
+.class-tiles{padding:0 17.14px; background-color:white}
+.class-tiles .tile-container{margin-right:14px;float: left;margin-bottom: 5px;margin-top: 12px;position:relative;}
+.class-tiles .tile{display:inline-block;width:175px;height:175px;box-sizing:border-box;border:1px solid #C2C2C2;border-radius:5px;-moz-border-radius:5px;background: -prefix-linear-zgradient(top, #434345, #BBBBBB); background: linear-gradient(to bottom, #434345, #BBBBBB); color:#fff;}
 .mysectionlink .tile{border:1px solid #C2C2C2;border-radius:5px;-moz-border-radius:5px;background: -prefix-linear-zgradient(top, #4E9F42, #B8E2B2); background: linear-gradient(to bottom, #4E9F42, #B8E2B2); }
-.section-tiles .tile>h5{text-align: center;margin: 60px 5px 0 5px;font-size:14px;font-style: normal;font-variant: normal;text-overflow:ellipsis}
-.section-tiles .tile>h2{text-align: center;margin-top:4px;font-size:30px;}
-.section-tiles .tile:hover{background-image:url('/Images/ClassDetailsTiles-bg.jpg');color:#000;border:2px solid green;}
-.section-tiles .tile:hover>h5{font-family:'Helvetica Neue LT Std Bold';font-size:16px;}
-.section-tiles .tile:hover>h2{font-family:'Helvetica Neue LT Std Bold';font-size:36px;}
-.section-tiles .detail {display:none;position:absolute; background:#fff; color:#000;top:-5px; left:188px;width:360px; min-height:230px;padding:8px 20px 30px 20px;z-index:10;border:solid #C2C2C2 1px;border-radius:5px;-moz-border-radius:5px;-moz-box-shadow:1px 2px 1px 2px #c2c2c2;-webkit-box-shadow: 1px 2px 1px 2px #c2c2c2;box-shadow:1px 2px 1px 2px #c2c2c2;}
-.section-tiles .detail h5{font-family:'Helvetica Neue LT Std Bold';}
-.section-tiles .tile-container:nth-child(6n) .detail,.section-tiles .tile-container:nth-child(6n-1) .detail{left:-380px;}
-.section-tiles .detail>h5{margin-top: 10px;font-weight: 800;font-size:12px;text-transform:uppercase;}
-.section-tiles .detail>h6{margin-top: 10px;font-size:12px;}
-.section-school-name{font-size:18px; width:100%; padding:0 20px 10px 0; text-align:right;}
+.class-tiles .tile>h5{text-align: center;margin: 60px 5px 0 5px;font-size:14px;font-style: normal;font-variant: normal;text-overflow:ellipsis}
+.class-tiles .tile>h2{text-align: center;margin-top:4px;font-size:30px;}
+.class-tiles .tile:hover{background-image:url('/Images/ClassDetailsTiles-bg.jpg');color:#000;border:2px solid green;}
+.class-tiles .tile:hover>h5{font-family:'Helvetica Neue LT Std Bold';font-size:16px;}
+.class-tiles .tile:hover>h2{font-family:'Helvetica Neue LT Std Bold';font-size:36px;}
+.class-tiles .detail {display:none;position:absolute; background:#fff; color:#000;top:-5px; left:188px;width:360px; min-height:230px;padding:8px 20px 30px 20px;z-index:10;border:solid #C2C2C2 1px;border-radius:5px;-moz-border-radius:5px;-moz-box-shadow:1px 2px 1px 2px #c2c2c2;-webkit-box-shadow: 1px 2px 1px 2px #c2c2c2;box-shadow:1px 2px 1px 2px #c2c2c2;}
+.class-tiles .detail h5{font-family:'Helvetica Neue LT Std Bold';}
+.class-tiles .tile-container:nth-child(6n) .detail,.class-tiles .tile-container:nth-child(6n-1) .detail{left:-380px;}
+.class-tiles .detail>h5{margin-top: 10px;font-weight: 800;font-size:12px;text-transform:uppercase;}
+.class-tiles .detail>h6{margin-top: 10px;font-size:12px;}
+.class-school-name{font-size:18px; width:100%; padding:0 20px 10px 0; text-align:right;}
 
-.sections .tiles-root-container .tiles-secondary-container{display:none}
-.sections .allclasses-container #allclasses.tiles-secondary-container, .sections .myclasses-container #myclasses.tiles-secondary-container{display:block}
+.classes .tiles-root-container .tiles-secondary-container{display:none}
+.classes .allclasses-container #allclasses.tiles-secondary-container, .classes .myclasses-container #myclasses.tiles-secondary-container{display:block}
 
-.sections .seemore{text-align:center; margin:20px 10px}
-.sections .seemore span{font-family:'Helvetica Neue LT Std Bold'; font-size:14px; color:#444344; text-decoration:none; cursor:pointer}
-.sections .seemore span.disabled, .sections .seemore span.nomore{cursor:default; color:#c2c2c2}
+.classes .seemore{text-align:center; margin:20px 10px}
+.classes .seemore span{font-family:'Helvetica Neue LT Std Bold'; font-size:14px; color:#444344; text-decoration:none; cursor:pointer}
+.classes .seemore span.disabled, .classes .seemore span.nomore{cursor:default; color:#c2c2c2}
 
-/*section detail*/
+/*class detail*/
 .b-title {
     font-size: 24px;
     color: #666565;

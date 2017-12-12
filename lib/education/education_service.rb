@@ -39,12 +39,14 @@ module Education
       })
     end
 
-    def get_my_classes(school_id)
+    def get_my_classes(school_id = nil)
       classes = get_objects(Education::Class, "education/me/classes", {
         '$expand': 'schools'
-      })      
-      my_classes = classes.select{|c| c.schools.any? { |s| s.id == school_id }}  
-      my_classes.each do |c|
+      })
+      if school_id 
+        classes = classes.select{|c| c.schools.any? { |s| s.id == school_id }}
+      end  
+      classes.each do |c|
         c.members = get_class_members(c.id)
       end  
     end

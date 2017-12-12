@@ -24,11 +24,11 @@ module Education
       get_value('principalName')
     end
 
-    def lowest_grade
+    def highest_grade
       get_value('highestGrade')
     end
 
-    def highest_grade
+    def lowest_grade
       get_value('lowestGrade')
     end
 

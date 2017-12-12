@@ -11,7 +11,7 @@
     <%= render 'common/user_login_info'  %>
 <% end %>
 
-<div class="row schools sections">
+<div class="row schools classes">
     <div class="tophero">
         <div class="col-md-8">
             <div class="secondnav">
@@ -20,7 +20,7 @@
             <div class="a-heading">Classes</div>
         </div>
         <div class="toptiles">
-            <div class="section-school-name"><%= @school.display_name %></div>
+            <div class="class-school-name"><%= @school.display_name %></div>
             <div class="infocontainer">
                 <div class="infoheader">PRINCIPAL</div>
                 <div class="infobody" title="">
@@ -57,7 +57,7 @@
     </div>
     <div class="myclasses-container tiles-root-container">
         <div id="allclasses" class="tiles-secondary-container">
-            <div class="section-tiles">
+            <div class="class-tiles">
                 <div class="content clearfix" id="class_content">
                     <% if @classes.value.empty? %>
                         <div class="nodata"> No classes in this school.</div>
@@ -105,7 +105,7 @@
             </div>
         </div>
         <div id="myclasses" class="tiles-secondary-container">
-            <div class="section-tiles">
+            <div class="class-tiles">
                 <div class="content clearfix">
                     <% if @my_classes.empty? %>
                         <% if current_user.is_student? %>
