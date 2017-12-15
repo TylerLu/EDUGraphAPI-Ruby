@@ -59,9 +59,9 @@ module Education
       get_objects(Education::User, "education/classes/#{class_id}/members")
     end
 
-    def get_allteachers(school_id)
+    def get_allteachers(school_number)
       get_objects(Education::User, "users", {
-        '$filter': "extension_fe2174665583431c953114ff7268b7b3_Education_SyncSource_SchoolId eq '#{school_id}' and extension_fe2174665583431c953114ff7268b7b3_Education_ObjectType eq 'Teacher'"
+        '$filter': "extension_fe2174665583431c953114ff7268b7b3_Education_SyncSource_SchoolId eq '#{school_number}' and extension_fe2174665583431c953114ff7268b7b3_Education_ObjectType eq 'Teacher'"
       })
     end
     

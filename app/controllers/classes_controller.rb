@@ -74,7 +74,7 @@ class ClassesController < ApplicationController
       end
     end
 
-    school_teachers = education_service.get_allteachers(@school.id);
+    school_teachers = education_service.get_allteachers(@school.number);
     @schoolTeachers = school_teachers.select do |teacher|
       @class.teachers.select{|classteacher| classteacher.id == teacher.id}.length == 0
     end
