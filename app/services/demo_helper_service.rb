@@ -482,49 +482,6 @@ class DemoHelperService
     ]
   },
   {
-    'controller': 'schools',
-    'action': 'users',
-    'functions': [
-      {
-        'title': 'Get all students and teachers information',
-        'tab': '',
-        'files': [
-          {
-            'url': '/app/controllers/schools_controller.rb',
-            'methods': [
-              {
-                'title': 'users',
-                'description': 'Users action.'
-              },
-              {
-                'title': 'users_next',
-                'description': 'Next page action.'
-              }
-            ]
-          },
-          {
-            'url': '/app/services/token_service.rb',
-            'methods': [
-              {
-                'title': 'get_access_token',
-                'description': 'Get current user access token.'
-              }
-            ]
-          },
-          {
-            'url': '/lib/education/education_service.rb',
-            'methods': [
-              {
-                'title': 'get_all_schools',
-                'description': 'Get all schools that exist in the Azure Active Directory tenant.'
-              }
-            ]
-          }
-        ]
-      },
-    ]
-  },
-  {
     'controller': 'classes',
     'action': 'index',
     'functions': [
@@ -635,7 +592,7 @@ class DemoHelperService
                 'description': 'Get a school by using the id.'
               },
               {
-                'title': 'get_section',
+                'title': 'get_class',
                 'description': 'Get a class by using the id.'
               },
               {

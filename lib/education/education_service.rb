@@ -51,7 +51,7 @@ module Education
       end  
     end
 
-    def get_section(class_id)
+    def get_class(class_id)
       get_object(Education::Class, "education/classes/#{class_id}")
     end
     

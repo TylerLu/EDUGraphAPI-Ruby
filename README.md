@@ -378,22 +378,15 @@ end
 ~~~
 
 ```typescript
-def get_section(class_id)
+def get_class(class_id)
   get_object(Education::Class, "groups/#{class_id}")
 end
-```
-**Get users**
-
-```typescript
-
 ```
 Below are some screenshots of the sample app that show the education data.
 
 ![](Images/edu-schools.png)
 
-![](Images/edu-users.png)
-
-![](Images/edu-classes.png)
+[](Images/edu-classes.png)
 
 ![](Images/edu-class.png)
 

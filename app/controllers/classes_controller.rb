@@ -56,7 +56,7 @@ class ClassesController < ApplicationController
 
     class_object_id = params[:id];
     @school = education_service.get_school(params[:school_id])
-    @class = education_service.get_section(class_object_id)
+    @class = education_service.get_class(class_object_id)
     @class.members = education_service.get_class_members(class_object_id)
 
     @conversations = ms_graph_servcie.get_conversations(class_object_id)

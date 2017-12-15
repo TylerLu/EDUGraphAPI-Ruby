@@ -11,7 +11,7 @@ module Education
       super(prop_hash)
     end
 
-    def external_Id      
+    def external_id      
       get_value('externalId')
     end
   
