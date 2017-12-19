@@ -123,27 +123,6 @@ class DemoHelperService
       ]
     },
     {
-      'controller': 'account',
-      'action': 'register',
-      'functions': [
-        {
-          'title': 'User register',
-          'tab': '',
-          'files': [
-            {
-              'url': '/app/controllers/account_controller.rb',
-              'methods': [
-                {
-                  'title': 'Register',
-                  'description': 'Register action.'
-                }
-              ]
-            }
-          ]
-        }
-      ]
-    },
-    {
       'controller': 'link',
       'action': 'index',
       'functions': [
