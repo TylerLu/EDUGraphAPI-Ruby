@@ -480,7 +480,11 @@ class DemoHelperService
               'methods': [
                 {
                   'title': 'aboutme',
-                  'description': 'AboutMe page action.'
+                  'description': 'Show about me page.'
+                },
+                {
+                  'title': 'update_favorite_color',
+                  'description': 'Save favorite color.'
                 }
               ]
             },
@@ -498,12 +502,17 @@ class DemoHelperService
               ]
             },
             {
-              'url': '/lib/education/education_service.rb',
+              'url': '/app/services/token_service.rb',
               'methods': [
                 {
-                  'title': 'get_me',
-                  'description': 'Get current user information.'
+                  'title': 'get_access_token',
+                  'description': 'Get access token.'
                 },
+              ]
+            },
+            {
+              'url': '/lib/education/education_service.rb',
+              'methods': [
                 {
                   'title': 'get_my_classes',
                   'description': 'Get current user\'s classes.'
