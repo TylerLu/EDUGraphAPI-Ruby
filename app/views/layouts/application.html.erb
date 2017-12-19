@@ -54,7 +54,7 @@
                     <ul class="files">
                         <% function[:files].each do |file| %>
                         <li>
-                            <p class="title"><a href="<%= Settings.SourceCodeRepositoryUrl %>/blob/master<%= file[:url] %>"><%= Settings.SourceCodeRepositoryUrl %>/blob/master<%= file[:url] %></a></p>
+                            <p class="title"><a href="<%= Settings.SourceCodeRepositoryUrl %>/blob/master<%= file[:url] %>" target="_blank"><%= Settings.SourceCodeRepositoryUrl %>/blob/master<%= file[:url] %></a></p>
                             <ul class="methods">
                                 <% file[:methods].each do |method| %>
                                 <li>
