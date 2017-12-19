@@ -126,7 +126,6 @@ module Education
       JSON.parse(response.body)    
     end
 
-
     def request(request_method, path, query = {}, body = {})
       begin
         response = HTTParty.method(request_method).call(
@@ -143,7 +142,6 @@ module Education
         nil
       end
     end
-
 
   end
 end
