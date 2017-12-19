@@ -16,8 +16,67 @@ class DemoHelperService
               'url': '/app/controllers/account_controller.rb',
               'methods': [
                 {
-                  'title': 'Login',
-                  'description': 'Login action.'
+                  'title': 'login',
+                  'description': 'Show the login page.'
+                },
+                {
+                  'title': 'login_local',
+                  'description': 'Hanle local user login.'
+                },
+                {
+                  'title': 'login_o365',
+                  'description': 'Redirect to the Office 365 sign in page.'
+                },
+                {
+                  'title': 'reset',
+                  'description': 'Delete cookies to let the user sign in with a different account.'
+                },                
+                {
+                  'title': 'azure_oauth2_callback',
+                  'description': 'Handle Azure OAuth2 callback.'
+                },
+              ]
+            },
+            {
+              'url': '/app/services/token_service.rb',
+              'methods': [
+                {
+                  'title': 'cache_tokens',
+                  'description': 'Cache access token and refresh token.'
+                },
+                {
+                  'title': 'get_access_token',
+                  'description': 'Get access token.'
+                },
+              ]
+            },
+            {
+              'url': '/app/services/ms_graph_service.rb',
+              'methods': [
+                {
+                  'title': 'get_organization',
+                  'description': 'Get organization.'
+                },
+                {
+                  'title': 'get_me',
+                  'description': 'Get me.'
+                },
+                {
+                  'title': 'get_my_roles',
+                  'description': 'Get my roles.'
+                },
+              ]
+            },
+            {
+              'url': '/app/services/user_service.rb',
+              'methods': [
+                {
+                  'title': 'authenticate',
+                  'description': 'Authenticate local user.'
+                },
+                {
+                  'title': 'get_user_by_o365_email',
+                  'description': 'Get local user by Office 365 email.'
                 }
               ]
             }
@@ -37,8 +96,25 @@ class DemoHelperService
               'url': '/app/controllers/account_controller.rb',
               'methods': [
                 {
-                  'title': 'Register',
-                  'description': 'Register action.'
+                  'title': 'register',
+                  'description': 'Show the reigster page.'
+                },
+                {
+                  'title': 'register_post',
+                  'description': 'Handle the register post request.'
+                }
+              ]
+            },
+            {
+              'url': '/app/services/user_service.rb',
+              'methods': [
+                {
+                  'title': 'register',
+                  'description': 'Register local user.'
+                },
+                {
+                  'title': 'get_user_by_email',
+                  'description': 'Get local user by email.'
                 }
               ]
             }
