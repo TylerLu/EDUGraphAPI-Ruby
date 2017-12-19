@@ -524,9 +524,9 @@ class DemoHelperService
       ]
     },
     {
-    'controller': 'schools',
-    'action': 'index',
-    'functions': [
+      'controller': 'schools',
+      'action': 'index',
+      'functions': [
       {
         'title': 'Get schools information',
         'tab': '',
@@ -536,7 +536,7 @@ class DemoHelperService
             'methods': [
               {
                 'title': 'index',
-                'description': 'Index action.'
+                'description': 'Show all schools page.'
               }
             ]
           },
@@ -545,7 +545,7 @@ class DemoHelperService
             'methods': [
               {
                 'title': 'get_access_token',
-                'description': 'Get current user access token.'
+                'description': 'Get access token.'
               }
             ]
           },
@@ -554,11 +554,11 @@ class DemoHelperService
             'methods': [
               {
                 'title': 'get_me',
-                'description': 'Get current user information.'
+                'description': 'Get current user\'s information.'
               },
               {
                 'title': 'get_all_schools',
-                'description': 'Get all schools that exist in the Azure Active Directory tenant.'
+                'description': 'Get all schools.'
               }
             ]
           }
@@ -579,11 +579,11 @@ class DemoHelperService
             'methods': [
               {
                 'title': 'index',
-                'description': 'Index action.'
+                'description': 'Show classes page.'
               },
               {
                 'title': 'more',
-                'description': 'More action.'
+                'description': 'Return more classes (JSON data).'
               }
             ]
           },
@@ -592,7 +592,7 @@ class DemoHelperService
             'methods': [
               {
                 'title': 'get_access_token',
-                'description': 'Get current user access token.'
+                'description': 'Get access token.'
               }
             ]
           },
@@ -601,7 +601,7 @@ class DemoHelperService
             'methods': [
               {
                 'title': 'get_school',
-                'description': 'Get a school by using the id.'
+                'description': 'Get a school.'
               }
             ]
           }
@@ -652,11 +652,11 @@ class DemoHelperService
             'methods': [
               {
                 'title': 'show',
-                'description': 'Show action.'
+                'description': 'Return class details page.'
               },
               {
                 'title': 'add_coteacher',
-                'description': 'Add a teacher action.'
+                'description': 'Add a teacher to current class.'
               }
             ]
           },
@@ -665,7 +665,7 @@ class DemoHelperService
             'methods': [
               {
                 'title': 'get_access_token',
-                'description': 'Get current user access token.'
+                'description': 'Get access token.'
               }
             ]
           },
@@ -674,23 +674,23 @@ class DemoHelperService
             'methods': [
               {
                 'title': 'get_school',
-                'description': 'Get a school by using the id.'
+                'description': 'Get a school.'
               },
               {
                 'title': 'get_class',
-                'description': 'Get a class by using the id.'
+                'description': 'Get a class.'
               },
               {
-                'title': 'get_allteachers',
+                'title': 'get_teachers',
                 'description': 'Get teachers within a school.'
               },
               {
-                'title': 'add_user_to_section_members',
-                'description': 'Add a member to class.'
+                'title': 'add_user_to_class_as_member',
+                'description': 'Add a user to class as a member.'
               },
               {
-                'title': 'add_user_to_section_owners',
-                'description': 'Add a user to the class\'s owners.'
+                'title': 'add_user_to_class_as_owner',
+                'description': 'Add a user to the class as an owner.'
               }
             ]
           }
@@ -705,7 +705,7 @@ class DemoHelperService
             'methods': [
               {
                 'title': 'get_class_members',
-                'description': 'Get students within a class.'
+                'description': 'Get members within a class.'
               }
             ]
           }
@@ -720,7 +720,7 @@ class DemoHelperService
             'methods': [
               {
                 'title': 'get_conversations',
-                'description': 'Get all conversations.'
+                'description': 'Get conversations of a class.'
               }
             ]
           }
@@ -735,8 +735,12 @@ class DemoHelperService
             'methods': [
               {
                 'title': 'get_documents',
-                'description': 'Get all documents.'
-              }
+                'description': 'Get documents of a class'
+              },
+              {
+                'title': 'get_documents_web_url',
+                'description': 'Get documents web URL.'
+              }              
             ]
           }
         ]
@@ -750,11 +754,11 @@ class DemoHelperService
             'methods': [
               {
                 'title': 'get_seating_position_hash',
-                'description': 'Get all seating positions.'
+                'description': 'Get seating positions of a class.'
               },
               {
                 'title': 'get_favorite_color_hash',
-                'description': 'Get favorite color hash.'
+                'description': 'Get users\' favorite colors.'
               },
               {
                 'title': 'save_seating_positions',

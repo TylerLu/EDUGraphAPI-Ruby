@@ -74,7 +74,7 @@ class ClassesController < ApplicationController
       end
     end
 
-    school_teachers = education_service.get_allteachers(@school.number);
+    school_teachers = education_service.get_teachers(@school.number);
     @schoolTeachers = school_teachers.select do |teacher|
       @class.teachers.select{|classteacher| classteacher.id == teacher.id}.length == 0
     end
@@ -83,8 +83,8 @@ class ClassesController < ApplicationController
   def add_coteacher
     ms_access_token = token_service.get_access_token(current_user.o365_user_id, Constants::Resources::MSGraph)
     education_service = Education::EducationService.new(current_user.tenant_id, ms_access_token)
-    result = education_service.add_user_to_section_members(params[:id], params[:user_id])
-    education_service.add_user_to_section_owners(params[:id], params[:user_id])
+    result = education_service.add_user_to_class_as_member(params[:id], params[:user_id])
+    education_service.add_user_to_class_as_owner(params[:id], params[:user_id])
     render json: {status: 'success'}
   end
   def save_seating_positions

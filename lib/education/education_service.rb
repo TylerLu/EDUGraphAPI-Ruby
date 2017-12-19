@@ -59,18 +59,18 @@ module Education
       get_objects(Education::User, "education/classes/#{class_id}/members")
     end
 
-    def get_allteachers(school_number)
+    def get_teachers(school_number)
       get_objects(Education::User, "users", {
         '$filter': "extension_fe2174665583431c953114ff7268b7b3_Education_SyncSource_SchoolId eq '#{school_number}' and extension_fe2174665583431c953114ff7268b7b3_Education_ObjectType eq 'Teacher'"
       })
     end
     
-    def add_user_to_section_members(class_id, user_id) 
+    def add_user_to_class_as_member(class_id, user_id) 
       data = { "@odata.id": "#{Constants::Resources::MSGraph}/v1.0/users/#{user_id}"}
       request('post', "#{Constants::Resources::MSGraph}/v1.0/groups/#{class_id}/members/$ref", {}, data.to_json)
     end
 
-    def add_user_to_section_owners(class_id, user_id) 
+    def add_user_to_class_as_owner(class_id, user_id) 
        data = { "@odata.id": "#{Constants::Resources::MSGraph}/v1.0/users/#{user_id}"}
        request('post', "#{Constants::Resources::MSGraph}/v1.0/groups/#{class_id}/owners/$ref", {}, data.to_json)
     end
