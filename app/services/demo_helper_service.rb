@@ -135,16 +135,55 @@ class DemoHelperService
               'methods': [
                 {
                   'title': 'index',
-                  'description': 'Index action.'
+                  'description': 'Show link page.'
+                },
+                {
+                  'title': 'matched_local',
+                  'description': 'Link current Office 365 account with the matched local account.'
+                },
+                {
+                  'title': 'login_o365',
+                  'description': 'Let current user to login in with Office 365 account.'
+                },
+                {
+                  'title': 'login_o365_callback',
+                  'description': 'Handle Office 365 login, link accounts.'
                 }
               ]
             },
             {
-              'url': '/app/controllers/application_controller.rb',
+              'url': '/app/services/token_service.rb',
               'methods': [
                 {
-                  'title': 'current_user',
-                  'description': 'Get current user.'
+                  'title': 'cache_tokens',
+                  'description': 'Cache access token and refresh token.'
+                },
+                {
+                  'title': 'get_access_token',
+                  'description': 'Get access token.'
+                },
+              ]
+            },
+            {
+              'url': '/app/services/ms_graph_service.rb',
+              'methods': [
+ 
+                {
+                  'title': 'get_organization',
+                  'description': 'Get organization(tenant).'
+                },
+                {
+                  'title': 'get_my_roles',
+                  'description': 'Get my roles.'
+                },
+              ]
+            },
+            {
+              'url': '/app/services/organization_service.rb',
+              'methods': [
+                {
+                  'title': 'create_or_update_organization',
+                  'description': 'Create or update organization.'
                 }
               ]
             },
@@ -153,7 +192,7 @@ class DemoHelperService
               'methods': [
                 {
                   'title': 'get_user_by_email',
-                  'description': 'Get user by email.'
+                  'description': 'Get local user by email.'
                 }
               ]
             }
@@ -174,11 +213,11 @@ class DemoHelperService
               'methods': [
                 {
                   'title': 'create_local',
-                  'description': 'Page action.'
+                  'description': 'Show create local account page.'
                 },
                 {
                   'title': 'create_local_post',
-                  'description': 'Create local account post action.'
+                  'description': 'Hanlde create local account post request.'
                 }
               ]
             },
@@ -187,7 +226,7 @@ class DemoHelperService
               'methods': [
                 {
                   'title': 'create',
-                  'description': 'Create a user.'
+                  'description': 'Create a local user.'
                 }
               ]
             },
@@ -196,7 +235,7 @@ class DemoHelperService
               'methods': [
                 {
                   'title': 'link',
-                  'description': 'Link O365 account with local account.'
+                  'description': 'Link an O365 account with a local account.'
                 }
               ]
             }
@@ -217,11 +256,11 @@ class DemoHelperService
               'methods': [
                 {
                   'title': 'login_local',
-                  'description': 'Page action.'
+                  'description': 'Show local account login page.'
                 },
                 {
                   'title': 'login_local_post',
-                  'description': 'Login local account post action.'
+                  'description': 'Hande login account login and link accounts.'
                 }
               ]
             },
@@ -230,7 +269,7 @@ class DemoHelperService
               'methods': [
                 {
                   'title': 'authenticate',
-                  'description': 'Local account authentication.'
+                  'description': 'Authenticate local account.'
                 }
               ]
             },
@@ -239,7 +278,7 @@ class DemoHelperService
               'methods': [
                 {
                   'title': 'link',
-                  'description': 'Link O365 account with local account.'
+                  'description': 'Link an O365 account with a local account.'
                 }
               ]
             }
@@ -260,7 +299,11 @@ class DemoHelperService
               'methods': [
                 {
                   'title': 'login_o365_required',
-                  'description': 'Page action.'
+                  'description': 'Show "Login to Office 365 is required" page.'
+                },
+                {
+                  'title': 'relogin_o365',
+                  'description': 'Redirect the user to Office 365 login page.'
                 }
               ]
             }
@@ -281,23 +324,27 @@ class DemoHelperService
               'methods': [
                 {
                   'title': 'index',
-                  'description': 'Page action.'
+                  'description': 'Show admin page.'
                 },
                 {
                   'title': 'consent_post',
-                  'description': 'Consent post action.'
+                  'description': 'Redirect the user to admin consent page.'
+                },
+                {
+                  'title': 'consent_callback',
+                  'description': 'Post-process after admin consent.'
                 },
                 {
                   'title': 'unconsent',
-                  'description': 'Unconsent post action.'
+                  'description': 'Undo admin consent.'
                 },
                 {
                   'title': 'add_app_role_assignments',
-                  'description': 'Enable user access action.'
+                  'description': 'Enable user access.'
                 },
                 {
                   'title': 'clear_adal_cache',
-                  'description': 'Clean adal cache action.'
+                  'description': 'Clean adal token cache.'
                 }
               ]
             },
@@ -306,11 +353,11 @@ class DemoHelperService
               'methods': [
                 {
                   'title': 'is_admin_consented',
-                  'description': 'Get admin\'s tenant and organization information.'
+                  'description': 'Check if the organization (tenant) is consent by an admin.'
                 },
                 {
                   'title': 'update_organization',
-                  'description': 'Create or update an organization, and configure as AdminConsented.'
+                  'description': 'Update an organization.'
                 }
               ]
             },
@@ -318,12 +365,12 @@ class DemoHelperService
               'url': '/app/services/token_service.rb',
               'methods': [
                 {
-                  'title': 'clear_token_cache',
-                  'description': 'Remove all user tokens from database.'
-                },
-                {
                   'title': 'get_access_token',
                   'description': 'Get current user access token.'
+                },
+                {
+                  'title': 'clear_token_cache',
+                  'description': 'Remove all user tokens from database.'
                 }
               ]
             },
@@ -335,12 +382,12 @@ class DemoHelperService
                   'description': 'Get service principal.'
                 },
                 {
-                  'title': 'delete_service_principal',
-                  'description': 'Delete service principal.'
-                },
-                {
                   'title': 'add_app_role_assignments',
                   'description': 'Enable access to all your tenant users.'
+                },
+                {
+                  'title': 'delete_service_principal',
+                  'description': 'Delete service principal.'
                 }
               ]
             }
@@ -361,12 +408,16 @@ class DemoHelperService
               'methods': [
                 {
                   'title': 'consent',
-                  'description': 'Page action.'
+                  'description': 'Show admin consent page.'
                 },
                 {
                   'title': 'consent_post',
-                  'description': 'Consent post action.'
-                }
+                  'description': 'Redirect the user to admin consent page.'
+                },
+                {
+                  'title': 'consent_callback',
+                  'description': 'Post-process after admin consent.'
+                },
               ]
             },
             {
@@ -374,7 +425,7 @@ class DemoHelperService
               'methods': [
                 {
                   'title': 'update_organization',
-                  'description': 'Create or update an organization, and configure it as AdminConsented.'
+                  'description': 'Update an organization.'
                 }
               ]
             }
@@ -404,7 +455,7 @@ class DemoHelperService
               'methods': [
                 {
                   'title': 'get_linked_users',
-                  'description': 'Get linked users with the specified organization.'
+                  'description': 'Get linked users of an organization.'
                 }
               ]
             }
@@ -425,11 +476,11 @@ class DemoHelperService
               'methods': [
                 {
                   'title': 'unlink_account',
-                  'description': 'Unlink account action.'
+                  'description': 'Show unlink account page'
                 },
                 {
                   'title': 'unlink_account_post',
-                  'description': 'Unlink the specified the account post action.'
+                  'description': 'Unlink current user\' accounts.'
                 }
               ]
             },
@@ -439,6 +490,15 @@ class DemoHelperService
                 {
                   'title': 'get_user_by_id',
                   'description': 'Get user from database by id.'
+                }
+              ]
+            },
+            {
+              'url': '/app/services/link_service.rb',
+              'methods': [
+                {
+                  'title': 'unlink_account',
+                  'description': 'Unlink account.'
                 }
               ]
             }
@@ -544,211 +604,211 @@ class DemoHelperService
         ]
       }
     ]
-  },
-  {
-    'controller': 'classes',
-    'action': 'index',
-    'functions': [
-      {
-        'title': 'Get classes information',
-        'tab': '',
-        'files': [
-          {
-            'url': '/app/controllers/classes_controller.rb',
-            'methods': [
-              {
-                'title': 'index',
-                'description': 'Show classes page.'
-              },
-              {
-                'title': 'more',
-                'description': 'Return more classes (JSON data).'
-              }
-            ]
-          },
-          {
-            'url': '/app/services/token_service.rb',
-            'methods': [
-              {
-                'title': 'get_access_token',
-                'description': 'Get access token.'
-              }
-            ]
-          },
-          {
-            'url': '/lib/education/education_service.rb',
-            'methods': [
-              {
-                'title': 'get_school',
-                'description': 'Get a school.'
-              }
-            ]
-          }
-        ]
-      },
-      {
-        'title': 'Get my classes information',
-        'tab': 'filtermyclasses',
-        'files': [
-          {
-            'url': '/lib/education/education_service.rb',
-            'methods': [
-              {
-                'title': 'get_my_classes',
-                'description': 'Get my classes within a school.'
-              }
-            ]
-          }
-        ]
-      },
-      {
-        'title': 'Get all classes information',
-        'tab': 'filterclasses',
-        'files': [
-          {
-            'url': '/lib/education/education_service.rb',
-            'methods': [
-              {
-                'title': 'get_classes',
-                'description': 'Get classes within a school.'
-              }
-            ]
-          }
-        ]
-      }
-    ]
-  },
-  {
-    'controller': 'classes',
-    'action': 'show',
-    'functions': [
-      {
-        'title': 'Get school and class information',
-        'tab': '',
-        'files': [
-          {
-            'url': '/app/controllers/classes_controller.rb',
-            'methods': [
-              {
-                'title': 'show',
-                'description': 'Return class details page.'
-              },
-              {
-                'title': 'add_coteacher',
-                'description': 'Add a teacher to current class.'
-              }
-            ]
-          },
-          {
-            'url': '/app/services/token_service.rb',
-            'methods': [
-              {
-                'title': 'get_access_token',
-                'description': 'Get access token.'
-              }
-            ]
-          },
-          {
-            'url': '/lib/education/education_service.rb',
-            'methods': [
-              {
-                'title': 'get_school',
-                'description': 'Get a school.'
-              },
-              {
-                'title': 'get_class',
-                'description': 'Get a class.'
-              },
-              {
-                'title': 'get_teachers',
-                'description': 'Get teachers within a school.'
-              },
-              {
-                'title': 'add_user_to_class_as_member',
-                'description': 'Add a user to class as a member.'
-              },
-              {
-                'title': 'add_user_to_class_as_owner',
-                'description': 'Add a user to the class as an owner.'
-              }
-            ]
-          }
-        ]
-      },
-      {
-        'title': 'Get students in this class',
-        'tab': '#students',
-        'files': [
-          {
-            'url': '/lib/education/education_service.rb',
-            'methods': [
-              {
-                'title': 'get_class_members',
-                'description': 'Get members within a class.'
-              }
-            ]
-          }
-        ]
-      },
-      {
-        'title': 'Get all conversations of current class',
-        'tab': '#conversations',
-        'files': [
-          {
-            'url': '/app/services/ms_graph_service.rb',
-            'methods': [
-              {
-                'title': 'get_conversations',
-                'description': 'Get conversations of a class.'
-              }
-            ]
-          }
-        ]
-      },
-      {
-        'title': 'Get documents from OneDrive of current class',
-        'tab': '#documents',
-        'files': [
-          {
-            'url': '/app/services/ms_graph_service.rb',
-            'methods': [
-              {
-                'title': 'get_documents',
-                'description': 'Get documents of a class'
-              },
-              {
-                'title': 'get_documents_web_url',
-                'description': 'Get documents web URL.'
-              }              
-            ]
-          }
-        ]
-      },
-      {
-        'title': 'Display, edit and save students charts',
-        'tab': '#seatingchart',
-        'files': [
-          {
-            'url': '/app/services/user_service.rb',
-            'methods': [
-              {
-                'title': 'get_seating_position_hash',
-                'description': 'Get seating positions of a class.'
-              },
-              {
-                'title': 'get_favorite_color_hash',
-                'description': 'Get users\' favorite colors.'
-              },
-              {
-                'title': 'save_seating_positions',
-                'description': 'Save seating positions.'
-              }
-            ]
-          }
-        ]
-      }
-    ]
-  }
+    },
+    {
+      'controller': 'classes',
+      'action': 'index',
+      'functions': [
+        {
+          'title': 'Get classes information',
+          'tab': '',
+          'files': [
+            {
+              'url': '/app/controllers/classes_controller.rb',
+              'methods': [
+                {
+                  'title': 'index',
+                  'description': 'Show classes page.'
+                },
+                {
+                  'title': 'more',
+                  'description': 'Return more classes (JSON data).'
+                }
+              ]
+            },
+            {
+              'url': '/app/services/token_service.rb',
+              'methods': [
+                {
+                  'title': 'get_access_token',
+                  'description': 'Get access token.'
+                }
+              ]
+            },
+            {
+              'url': '/lib/education/education_service.rb',
+              'methods': [
+                {
+                  'title': 'get_school',
+                  'description': 'Get a school.'
+                }
+              ]
+            }
+          ]
+        },
+        {
+          'title': 'Get my classes information',
+          'tab': 'filtermyclasses',
+          'files': [
+            {
+              'url': '/lib/education/education_service.rb',
+              'methods': [
+                {
+                  'title': 'get_my_classes',
+                  'description': 'Get my classes within a school.'
+                }
+              ]
+            }
+          ]
+        },
+        {
+          'title': 'Get all classes information',
+          'tab': 'filterclasses',
+          'files': [
+            {
+              'url': '/lib/education/education_service.rb',
+              'methods': [
+                {
+                  'title': 'get_classes',
+                  'description': 'Get classes within a school.'
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      'controller': 'classes',
+      'action': 'show',
+      'functions': [
+        {
+          'title': 'Get school and class information',
+          'tab': '',
+          'files': [
+            {
+              'url': '/app/controllers/classes_controller.rb',
+              'methods': [
+                {
+                  'title': 'show',
+                  'description': 'Return class details page.'
+                },
+                {
+                  'title': 'add_coteacher',
+                  'description': 'Add a teacher to current class.'
+                }
+              ]
+            },
+            {
+              'url': '/app/services/token_service.rb',
+              'methods': [
+                {
+                  'title': 'get_access_token',
+                  'description': 'Get access token.'
+                }
+              ]
+            },
+            {
+              'url': '/lib/education/education_service.rb',
+              'methods': [
+                {
+                  'title': 'get_school',
+                  'description': 'Get a school.'
+                },
+                {
+                  'title': 'get_class',
+                  'description': 'Get a class.'
+                },
+                {
+                  'title': 'get_teachers',
+                  'description': 'Get teachers within a school.'
+                },
+                {
+                  'title': 'add_user_to_class_as_member',
+                  'description': 'Add a user to class as a member.'
+                },
+                {
+                  'title': 'add_user_to_class_as_owner',
+                  'description': 'Add a user to the class as an owner.'
+                }
+              ]
+            }
+          ]
+        },
+        {
+          'title': 'Get students in this class',
+          'tab': '#students',
+          'files': [
+            {
+              'url': '/lib/education/education_service.rb',
+              'methods': [
+                {
+                  'title': 'get_class_members',
+                  'description': 'Get members within a class.'
+                }
+              ]
+            }
+          ]
+        },
+        {
+          'title': 'Get all conversations of current class',
+          'tab': '#conversations',
+          'files': [
+            {
+              'url': '/app/services/ms_graph_service.rb',
+              'methods': [
+                {
+                  'title': 'get_conversations',
+                  'description': 'Get conversations of a class.'
+                }
+              ]
+            }
+          ]
+        },
+        {
+          'title': 'Get documents from OneDrive of current class',
+          'tab': '#documents',
+          'files': [
+            {
+              'url': '/app/services/ms_graph_service.rb',
+              'methods': [
+                {
+                  'title': 'get_documents',
+                  'description': 'Get documents of a class'
+                },
+                {
+                  'title': 'get_documents_web_url',
+                  'description': 'Get documents web URL.'
+                }              
+              ]
+            }
+          ]
+        },
+        {
+          'title': 'Display, edit and save students charts',
+          'tab': '#seatingchart',
+          'files': [
+            {
+              'url': '/app/services/user_service.rb',
+              'methods': [
+                {
+                  'title': 'get_seating_position_hash',
+                  'description': 'Get seating positions of a class.'
+                },
+                {
+                  'title': 'get_favorite_color_hash',
+                  'description': 'Get users\' favorite colors.'
+                },
+                {
+                  'title': 'save_seating_positions',
+                  'description': 'Save seating positions.'
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
 ]
 
   def self.get_links(controller, action)        

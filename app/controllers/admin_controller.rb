@@ -51,7 +51,6 @@ class AdminController < ApplicationController
     redirect_to admin_index_path, notice: 'Admin unconsented successfully!'
   end
 
-
   def add_app_role_assignments
     token = token_service.get_access_token(current_user.o365_user_id, Constants::Resources::AADGraph)
     aad_graph_service = AADGraphService.new(token, current_user.tenant_id)
