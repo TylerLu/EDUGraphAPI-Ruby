@@ -48,6 +48,7 @@ Rails.application.routes.draw do
   post 'manage/update_favorite_color'
   
 
+
   # schools
   resources :schools, only: :index do
     resources :classes do
@@ -61,4 +62,5 @@ Rails.application.routes.draw do
     end
   end
 
+post '/classes/newassignment'
 end

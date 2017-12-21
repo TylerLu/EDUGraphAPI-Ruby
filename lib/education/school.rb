@@ -36,10 +36,6 @@ module Education
       get_value('schoolNumber')
     end
 
-    def school_id
-      get_value('SyncSource_SchoolId')
-    end
-
     def address
       if @address.nil?
         @address = PhysicalAddress.new(get_value('address'))

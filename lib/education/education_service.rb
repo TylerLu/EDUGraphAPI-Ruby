@@ -64,6 +64,10 @@ module Education
         '$filter': "extension_fe2174665583431c953114ff7268b7b3_Education_SyncSource_SchoolId eq '#{school_number}' and extension_fe2174665583431c953114ff7268b7b3_Education_ObjectType eq 'Teacher'"
       })
     end
+
+    def get_assignments_by_class_id(class_id)
+      get_objects(Education::Assignment, "education/classes/#{class_id}/assignments")
+    end
     
     def add_user_to_class_as_member(class_id, user_id) 
       data = { "@odata.id": "#{Constants::Resources::MSGraph}/v1.0/users/#{user_id}"}

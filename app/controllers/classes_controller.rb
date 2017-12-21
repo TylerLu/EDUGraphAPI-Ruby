@@ -79,6 +79,7 @@ class ClassesController < ApplicationController
       @class.teachers.select{|classteacher| classteacher.id == teacher.id}.length == 0
     end
 
+    @assignments = education_service.get_assignments_by_class_id(class_object_id)
   end
   def add_coteacher
     ms_access_token = token_service.get_access_token(current_user.o365_user_id, Constants::Resources::MSGraph)
@@ -86,6 +87,12 @@ class ClassesController < ApplicationController
     result = education_service.add_user_to_class_as_member(params[:id], params[:user_id])
     education_service.add_user_to_class_as_owner(params[:id], params[:user_id])
     render json: {status: 'success'}
+  end
+
+  def newassignment
+    test1 = params["schoolId"]
+    test2 = params["classId"]
+    byebug
   end
   def save_seating_positions
     user_service = UserService.new
