@@ -308,6 +308,7 @@
             detailForm.modal("show");
             detailForm.find(".resource-list").html("<li>Loading...</li>");
             $("input[name='assignmentId']").val(assignmentId);
+            $("input[name='assignmentOriginalStatus']").val(assignmentStatus);
             $("input[name='assignmentStatus']").val(assignmentStatus);
 
             $.ajax({

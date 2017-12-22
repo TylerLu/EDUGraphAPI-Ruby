@@ -89,6 +89,30 @@ class ClassesController < ApplicationController
     render json: {status: 'success'}
   end
 
+  def update_assignment
+    ms_access_token = token_service.get_access_token(current_user.o365_user_id, Constants::Resources::MSGraph)
+    education_service = Education::EducationService.new(current_user.tenant_id, ms_access_token)
+    if params[:assignmentOriginalStatus] == "draft" and params[:assignmentStatus] == "assigned"
+      ducation_service.publish_assignment(params[:classId], params[:assignmentId])
+    end
+
+    resourceFolder = education_service.get_assignment_resource_folder_URL(params[:classId], params[:assignmentId])
+    ids = self.get_ids_from_resource_folder(resourceFolder.resource_folder_URL);
+
+    if params[:newResource].length > 0
+       params[:newResource].each do |fileupload|
+        driveItem = Education::DriveItem.new(education_service.upload_File(ids, fileupload.original_filename,fileupload.read))
+        education_service.add_assignment_resources(
+          params[:classId], 
+          params[:assignmentId], 
+          driveItem.name, 
+          self.get_file_type(driveItem.name),
+          "drives/#{driveItem.parent_reference.drive_id}/items/#{driveItem.id}")
+       end
+    end
+    redirect_to "/schools/#{params[:schoolId]}/classes/#{params[:classId]}"
+  end
+
   def new_assignment
     ms_access_token = token_service.get_access_token(current_user.o365_user_id, Constants::Resources::MSGraph)
     education_service = Education::EducationService.new(current_user.tenant_id, ms_access_token)
