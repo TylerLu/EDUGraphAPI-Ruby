@@ -6,64 +6,6 @@ require_relative 'school.rb'
 require_relative 'term.rb'
 
 module Education
-  
-  class EducationAssignmentResource < ObjectBase
-    
-    def initialize(prop_hash = {})
-      super(prop_hash)
-    end
-
-    def distribute_for_student_work
-      get_value('distributeForStudentWork')
-    end
-
-    def resource
-      @resource ||= EducationResource.new(get_value('resource'))
-    end
-  end
-
-  class ItemReference < ObjectBase
-    
-    def initialize(prop_hash = {})
-      super(prop_hash)
-    end
-
-    def drive_id
-      get_value('driveId')
-    end
-  end
-
-  class DriveItem < ObjectBase
-    
-    def initialize(prop_hash = {})
-      super(prop_hash)
-    end
-
-    def name
-      get_value('name')
-    end
-
-    def parent_reference
-      @parent_reference ||= ItemReference.new(get_value('parentReference'))
-    end
-    
-  end
-
-   class ResourcesFolder < ObjectBase
-    
-    def initialize(prop_hash = {})
-      super(prop_hash)
-    end
-
-    def odata_id
-      get_value('odataid')
-    end
-
-    def resource_folder_URL
-      get_value('value')
-    end
-    
-  end
 
   class ResourceContainer < ObjectBase
     

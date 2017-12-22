@@ -89,11 +89,74 @@ class ClassesController < ApplicationController
     render json: {status: 'success'}
   end
 
-  def newassignment
-    test1 = params["schoolId"]
-    test2 = params["classId"]
-    byebug
+  def new_assignment
+    ms_access_token = token_service.get_access_token(current_user.o365_user_id, Constants::Resources::MSGraph)
+    education_service = Education::EducationService.new(current_user.tenant_id, ms_access_token)
+
+    dateArray = (params[:duedate]).split("/");
+    dueDateTime = ("#{dateArray[2]}-#{dateArray[0]}-#{dateArray[1]} #{params[:duetime]}").to_time.getutc.strftime("%Y-%m-%dT%H:%M:%SZ")
+    assignment = {
+                  "displayName":params[:name],
+                  "dueDateTime":dueDateTime,
+                  "allowStudentsToAddResourcesToSubmission":true,
+                  "status":"draft",
+                  "assignTo":{"@odata.type":"#microsoft.graph.educationAssignmentClassRecipient"}
+                }
+    assignment = Education::Assignment.new(education_service.create_assignment(params[:classId], assignment))
+    if params[:status] == "assigned"
+      education_service.publish_assignment(params[:classId], assignment.id)
+    end
+
+    resourceFolder = education_service.get_assignment_resource_folder_URL(params[:classId], assignment.id)
+    ids = self.get_ids_from_resource_folder(resourceFolder.resource_folder_URL);
+
+    if params[:fileUpload].length > 0
+       params[:fileUpload].each do |fileupload|
+        driveItem = Education::DriveItem.new(education_service.upload_File(ids, fileupload.original_filename,fileupload.read))
+        education_service.add_assignment_resources(
+          params[:classId], 
+          assignment.id, 
+          driveItem.name, 
+          self.get_file_type(driveItem.name),
+          "drives/#{driveItem.parent_reference.drive_id}/items/#{driveItem.id}")
+       end
+    end
+    redirect_to "/schools/#{params[:schoolId]}/classes/#{params[:classId]}"
   end
+
+  def get_assignment_resources
+    ms_access_token = token_service.get_access_token(current_user.o365_user_id, Constants::Resources::MSGraph)
+    education_service = Education::EducationService.new(current_user.tenant_id, ms_access_token)
+
+    resources = education_service.get_assignment_resources(params[:classId], params[:assignmentId])
+    retArray = Array.new;
+
+    resources.each do |resource|
+      retArray.push({ Id:resource.id, Resource: { DisplayName: resource.resource.display_name } })
+    end
+    render json: retArray
+
+  end
+ 
+  def get_ids_from_resource_folder(resource_folder)
+    array = resource_folder.split("/")
+    result = Array.new
+    if array.length >=3
+      result.push(array[array.length - 3])
+      result.push(array[array.length - 1])
+    end
+  end
+
+  def get_file_type(file_name)
+    if file_name.downcase.end_with?(".docx")
+      "#microsoft.graph.educationWordResource"
+    elsif file_name.downcase.end_with?(".xlsx")
+      "#microsoft.graph.educationExcelResource"
+    else
+      "#microsoft.graph.educationFileResource"
+    end
+  end
+
   def save_seating_positions
     user_service = UserService.new
     user_service.save_seating_positions(params[:id], params['_json'])

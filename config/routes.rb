@@ -62,5 +62,10 @@ Rails.application.routes.draw do
     end
   end
 
-post '/classes/newassignment'
+
+
+post '/classes/newassignment'=> 'classes#new_assignment'
+post '/classes/newassignmentsubmissionresource'=> 'classes#new_assignment_submission_resource'
+post '/classes/updateassignment'=> 'classes#update_assignment'
+get '/classes/:classId/assignments/:assignmentId/resources' =>'classes#get_assignment_resources'
 end

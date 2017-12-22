@@ -248,6 +248,71 @@
                         </div>
                     </div>
                 </div>
+                <div class="modal fade assignment-detail-modal" id="assignment-detail-form" role="dialog">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="alert alert-danger assignment-alert">
+                                <a href="#" class="close" data-dismiss="alert">&times;</a>
+                                <span></span>
+                            </div>
+                            <% if not(current_user.is_student?)%>
+                                <form action="/classes/updateassignment" enctype="multipart/form-data" class="form-horizontal" method="post" role="form" id = "assignment-detail-form-teacher">
+                                    <input name="schoolId" type="hidden" value="<%= @school.id %>" />
+                                    <input name="classId" type="hidden" value="<%= @class.id %>" />
+                                    <input name="assignmentId" type="hidden" />
+                                    <input name="assignmentStatus" type="hidden" />
+
+                                    <div class="modal-body">
+                                        <div><h5 class="assignment-title"></h5></div>
+                                        <div><h5 class="due-date"></h5></div>
+                                        
+                                        <div class="row resource-upload">
+                                            <h5 class="resources-title col-md-8"></h5>
+                                            <button type="button" class="btn btn-primary btn-new">+ New</button>
+                                            <input type="file" id="newResourceFileCtrl" name="newResource[]" class="hidden" multiple>
+                                        </div>
+                                        <ul class="resource-list"></ul>
+                                    </div>
+                                </form>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary btn-cancel" data-dismiss="modal">Cancel</button>
+                                    <button type="button" class="btn btn-primary btn-save">Save</button>
+                                    <button type="button" class="btn btn-primary btn-publish">Assign</button>
+                                    <button type="button" class="btn btn-primary btn-update">Update</button>
+                                </div>
+                            <% else %>
+                                <form action="/classes/newassignmentsubmissionresource" enctype="multipart/form-data" class="form-horizontal" method="post" role="form" id = "assignment-detail-form-student">
+                                    <input name="schoolId" type="hidden" value="<%= @school.id %>d" />
+                                    <input name="classId" type="hidden" value="<%= @class.id %>" />
+                                    <input name="assignmentId" type="hidden" />
+                                    <input name="submissionId" type="hidden" />
+
+                                    <div class="modal-body">
+                                        <div><h5 class="assignment-title"></h5></div>
+                                        <div><h5 class="due-date"></h5></div>
+                                        <div><h5 class="allow-late"></h5></div>
+                                        <div class="row">
+                                            <h5 class="resources-title col-md-8"></h5>
+                                        </div>
+                                        <ul class="resource-list"></ul>
+                                        <div class="row resource-upload">
+                                            <h5 class="handin-title col-md-8"></h5>
+                                            <button type="button" class="btn btn-primary btn-upload">Upload</button>
+                                            <input type="file" id="newResourceFileCtrl" name="newResource[]" class="hidden">
+                                        </div>
+                                        <ul class="handin-list"></ul>
+                                    </div>
+                                </form>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary btn-cancel" data-dismiss="modal">Cancel</button>
+                                    <button type="button" class="btn btn-primary btn-save">Save</button>
+                                    <button type="button" class="btn btn-primary btn-publish">Assign</button>
+                                    <button type="button" class="btn btn-primary btn-update">Update</button>
+                                </div>
+                            <% end %>
+                        </div>
+                   </div>
+                </div>
             </div>
             <div id="documents" class="tab-pane fade">
                 <% if @documents.count > 0 %>

@@ -312,7 +312,7 @@
 
             $.ajax({
                 type: 'GET',
-                url: '/Classes/' + sectionId + '/Assignments/' + assignmentId + '/Resources',
+                url: '/classes/' + sectionId + '/assignments/' + assignmentId + '/resources',
                 success: function (data) {
 
                     var resourcesListHtml = "";
@@ -358,9 +358,7 @@
                         for (var i = 0; i < data.resources.length; i++) {
                             resourcesListHtml += '<li data-id="' + data.resources[i].Id + '">' + data.resources[i].Resource.DisplayName + '</li>';
                         }
-                    } //else {
-                    //    resourcesListHtml = "<li>There is no data available for this page at this time.</li>";
-                    //}
+                    }
                     detailForm.find(".resource-list").html(resourcesListHtml);
 
                     var submissionsListHtml = "";
@@ -371,9 +369,7 @@
                         for (var i = 0; i < data.submission.Resources.length; i++) {
                             submissionsListHtml += '<li data-id="' + data.submission.Resources[i].Id + '">' + data.submission.Resources[i].Resource.DisplayName + '</li>';
                         }
-                    } //else {
-                       // submissionsListHtml = "<li class='emptyHint'>There is no data available for this page at this time.</li>";
-                    //}
+                    } 
                     detailForm.find(".handin-list").html(submissionsListHtml);
                 }
             });
