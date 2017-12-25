@@ -18,21 +18,20 @@
                 _assignment_api.resetAssignmentDetailForm();
 
                 var assignmentId = $(this).data("id");
-                var dueDateUTC = $(this).data("duedate");
-                var assignmentDueDate = moment.utc(dueDateUTC).format("M/DD/YYYY");
+                var dueDate = $(this).data("duedate");
                 var assignmentTitle = $(this).data("title");
                 var assignmentStatus = $(this).data("status");
                 
                 if (_isStudent) {
                     var isallowlate = $(this).data("allowlate") === "True";
                     var disableButton = false;
-                    if (!isallowlate && moment.utc(dueDateUTC) < moment()) {
+                    if (!isallowlate && moment(dueDate) < moment()) {
                         disableButton = true;
                     }
-                    _assignment_api.showAssignmentDetailForStudent(assignmentId, assignmentTitle, assignmentDueDate, assignmentStatus, disableButton, isallowlate);
+                    _assignment_api.showAssignmentDetailForStudent(assignmentId, assignmentTitle, dueDate, assignmentStatus, disableButton, isallowlate);
                 }
                 else {
-                    _assignment_api.showAssignmentDetailForTeacher(assignmentId, assignmentTitle, assignmentDueDate, assignmentStatus);
+                    _assignment_api.showAssignmentDetailForTeacher(assignmentId, assignmentTitle, dueDate, assignmentStatus);
                 }
 
             });
@@ -88,7 +87,10 @@
             $("input[id^='fileToUpload']").change(function (e) {
                 _assignment_api.doReCreateUploadControl(e);
             });
-            $("#duedate").datepicker();
+            if(!_isStudent) {
+                $("#duedate").datepicker();
+            }
+            
 
         },
         saveNewAssignmentSubmit: function (status) {
@@ -240,7 +242,7 @@
                     $("#assignment-detail-form .assignment-alert"),
                     $("input[id^='newResourceFileCtrl']"),
                     "newResourceFileCtrl",
-                    "newResource",
+                    "newResource[]",
                     "#assignment-detail-form .resource-upload")
             }
             else {
@@ -250,7 +252,7 @@
                 $("#assignment-detail-form .assignment-alert"),
                 $("input[id^='newResourceFileCtrl']"),
                 "newResourceFileCtrl",
-                "newResource",
+                "newResource[]",
                 "#assignment-detail-form .resource-upload");
             }
         },
@@ -262,7 +264,7 @@
             $("#assignment-submissions-form tbody").html("<tr><td colspan='2'>Loading...</tr></td>");
             $.ajax({
                 type: 'GET',
-                url: '/Classes/' + _classId + '/Assignments/' + assignmentId + '/Submissions',
+                url: '/classes/' + _classId + '/assignments/' + assignmentId + '/submissions',
                 success: function (data) {
                     var resourcesListHtml = "";
                     if (data && data.length > 0) {
@@ -352,7 +354,7 @@
 
             $.ajax({
                 type: 'GET',
-                url: '/Classes/' + sectionId + '/Assignments/' + assignmentId + '/ResourcesSubmission',
+                url: '/classes/' + sectionId + '/assignments/' + assignmentId + '/resourcessubmission',
                 success: function (data) {
                     var resourcesListHtml = "";
                     if (data.resources && data.resources.length > 0) {
@@ -365,6 +367,8 @@
                     var submissionsListHtml = "";
                     if (data.submission) {
                         $("input[name='submissionId']").val(data.submission.Id);
+                        $("input[name='submissionResourcesFolderUrl']").val(data.submission.ResourcesFolderUrl);
+                        
                     }
                     if (data.submission && data.submission.Resources && data.submission.Resources.length > 0) {
                         for (var i = 0; i < data.submission.Resources.length; i++) {

@@ -46,7 +46,20 @@ class MSGraphService
     admin_role.members.reload!    
     if admin_role.members.any?{|_| _.id == me.id}
       roles << Constants::Roles::Admin
-    end       
+    end   
+    
+    if roles.length == 0
+      response = HTTParty.get(
+        Constants::Resources::MSGraph + '/beta/education/me',
+        headers: {
+          "Authorization" => "Bearer #{@access_token}"
+        }
+      )
+      ret = JSON.parse(response.body)
+      if ret["primaryRole"]
+        roles << ret["primaryRole"].upcase_first
+      end
+    end
     roles
   end  
 

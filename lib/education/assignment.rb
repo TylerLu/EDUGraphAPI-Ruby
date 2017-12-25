@@ -78,7 +78,6 @@ module Education
   end
 
   class EducationResource < ObjectBase
-    
     def initialize(prop_hash = {})
       super(prop_hash)
     end
@@ -90,9 +89,7 @@ module Education
     def created_dateTime
       get_value('createdDateTime')
     end
-
   end
-
 
   class Assignment < ObjectBase
 
@@ -137,4 +134,57 @@ module Education
     end
 
   end
+
+class User < ObjectBase
+
+    def initialize(prop_hash = {})
+      super(prop_hash)
+    end
+
+    def display_name
+      get_value('displayName')
+    end
+end
+
+class SubmittedBy < ObjectBase
+
+    def initialize(prop_hash = {})
+      super(prop_hash)
+    end
+
+    def user
+      @user ||= User.new(get_value('user'))
+    end
+end
+
+class Submission < ObjectBase
+
+    def initialize(prop_hash = {})
+      super(prop_hash)
+    end
+    
+    def status
+      get_value('status')
+    end
+    def submitted_dateTime
+      get_value('submittedDateTime')
+    end
+
+    def submitted_By
+      @submitted_By ||= SubmittedBy.new(get_value('submittedBy'))
+    end
+
+    def resources_folder
+      @resources_folder ||= EducationResource.new(get_value('resourcesFolder'))
+    end
+
+    def resources_folder_Url
+      get_value('resourcesFolderUrl')
+    end
+    
+    def resources
+      @resources ||= get_value('resources').map { |s| ResourceContainer.new(s) }
+    end
+  end
+
 end

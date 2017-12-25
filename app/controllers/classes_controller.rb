@@ -89,6 +89,25 @@ class ClassesController < ApplicationController
     render json: {status: 'success'}
   end
 
+  def new_assignment_submission_resource
+    if params[:newResource] and params[:newResource].length > 0
+      ms_access_token = token_service.get_access_token(current_user.o365_user_id, Constants::Resources::MSGraph)
+      education_service = Education::EducationService.new(current_user.tenant_id, ms_access_token)
+      ids = self.get_ids_from_resource_folder(params[:submissionResourcesFolderUrl]);
+      params[:newResource].each do |fileupload|
+        driveItem = Education::DriveItem.new(education_service.upload_File(ids, fileupload.original_filename,fileupload.read))
+        education_service.add_submission_resource(
+          params[:classId], 
+          params[:assignmentId], 
+          params[:submissionId],
+          driveItem.name, 
+          self.get_file_type(driveItem.name),
+          "drives/#{driveItem.parent_reference.drive_id}/items/#{driveItem.id}")
+      end
+    end
+    redirect_to :back
+  end
+  
   def update_assignment
     ms_access_token = token_service.get_access_token(current_user.o365_user_id, Constants::Resources::MSGraph)
     education_service = Education::EducationService.new(current_user.tenant_id, ms_access_token)
@@ -96,13 +115,12 @@ class ClassesController < ApplicationController
       ducation_service.publish_assignment(params[:classId], params[:assignmentId])
     end
 
-    resourceFolder = education_service.get_assignment_resource_folder_URL(params[:classId], params[:assignmentId])
-    ids = self.get_ids_from_resource_folder(resourceFolder.resource_folder_URL);
-
-    if params[:newResource].length > 0
+    if params[:newResource] and params[:newResource].length > 0
+       resourceFolder = education_service.get_assignment_resource_folder_URL(params[:classId], params[:assignmentId])
+       ids = self.get_ids_from_resource_folder(resourceFolder.resource_folder_URL);
        params[:newResource].each do |fileupload|
-        driveItem = Education::DriveItem.new(education_service.upload_File(ids, fileupload.original_filename,fileupload.read))
-        education_service.add_assignment_resources(
+         driveItem = Education::DriveItem.new(education_service.upload_File(ids, fileupload.original_filename,fileupload.read))
+         education_service.add_assignment_resources(
           params[:classId], 
           params[:assignmentId], 
           driveItem.name, 
@@ -110,7 +128,8 @@ class ClassesController < ApplicationController
           "drives/#{driveItem.parent_reference.drive_id}/items/#{driveItem.id}")
        end
     end
-    redirect_to "/schools/#{params[:schoolId]}/classes/#{params[:classId]}"
+    #redirect_to "/schools/#{params[:schoolId]}/classes/#{params[:classId]}"
+    redirect_to :back
   end
 
   def new_assignment
@@ -134,7 +153,7 @@ class ClassesController < ApplicationController
     resourceFolder = education_service.get_assignment_resource_folder_URL(params[:classId], assignment.id)
     ids = self.get_ids_from_resource_folder(resourceFolder.resource_folder_URL);
 
-    if params[:fileUpload].length > 0
+    if  params[:fileUpload] and params[:fileUpload].length > 0
        params[:fileUpload].each do |fileupload|
         driveItem = Education::DriveItem.new(education_service.upload_File(ids, fileupload.original_filename,fileupload.read))
         education_service.add_assignment_resources(
@@ -145,7 +164,8 @@ class ClassesController < ApplicationController
           "drives/#{driveItem.parent_reference.drive_id}/items/#{driveItem.id}")
        end
     end
-    redirect_to "/schools/#{params[:schoolId]}/classes/#{params[:classId]}"
+    #redirect_to "/schools/#{params[:schoolId]}/classes/#{params[:classId]}"
+    redirect_to :back
   end
 
   def get_assignment_resources
@@ -160,6 +180,22 @@ class ClassesController < ApplicationController
     end
     render json: retArray
 
+  end
+
+  def get_assignment_resources_submission
+    ms_access_token = token_service.get_access_token(current_user.o365_user_id, Constants::Resources::MSGraph)
+    education_service = Education::EducationService.new(current_user.tenant_id, ms_access_token)
+
+    resources = education_service.get_assignment_resources(params[:classId], params[:assignmentId])
+    submissions = education_service.get_assignment_submission_by_user(params[:classId], params[:assignmentId], current_user.o365_user_id)
+
+    if submissions and submissions.length > 0
+      render json: {resources: resources.map{|resource| { Id:resource.id, Resource: { DisplayName: resource.resource.display_name }}},
+                    submission:{Id:submissions[0].id, ResourcesFolderUrl:submissions[0].resources_folder_Url , Resources: submissions[0].resources.map { |res| { Id:res.id, Resource: { DisplayName: res.resource.display_name } }}}}
+    else
+      render json: {resources: resources.map{|resource| { Id:resource.id, Resource: { DisplayName: resource.resource.display_name }}},
+                    submission:nil}
+    end
   end
  
   def get_ids_from_resource_folder(resource_folder)
