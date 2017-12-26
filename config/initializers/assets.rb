@@ -14,4 +14,5 @@ jqueryval.js site.js
 moment.min.js classes.js
 users.js classdetail.js
 schools.js jquery.tablesorter.min.js
+assignments.js jquery-ui.js
 )

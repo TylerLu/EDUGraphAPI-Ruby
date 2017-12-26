@@ -13,6 +13,6 @@
 //= require jquery
 //= require moment.min
 //= require modernizr
-//= require jquery_ujs
+//= require jquery-ui
 //= require turbolinks
 // require_tree .
