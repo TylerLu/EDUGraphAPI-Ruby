@@ -751,6 +751,49 @@ class DemoHelperService
           ]
         },
         {
+          'title': 'Get assignments in this class',
+          'tab': '#assignments',
+          'files': [
+            {
+              'url': '/lib/education/education_service.rb',
+              'methods': [
+                {
+                  'title': 'get_assignments_by_class_id',
+                  'description': 'Get a class\'s assignments.'
+                },
+                {
+                  'title': 'create_assignment',
+                  'description': 'Create an assignment for a class.'
+                },
+                {
+                  'title': 'add_assignment_resources',
+                  'description': 'Add resource to an assignment.'
+                },
+                {
+                  'title': 'publish_assignment',
+                  'description': 'Publish an assignment. Set its status from draft to published.'
+                },
+                {
+                  'title': 'add_submission_resource',
+                  'description': 'Add resources to an assignment submission.'
+                },
+                {
+                  'title': 'get_assignment_resources',
+                  'description': 'Get resources of an assignment.'
+                },
+                {
+                  'title': 'get_assignment_submissions',
+                  'description': 'Get submissions of an assignment.'
+                },
+                {
+                  'title': 'get_assignment_submission_by_user',
+                  'description': 'Get a student\'s assignment submissions.'
+                }
+              ]
+            }
+          ]
+        },
+        {
           'title': 'Get all conversations of current class',
           'tab': '#conversations',
           'files': [

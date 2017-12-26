@@ -65,10 +65,6 @@ module Education
       })
     end
 
-    def get_assignments_by_class_id(class_id)
-      get_objects(Education::Assignment, "education/classes/#{class_id}/assignments")
-    end
-    
     def add_user_to_class_as_member(class_id, user_id) 
       data = { "@odata.id": "#{@base_url}/users/#{user_id}"}
       request('post', "groups/#{class_id}/members/$ref", {}, data.to_json)
@@ -79,6 +75,10 @@ module Education
        request('post', "groups/#{class_id}/owners/$ref", {}, data.to_json)
     end
 
+    def get_assignments_by_class_id(class_id)
+      get_objects(Education::Assignment, "education/classes/#{class_id}/assignments")
+    end
+    
     def create_assignment(class_id, assignment_obj)
       request('post', "education/classes/#{class_id}/assignments", {}, assignment_obj.to_json)
     end
