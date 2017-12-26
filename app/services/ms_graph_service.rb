@@ -63,6 +63,10 @@ class MSGraphService
     roles
   end  
 
+  def get_user_name(user_id)
+    @graph.users.find(user_id).display_name
+  end
+
   def get_conversations(class_id)
     @graph.groups.find(class_id).conversations rescue []
   end

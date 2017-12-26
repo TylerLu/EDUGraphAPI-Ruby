@@ -168,6 +168,24 @@ class ClassesController < ApplicationController
     redirect_to :back
   end
 
+  def get_assignment_submissions
+    ms_access_token = token_service.get_access_token(current_user.o365_user_id, Constants::Resources::MSGraph)
+    education_service = Education::EducationService.new(current_user.tenant_id, ms_access_token)
+    ms_graph_servcie = MSGraphService.new(ms_access_token)
+
+    retArray = Array.new;
+    submissions = education_service.get_assignment_submissions(params[:classId], params[:assignmentId])
+    submissions.each do |submission|
+      if submission.submitted_By.user && submission.submitted_By.user.id
+        displayname = ms_graph_servcie.get_user_name(submission.submitted_By.user.id)
+        retArray.push({SubmittedBy: {User:{DisplayName:displayname}}, 
+                        SubmittedDateTime: (submission.submitted_dateTime and submission.submitted_dateTime.length > 0) ? DateTime.parse(submission.submitted_dateTime).getlocal.strftime('%m/%d/%Y') : "",
+                        Resources:submission.resources.map{|resource| { Resource: { DisplayName: resource.resource.display_name }}}})
+      end
+    end
+    render json: retArray
+  end
+
   def get_assignment_resources
     ms_access_token = token_service.get_access_token(current_user.o365_user_id, Constants::Resources::MSGraph)
     education_service = Education::EducationService.new(current_user.tenant_id, ms_access_token)

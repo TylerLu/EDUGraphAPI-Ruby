@@ -111,7 +111,12 @@ module Education
 
    def get_assignment_submission_by_user(class_id, assignment_id, user_id)
       get_objects(Education::Submission, "education/classes/#{class_id}/assignments/#{assignment_id}/submissions?$filter=submittedBy/user/id eq '#{user_id}'")
-    end
+   end
+
+   def get_assignment_submissions(class_id, assignment_id)
+      get_objects(Education::Submission, "education/classes/#{class_id}/assignments/#{assignment_id}/submissions")
+   end
+
 
 
 
