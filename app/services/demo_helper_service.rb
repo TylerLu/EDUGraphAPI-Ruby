@@ -21,7 +21,7 @@ class DemoHelperService
                 },
                 {
                   'title': 'login_local',
-                  'description': 'Hanle local user login.'
+                  'description': 'Handle local user login.'
                 },
                 {
                   'title': 'login_o365',
@@ -778,7 +778,7 @@ class DemoHelperService
                 },
                 {
                   'title': 'get_documents_web_url',
-                  'description': 'Get documents web URL.'
+                  'description': 'Get URL of the documents page.'
                 }              
               ]
             }
