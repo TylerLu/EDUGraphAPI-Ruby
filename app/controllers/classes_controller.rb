@@ -13,6 +13,7 @@ class ClassesController < ApplicationController
     @school = education_service.get_school(params[:school_id])
     @my_classes = education_service.get_my_classes(@school.id)
     @classes = education_service.get_classes(@school.id, 12)
+    
     @classes.value.each do |c| 
       c.custom_data[:is_my] = @my_classes.any?{ |mc| mc.id == c.id}
     end
@@ -36,13 +37,14 @@ class ClassesController < ApplicationController
       values: @classes.value.map do |c|
         {
           is_my: c.custom_data[:is_my],
+          id: c.id,
           display_name: c.display_name,
           code: c.code,
           teachers: c.teachers.map{ |t| { display_name: t.display_name } },
           description: c.description,
           term_name: c.term.display_name,
-          term_start_time: c.term.start_date.to_s,
-          term_end_time: c.term.end_date.to_s
+          term_start_time: c.term.start_date,
+          term_end_time: c.term.end_date
         }
       end
     }
@@ -95,7 +97,7 @@ class ClassesController < ApplicationController
       education_service = Education::EducationService.new(current_user.tenant_id, ms_access_token)
       ids = self.get_ids_from_resource_folder(params[:submissionResourcesFolderUrl]);
       params[:newResource].each do |fileupload|
-        driveItem = Education::DriveItem.new(education_service.upload_File(ids, fileupload.original_filename,fileupload.read))
+        driveItem = Education::DriveItem.new(education_service.upload_File(ids, URI.encode(fileupload.original_filename),fileupload.read))
         education_service.add_submission_resource(
           params[:classId], 
           params[:assignmentId], 
@@ -112,14 +114,14 @@ class ClassesController < ApplicationController
     ms_access_token = token_service.get_access_token(current_user.o365_user_id, Constants::Resources::MSGraph)
     education_service = Education::EducationService.new(current_user.tenant_id, ms_access_token)
     if params[:assignmentOriginalStatus] == "draft" and params[:assignmentStatus] == "assigned"
-      ducation_service.publish_assignment(params[:classId], params[:assignmentId])
+      education_service.publish_assignment(params[:classId], params[:assignmentId])
     end
 
     if params[:newResource] and params[:newResource].length > 0
        resourceFolder = education_service.get_assignment_resource_folder_URL(params[:classId], params[:assignmentId])
        ids = self.get_ids_from_resource_folder(resourceFolder.resource_folder_URL);
        params[:newResource].each do |fileupload|
-         driveItem = Education::DriveItem.new(education_service.upload_File(ids, fileupload.original_filename,fileupload.read))
+         driveItem = Education::DriveItem.new(education_service.upload_File(ids, URI.encode(fileupload.original_filename),fileupload.read))
          education_service.add_assignment_resources(
           params[:classId], 
           params[:assignmentId], 
@@ -152,10 +154,10 @@ class ClassesController < ApplicationController
 
     resourceFolder = education_service.get_assignment_resource_folder_URL(params[:classId], assignment.id)
     ids = self.get_ids_from_resource_folder(resourceFolder.resource_folder_URL);
-
+ 
     if  params[:fileUpload] and params[:fileUpload].length > 0
        params[:fileUpload].each do |fileupload|
-        driveItem = Education::DriveItem.new(education_service.upload_File(ids, fileupload.original_filename,fileupload.read))
+        driveItem = Education::DriveItem.new(education_service.upload_File(ids, URI.encode(fileupload.original_filename),fileupload.read))
         education_service.add_assignment_resources(
           params[:classId], 
           assignment.id, 

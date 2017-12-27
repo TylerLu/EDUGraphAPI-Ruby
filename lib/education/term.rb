@@ -20,11 +20,11 @@ module Education
     end
 
     def start_date
-      DateTime.parse(get_value('startDate'))
+      DateTime.parse(get_value('startDate')).getlocal.strftime('%B %d %Y')
     end
 
     def end_date
-      DateTime.parse(get_value('endDate'))
+      DateTime.parse(get_value('endDate')).getlocal.strftime('%B %d %Y')
     end
 
   end
