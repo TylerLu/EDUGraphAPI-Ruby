@@ -59,10 +59,9 @@ class UserService
   end
 
   def get_favorite_color_hash(o365_user_ids)
-    User
-			.where('o365_user_id', o365_user_ids)
+    User.where(o365_user_id:o365_user_ids)
 			.pluck(:o365_user_id, :favorite_color)
-			.to_h     
+			.to_h    
   end
 
   def get_seating_position_hash(class_object_id)
