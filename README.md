@@ -93,7 +93,7 @@ The sample is implemented with Ruby on Rail.
 
      | API                            | Application Permissions | Delegated Permissions                    |
      | ------------------------------ | ----------------------- | ---------------------------------------- |
-     | Microsoft Graph                | Read directory data     | Read all users' full profiles<br>Read directory data<br>Access directory as the signed in user<br>Sign users in |
+     | Microsoft Graph                |                         | Read directory data<br>Access directory as the signed in user<br>Sign users in<br> Have full access to all files user can access<br> Have full access to user files<br> Read users' class assignments without grades<br> Read and write users' class assignments without grades<br> Read users' class assignments and their grades<br> Read and write users' class assignments and their grades |
      | Windows Azure Active Directory |                         | Sign in and read user profile<br>Read and write directory data |
 
      ![](/Images/aad-create-app-06.png)
@@ -355,13 +355,13 @@ The **EducationService** is the core class of the library. It is used to easily 
 
 ~~~typescript
 def get_all_schools
-  get_objects(Education::School, 'administrativeUnits')
+  get_objects(Education::School, 'education/schools')
 end
 ~~~
 
 ~~~typescript
 def get_school(id)
-  get_object(Education::School, "administrativeUnits/#{id}")
+  get_object(Education::School, "education/schools/#{id}")
 end
 ~~~
 
@@ -369,24 +369,49 @@ end
 
 ~~~typescript
 def get_classes(school_id, skip_token = nil, top = 12)
-  get_paged_objects(Education::Class, 'groups', {
-    '$top': 12,
-    '$filter': "extension_fe2174665583431c953114ff7268b7b3_Education_ObjectType eq 'Section' and extension_fe2174665583431c953114ff7268b7b3_Education_SyncSource_SchoolId eq '#{school_id}'",
-    '$skiptoken': skip_token
-  })
+  get_paged_objects(Education::Class, "education/schools/#{school_id}/classes", {
+        '$top': top,
+        '$skiptoken': skip_token,
+        '$expand': 'members'
+      })
 end
 ~~~
 
 ```typescript
 def get_class(class_id)
-  get_object(Education::Class, "groups/#{class_id}")
+   get_object(Education::Class, "education/classes/#{class_id}")
 end
 ```
+**Manage assignment**
+
+```
+def create_assignment(class_id, assignment_obj)
+   request('post', "education/classes/#{class_id}/assignments", {}, assignment_obj.to_json)
+end
+```
+
+```
+def publish_assignment(class_id, assignment_id)
+  request('post', "education/classes/#{class_id}/assignments/#{assignment_id}/publish", {}, nil)
+end
+```
+
+```
+ def add_assignment_resources(class_id, assignment_id,file_name, file_type,resource_url)
+      data = {"resource":{"displayName":file_name, "@odata.type":file_type, "file":{"odataid":"#{@base_url}/#{resource_url}"}} }
+      request('post', "education/classes/#{class_id}/assignments/#{assignment_id}/resources", {}, data.to_json)
+ end
+```
+
+```
+ def get_assignment_resources(class_id, assignment_id)
+      get_objects(Education::EducationAssignmentResource, "education/classes/#{class_id}/assignments/#{assignment_id}/resources")
+ end
+```
+
 Below are some screenshots of the sample app that show the education data.
 
 ![](Images/edu-schools.png)
-
-[](Images/edu-classes.png)
 
 ![](Images/edu-class.png)
 
@@ -453,7 +478,7 @@ Note that in the AAD Application settings, permissions for each Graph API are co
 
 ## Contributing
 
-We encourage you to contribute to our samples. For guidelines on how to proceed, see [our contribution guide](/CONTRIBUTING.md).
+We encourage you to contribute to our samples. For guidelines on how to proceed, see [our contribution guide](/Contributing.md).
 
 This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/). For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
 
