@@ -44,14 +44,15 @@ class ClassesController < ApplicationController
           teachers: c.teachers.map{ |t| { display_name: t.display_name } },
           description: c.description,
           term_name: c.term.display_name,
-          term_start_time: c.term.start_date,
-          term_end_time: c.term.end_date
+          term_start_time: c.term.start_date.getlocal.strftime('%B %-d %Y'),
+          term_end_time: c.term.end_date.getlocal.strftime('%B %-d %Y')
         }
       end
     }
   end
 
   def show
+    
     #aad_access_token = token_service.get_access_token(current_user.o365_user_id, Constants::Resources::AADGraph)
     ms_access_token = token_service.get_access_token(current_user.o365_user_id, Constants::Resources::MSGraph)
     education_service = Education::EducationService.new(current_user.tenant_id, ms_access_token)
@@ -68,19 +69,18 @@ class ClassesController < ApplicationController
     user_service = UserService.new    
     seating_position_hash = user_service.get_seating_position_hash(class_object_id)
     favorite_color_hash = user_service.get_favorite_color_hash(@class.members.map{ |m| m.id })
-    
+
     @class.members.each do |m|
       m.custom_data[:position] = seating_position_hash[m.id]
       m.custom_data[:favorite_color] = favorite_color_hash[m.id]
-      if m.is_teacher?
-        @teacher_favorite_color = favorite_color_hash[m.id]
-      end
     end
 
     school_teachers = education_service.get_teachers(@school.number);
     @schoolTeachers = school_teachers.select do |teacher|
       @class.teachers.select{|classteacher| classteacher.id == teacher.id}.length == 0
     end
+
+    @teacher_favorite_color = current_user.favorite_color ? current_user.favorite_color : "#2F19FF"
 
     @assignments = education_service.get_assignments_by_class_id(class_object_id)
   end

@@ -89,4 +89,8 @@ class UnifiedUser
     end
   end
 
+ def favorite_color
+    local_user ? local_user.favorite_color : nil
+  end
+
 end

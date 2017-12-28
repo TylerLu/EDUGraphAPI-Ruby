@@ -9,13 +9,13 @@ $(document).ready(function () {
             $(this).children().last().show();
         }, function outFn(e) {
             $(this).children().last().hide();
-        }).find(".detail #termdate").each(function (i, e) {
+        })/*.find(".detail #termdate").each(function (i, e) {
             var $e = $(e);
             var dateStr = $e.text();
             if (dateStr) {
                 $e.text(moment.utc(dateStr).local().format('MMMM D YYYY'));
             }
-        });
+        })*/;
     };
 
     function hasClass(c, classes) {
@@ -82,10 +82,11 @@ $(document).ready(function () {
                         $.each(value['teachers'], function(index, member){
                             teachers += '<h6>' + member['display_name'] + '</h6>';
                         })
+                                              
                         html += '<div class="detail"><h5>Class Number:</h5><h6>' +value['code'] +'</h6>' + 
                             '<h5>Teachers:</h5>'+ teachers +'<h5>Term Name:</h5><h6>' + value['term_name'] + '</h6>' +
-                            '<h5>Start/Finish Date:</h5><h6><span id="termdate">'+ value['term_start_time'] +'</span><span> - </span>' + 
-                            '<span id="termdate">'+value['term_end_time']+'</span></h6></div>';
+                            '<h5>Start/Finish Date:</h5><h6><span id="termdate">'+ value['term_start_time']+'</span><span> - </span>' + 
+                            '<span id="termdate">'+ value['term_end_time']+'</span></h6></div>';
                         html += '</div>';
                     })
                     _ = $(html);

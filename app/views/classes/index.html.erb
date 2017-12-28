@@ -89,9 +89,9 @@
                             <h6><%= c.term.display_name %></h6>
                             <h5>Start/Finish Date:</h5>
                             <h6>
-                                <span id="termdate"><%= c.term.start_date %></span>
+                                <span id="termdate"><%= c.term.start_date.getlocal.strftime('%B %-d %Y') %></span>
                                 <span> - </span>
-                                <span id="termdate"><%= c.term.end_date %></span>
+                                <span id="termdate"><%= c.term.end_date.getlocal.strftime('%B %-d %Y') %></span>
                             </h6>
                         </div>
                     </div>
@@ -134,9 +134,9 @@
                                 <h6><%= c.term.display_name %></h6>
                                 <h5>Start/Finish Date:</h5>
                                 <h6>
-                                    <span id="termdate"><%= c.term.start_date %></span>
+                                    <span id="termdate"><%= c.term.start_date.getlocal.strftime('%B %-d %Y') %></span>
                                     <span> - </span>
-                                    <span id="termdate"><%= c.term.end_date %></span>
+                                    <span id="termdate"><%= c.term.end_date.getlocal.strftime('%B %-d %Y') %></span>
                                 </h6>
                             </div>
                         </div>

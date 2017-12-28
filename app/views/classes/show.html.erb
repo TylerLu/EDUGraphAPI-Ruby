@@ -30,9 +30,9 @@
                 <span>Term Name:</span> <%= @class.term.display_name %>
                 <br />
                 <span>Start/Finish Date:</span>
-                <span id="termdate"><%= @class.term.start_date %></span>
+                <span id="termdate"><%= @class.term.start_date.getlocal.strftime('%B %d %Y') %></span>
                 <span id="termdate-separator"> - </span>
-                <span id="termdate"><%= @class.term.end_date %></span>
+                <span id="termdate"><%= @class.term.end_date.getlocal.strftime('%B %d %Y') %></span>
             </div>
             <div class="col-md-6">
                 <span>Teacher:</span> 
@@ -140,7 +140,7 @@
                                                 data-title="<%= assignment.display_name %>" 
                                                 data-allowlate="<% assignment.allow_lateSubmissions %>" 
                                                 href="javascript:void(0)">Details</a>
-                                                <% if not(current_user.is_student?)%>
+                                                <% if not(current_user.is_student?) and (assignment.status !='draft')%>
                                                     <span>|</span>
                                                     <a href="javascript:void(0)" 
                                                         class="submissionslink"  
@@ -430,7 +430,7 @@
                     </div>
                 </div>
                 <div class="right" id="dvright">
-                    <div class="teacherdesk" style="background-color: <%= @teacher_favorite_color || '#2F19FF' %>">Teacher's desk</div>
+                    <div class="teacherdesk" style="background-color: <%= @teacher_favorite_color %>">Teacher's desk</div>
                     <div>
                         <div id="graybg">
                             <% (1..36).each do |index| %>
